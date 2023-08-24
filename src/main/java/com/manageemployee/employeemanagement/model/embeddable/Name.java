@@ -12,6 +12,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Embeddable
 @Setter
 @Getter
@@ -25,6 +27,7 @@ public class Name {
     private String firstName;
 
     @Column(name = "MIDDLE_NAME")
+    @NotNull
     private String middleName;
 
     @NotNull
@@ -39,5 +42,19 @@ public class Name {
         if (middleName.isEmpty() || middleName == null) {
             middleName = "ОТСУТСТВУЕТ";
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Name)) return false;
+        Name name = (Name) o;
+        return firstName.equals(name.firstName) && middleName.equals(name.middleName)
+                && lastName.equals(name.lastName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, middleName, lastName);
     }
 }

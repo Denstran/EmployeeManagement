@@ -3,10 +3,7 @@ package com.manageemployee.employeemanagement.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -18,6 +15,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +24,7 @@ public class Department {
     @NotNull
     @NotBlank(message = "Название отдела не может быть пустым!")
     @Column(name = "DEPARTMENT_NAME")
-    private String departamentName;
+    private String departmentName;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "LAST_MODIFIED", insertable = false, updatable = false)

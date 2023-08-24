@@ -3,11 +3,17 @@ package com.manageemployee.employeemanagement.model;
 import com.manageemployee.employeemanagement.model.enumTypes.EEmployeeStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@NoArgsConstructor
+@Getter
+@Setter
 public class EmployeeStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +24,21 @@ public class EmployeeStatus {
     @Enumerated(value = EnumType.STRING)
     private EEmployeeStatus employeeStatus;
 
+    public EmployeeStatus(Long id, EEmployeeStatus employeeStatus) {
+        this.id = id;
+        this.employeeStatus = employeeStatus;
+    }
+
     @OneToMany(mappedBy = "employeeStatus", cascade = CascadeType.ALL)
     private Set<Employee> employees = new HashSet<>();
 
+    private void addEmployee(Employee employee) {
+        this.employees.add(employee);
+        employee.setEmployeeStatus(this);
+    }
+
+    private void deleteStatusFromEmployee(Employee employee) {
+        this.employees.remove(employee);
+        employee.setEmployeeStatus(null);
+    }
 }

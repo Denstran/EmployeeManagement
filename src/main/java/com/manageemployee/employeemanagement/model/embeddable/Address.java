@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.Objects;
+
 @Embeddable
 @Data
 @Getter
@@ -32,4 +34,18 @@ public class Address {
     @NotBlank
     @Column(name = "COUNTRY")
     private String country;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Address)) return false;
+        Address address = (Address) o;
+        return city.equals(address.city) && zipCode.equals(address.zipCode) && street.equals(address.street)
+                && country.equals(address.country);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(city, zipCode, street, country);
+    }
 }

@@ -56,4 +56,9 @@ public class CompanyBranch {
 
     @OneToMany(mappedBy = "companyBranch")
     private Set<Department> departments = new HashSet<>();
+
+    public void addDepartment(Department department) {
+        this.departments.add(department);
+        department.setCompanyBranch(this);
+    }
 }
