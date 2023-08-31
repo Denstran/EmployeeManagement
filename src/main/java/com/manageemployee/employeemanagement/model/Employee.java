@@ -3,7 +3,6 @@ package com.manageemployee.employeemanagement.model;
 import com.manageemployee.employeemanagement.converter.MoneyConverter;
 import com.manageemployee.employeemanagement.model.embeddable.Address;
 import com.manageemployee.employeemanagement.model.embeddable.Name;
-import com.manageemployee.employeemanagement.model.enumTypes.EEmployeeStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -59,7 +58,7 @@ public class Employee {
     @CreationTimestamp
     private Date employmentDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "EMPLOYEE_STATUS_ID")
     private EmployeeStatus employeeStatus;
 
@@ -70,7 +69,10 @@ public class Employee {
     @Column(name = "SALARY", length = 63)
     private Money salary;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
     @JoinTable(
             name = "EMPLOYEE_POSITION",
             joinColumns = {@JoinColumn(name = "EMPLOYEE_ID")},
@@ -78,7 +80,17 @@ public class Employee {
     )
     private Set<Position> positions = new HashSet<>();
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    public void addPosition(Position position) {
+        this.positions.add(position);
+        position.getEmployees().add(this);
+    }
+
+    public void removePosition(Position position) {
+        this.positions.remove(position);
+        position.getEmployees().remove(this);
+    }
+
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PaymentLog> payments = new HashSet<>();
 
     public void addPayment(PaymentLog paymentLog) {
@@ -86,12 +98,12 @@ public class Employee {
         paymentLog.setEmployee(this);
     }
 
-    public void remove(PaymentLog paymentLog) {
+    public void removePayment(PaymentLog paymentLog) {
         this.payments.remove(paymentLog);
         paymentLog.setEmployee(null);
     }
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "DEPARTMENT_ID")
     private Department department;
 }

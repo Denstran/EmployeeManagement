@@ -54,11 +54,16 @@ public class CompanyBranch {
     private String phoneNumber;
 
 
-    @OneToMany(mappedBy = "companyBranch")
+    @OneToMany(mappedBy = "companyBranch", cascade = CascadeType.ALL)
     private Set<Department> departments = new HashSet<>();
 
     public void addDepartment(Department department) {
         this.departments.add(department);
         department.setCompanyBranch(this);
+    }
+
+    public void removeDepartment(Department department) {
+        this.departments.remove(department);
+        department.setCompanyBranch(null);
     }
 }

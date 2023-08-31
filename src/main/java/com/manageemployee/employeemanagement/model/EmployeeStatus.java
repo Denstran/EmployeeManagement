@@ -29,7 +29,7 @@ public class EmployeeStatus {
         this.employeeStatus = employeeStatus;
     }
 
-    @OneToMany(mappedBy = "employeeStatus", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "employeeStatus", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Set<Employee> employees = new HashSet<>();
 
     private void addEmployee(Employee employee) {
@@ -37,7 +37,7 @@ public class EmployeeStatus {
         employee.setEmployeeStatus(this);
     }
 
-    private void deleteStatusFromEmployee(Employee employee) {
+    private void deleteEmployee(Employee employee) {
         this.employees.remove(employee);
         employee.setEmployeeStatus(null);
     }

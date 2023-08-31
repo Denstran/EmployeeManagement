@@ -30,11 +30,11 @@ public class PaymentLog {
     @Column(name = "DATE_OF_PAYMENT", updatable = false, insertable = false)
     private Date dateOfPayment;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PAYMENT_TYPE_ID", nullable = false)
     private PaymentType paymentType;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "EMPLOYEE_ID", nullable = false)
     private Employee employee;
 

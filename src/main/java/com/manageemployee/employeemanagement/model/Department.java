@@ -1,5 +1,6 @@
 package com.manageemployee.employeemanagement.model;
 
+import com.manageemployee.employeemanagement.model.enumTypes.EEmployeeStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,9 +14,6 @@ import java.util.Set;
 @Table(name = "DEPARTMENT")
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
 public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,11 +28,11 @@ public class Department {
     @Column(name = "LAST_MODIFIED", insertable = false, updatable = false)
     private Date lastModified;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "COMPANY_BRANCH_ID")
     private CompanyBranch companyBranch;
 
-    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "department", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Employee> employees = new HashSet<>();
 
     public void addEmployee(Employee employee) {
@@ -51,5 +49,10 @@ public class Department {
     @PrePersist
     protected void setDefaultLastModified(){
         lastModified = new Date();
+    }
+
+    @PreRemove
+    protected void changeEmploysStatus() {
+        this.employees.forEach(employee -> employee.getEmployeeStatus().setEmployeeStatus(EEmployeeStatus.FIRED));
     }
 }
