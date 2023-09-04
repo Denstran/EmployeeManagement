@@ -37,13 +37,13 @@ public class Employee {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "CITY",
+            @AttributeOverride(name = "city",
                 column = @Column(name = "HOME_CITY")),
-            @AttributeOverride(name = "ZIP_CODE",
+            @AttributeOverride(name = "zipCode",
                 column = @Column(name = "HOME_ZIP_CODE")),
-            @AttributeOverride(name = "STREET",
+            @AttributeOverride(name = "street",
                 column = @Column(name = "HOME_STREET")),
-            @AttributeOverride(name = "COUNTRY",
+            @AttributeOverride(name = "country",
                 column = @Column(name = "HOME_COUNTRY"))
     })
     private Address homeAddress;

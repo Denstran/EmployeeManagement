@@ -1,11 +1,10 @@
 package com.manageemployee.employeemanagement.model;
 
-import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -14,15 +13,15 @@ import java.util.Objects;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 public class Money {
 
-    @Min(value = 1, message = "Количество денег должно быть больше нуля!")
-    @NotNull
+    @Min(value = 1, message = "Количество средств должно быть больше нуля!")
+    @NotNull(message = "Количество средств не может быть пустым")
     private BigDecimal amount;
 
-    @NotBlank(message = "Валюта не должна быть пустой!")
-    @NotNull
+    @NotNull(message = "Валюта не должны быть пустой!")
     private Currency currency;
 
     @Override

@@ -12,7 +12,25 @@
     </header>
 
     <div class="container">
-
+        <a class="btn btn-dark" th:href="@{/companyBranches/new}" role="button">Link</a>
+        <table class="table">
+            <thead class="table-dark">
+            <tr>
+                <th scope="col">Бюджет</th>
+                <th scope="col">Адрес</th>
+                <th scope="col">Номер телефона</th>
+                <th scope="col">Отделы</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="companyBranch : ${companyBranches}">
+                <td th:text="${companyBranch.budget}"></td>
+                <td th:text="${companyBranch.companyBranchAddress}"></td>
+                <td th:text="${companyBranch.phoneNumber}"></td>
+                <td><a th:href="@{/companyBranch/{id}(id = ${companyBranch.id})/departments}">Отделы</a></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 
 

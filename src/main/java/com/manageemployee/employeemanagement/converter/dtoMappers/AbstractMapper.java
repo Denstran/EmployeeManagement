@@ -1,8 +1,9 @@
 package com.manageemployee.employeemanagement.converter.dtoMappers;
 
-import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public abstract class AbstractMapper<E, D> implements Mapper<E, D> {
@@ -31,4 +32,25 @@ public abstract class AbstractMapper<E, D> implements Mapper<E, D> {
                 : mapper.map(entity, dtoClass);
     }
 
+    @Override
+    public List<E> toEntityCollection(List<D> dtoCollection) {
+        if (dtoCollection == null) {
+            return null;
+        }
+
+        List<E> entityList = new ArrayList<>();
+        dtoCollection.forEach(dto -> entityList.add(toEntity(dto)));
+        return entityList;
+    }
+
+    @Override
+    public List<D> toDtoCollection(List<E> entityCollection) {
+        if (entityCollection == null) {
+            return null;
+        }
+
+        List<D> dtoList = new ArrayList<>();
+        entityCollection.forEach(e -> dtoList.add(toDto(e)));
+        return dtoList;
+    }
 }

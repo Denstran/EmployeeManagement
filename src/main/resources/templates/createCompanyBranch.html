@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Филиалы</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body>
+    <header th:replace="fragments/header :: header(text='ДОБАВЛЕНИЕ ФИЛИАЛА')">
+    </header>
+
+    <div class="container">
+        <form th:action="@{/companyBranches/new}" th:object="${companyBranchDTO}" method="post">
+            <hr/>
+            <div class="form-group" th:if="${errorMessage}">
+                <small  th:text="${errorMessage}" class="form-text text-danger">Error</small>
+            </div>
+            <h2>Адресс</h2>
+            <div class="form-group">
+                <label for="cityInput">Город</label>
+                <input type="text" th:field="*{companyBranchAddress.city}" class="form-control" id="cityInput"
+                       aria-describedby="cityError" placeholder="Введите город">
+
+                <small th:if="${#fields.hasErrors('companyBranchAddress.city')}" th:errors="*{companyBranchAddress.city}"
+                       id="cityError"
+                       class="form-text text-danger">Error</small>
+            </div>
+            <div class="form-group">
+                <label for="streetInput">Улица</label>
+                <input type="text" th:field="*{companyBranchAddress.street}" class="form-control" id="streetInput"
+                       aria-describedby="streetError" placeholder="Введите улицу">
+
+                <small th:if="${#fields.hasErrors('companyBranchAddress.street')}" th:errors="*{companyBranchAddress.street}"
+                       id="streetError"
+                       class="form-text text-danger">Error</small>
+            </div>
+            <div class="form-group">
+                <label for="zipCodeInput">ZIP CODE</label>
+                <input type="number" th:field="*{companyBranchAddress.zipCode}" class="form-control" id="zipCodeInput"
+                       aria-describedby="zipCodeError" placeholder="Введите ZIP CODE">
+
+                <small th:if="${#fields.hasErrors('companyBranchAddress.zipCode')}" th:errors="*{companyBranchAddress.zipCode}"
+                       id="zipCodeError"
+                       class="form-text text-danger">Error</small>
+            </div>
+            <div class="form-group">
+                <label for="countryInput">Страна</label>
+                <input type="text" th:field="*{companyBranchAddress.country}" class="form-control" id="countryInput"
+                       aria-describedby="countryError" placeholder="Введите страну">
+
+                <small th:if="${#fields.hasErrors('companyBranchAddress.country')}" th:errors="*{companyBranchAddress.country}"
+                       id="countryError"
+                       class="form-text text-danger">Error</small>
+            </div>
+            <hr/>
+            <h3>Бюджет</h3>
+            <div class="form-group">
+                <label for="amountInput">Количество средств</label>
+                <input type="number" th:field="*{budget.amount}" class="form-control" id="amountInput"
+                       aria-describedby="budgetError" placeholder="Введите количество средств">
+
+                <small th:if="${#fields.hasErrors('budget.amount')}" th:errors="*{budget.amount}"
+                       id="budgetError"
+                       class="form-text text-danger">Error</small>
+            </div>
+            <div class="form-group">
+                <label for="currencyInput">Валюта</label>
+                <input type="text" th:field="*{budget.currency}" class="form-control" id="currencyInput"
+                       aria-describedby="currencyError" placeholder="Введите валюту">
+
+                <small th:if="${#fields.hasErrors('budget.currency')}" th:errors="*{budget.currency}"
+                       id="currencyError"
+                       class="form-text text-danger">Error</small>
+            </div>
+            <hr/>
+            <h2>Контактная информация</h2>
+            <div class="form-group">
+                <label for="phoneNumberInput">Номер телефона</label>
+                <input type="text" th:field="*{phoneNumber}" class="form-control" id="phoneNumberInput"
+                       aria-describedby="phoneNumberError" placeholder="Введите номер телефона">
+
+                <small th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"
+                       id="phoneNumberError"
+                       class="form-text text-danger">Error</small>
+            </div>
+            <hr/>
+            <button type="submit" class="btn btn-primary">Подтвердить</button>
+        </form>
+    </div>
+
+</body>
+</html>

@@ -34,14 +34,15 @@ public class CompanyBranch {
     private Money budget;
 
     @Embedded
+    @NotNull
     @AttributeOverrides({
-            @AttributeOverride(name = "CITY",
+            @AttributeOverride(name = "city",
                 column = @Column(name = "COMPANY_BRANCH_CITY")),
-            @AttributeOverride(name = "zip_code",
+            @AttributeOverride(name = "zipCode",
                 column = @Column(name = "COMPANY_BRANCH_ZIP_CODE")),
-            @AttributeOverride(name = "STREET",
-                column = @Column(name = "COMPANY_BRANCH_CITY_STREET")),
-            @AttributeOverride(name = "COUNTRY",
+            @AttributeOverride(name = "street",
+                column = @Column(name = "COMPANY_BRANCH_STREET")),
+            @AttributeOverride(name = "country",
             column = @Column(name = "COMPANY_BRANCH_COUNTRY"))
     })
     private Address companyBranchAddress;

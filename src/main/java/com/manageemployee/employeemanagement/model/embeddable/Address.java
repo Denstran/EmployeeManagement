@@ -16,24 +16,27 @@ import java.util.Objects;
 @AllArgsConstructor
 public class Address {
     @NotNull
-    @NotBlank
+    @NotBlank(message = "Город не должен быть пустым!")
     @Column(name = "CITY")
     private String city;
 
-    @NotNull
-    @NotBlank
     @Column(name = "ZIP_CODE")
     private String zipCode;
 
     @NotNull
-    @NotBlank
+    @NotBlank(message = "Улица не может быть пустой!")
     @Column(name = "STREET")
     private String street;
 
     @NotNull
-    @NotBlank
+    @NotBlank(message = "Страна не может быть пустой!")
     @Column(name = "COUNTRY")
     private String country;
+
+    @Override
+    public String toString() {
+        return String.format("%s, %s, %s, %s", country, city, street, zipCode);
+    }
 
     @Override
     public boolean equals(Object o) {
