@@ -31,7 +31,7 @@ public class DepartmentMapper extends AbstractMapperWithSpecificFields<Departmen
     @Override
     public void mapSpecificFieldsForDto(Department source, DepartmentDTO destination) {
         destination.setCompanyBranchId(Objects.isNull(source) ||
-                Objects.isNull(source.getId()) ? null : source.getId());
+                Objects.isNull(source.getCompanyBranch()) ? null : source.getCompanyBranch().getId());
     }
 
     @Override

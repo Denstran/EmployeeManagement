@@ -15,5 +15,4 @@ public class DepartmentDTO {
     private String departmentName;
     private Date lastModified;
     private Long companyBranchId;
-    private Set<EmployeeDTO> employees;
 }

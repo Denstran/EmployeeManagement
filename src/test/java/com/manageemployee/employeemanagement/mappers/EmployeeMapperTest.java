@@ -7,7 +7,6 @@ import com.manageemployee.employeemanagement.dto.EmployeeStatusDTO;
 import com.manageemployee.employeemanagement.model.Department;
 import com.manageemployee.employeemanagement.model.Employee;
 import com.manageemployee.employeemanagement.model.EmployeeStatus;
-import com.manageemployee.employeemanagement.model.PaymentLog;
 import com.manageemployee.employeemanagement.model.embeddable.Name;
 import com.manageemployee.employeemanagement.model.enumTypes.EEmployeeStatus;
 import com.manageemployee.employeemanagement.service.DepartmentService;
@@ -114,22 +113,5 @@ public class EmployeeMapperTest {
 
         Assertions.assertEquals(dto.getEmployeeStatus().getEmployeeStatus(),
                 entity.getEmployeeStatus().getEmployeeStatus());
-    }
-
-    @Test
-    void assertThatPaymentsAreTheSameAfterConvertationFromEntityToDto() {
-        Employee entity = new Employee();
-
-        PaymentLog payment1 = new PaymentLog();
-        payment1.setId(1L);
-        PaymentLog payment2 = new PaymentLog();
-        payment2.setId(2L);
-
-        entity.setId(1L);
-        entity.addPayment(payment1);
-        entity.addPayment(payment2);
-
-        EmployeeDTO dto = employeeMapper.toDto(entity);
-        Assertions.assertEquals(entity.getPayments().size(), dto.getPayments().size());
     }
 }

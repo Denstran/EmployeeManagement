@@ -31,5 +31,4 @@ public class CompanyBranchDTO {
     @Pattern(regexp = "^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$",
             message = "Неверный формат номера!")
     private String phoneNumber;
-    private Set<DepartmentDTO> departments;
 }

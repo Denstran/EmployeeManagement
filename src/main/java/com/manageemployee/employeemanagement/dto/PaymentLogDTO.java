@@ -11,7 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class PaymentLogDto {
+public class PaymentLogDTO {
     private Long id;
     private Money paymentAmount;
     private Date dateOfPayment;

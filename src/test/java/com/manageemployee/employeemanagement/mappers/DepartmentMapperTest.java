@@ -69,8 +69,7 @@ public class DepartmentMapperTest {
                 .hasFieldOrPropertyWithValue("id", departmentEntity.getId())
                 .hasFieldOrPropertyWithValue("departmentName", departmentEntity.getDepartmentName())
                 .hasFieldOrPropertyWithValue("lastModified", departmentEntity.getLastModified())
-                .hasFieldOrPropertyWithValue("companyBranchId", departmentEntity.getCompanyBranch().getId())
-                .hasFieldOrPropertyWithValue("employees", departmentEntity.getEmployees());
+                .hasFieldOrPropertyWithValue("companyBranchId", departmentEntity.getCompanyBranch().getId());
     }
 
     @Test

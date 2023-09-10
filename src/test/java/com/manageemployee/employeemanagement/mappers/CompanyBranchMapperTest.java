@@ -3,11 +3,9 @@ package com.manageemployee.employeemanagement.mappers;
 import com.manageemployee.employeemanagement.converter.dtoMappers.CompanyBranchMapper;
 import com.manageemployee.employeemanagement.dto.CompanyBranchDTO;
 import com.manageemployee.employeemanagement.model.CompanyBranch;
-import com.manageemployee.employeemanagement.model.Department;
 import com.manageemployee.employeemanagement.model.Money;
 import com.manageemployee.employeemanagement.model.embeddable.Address;
 import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -70,16 +68,7 @@ public class CompanyBranchMapperTest {
 
         CompanyBranch entity = companyBranchMapper.toEntity(dto);
 
-        assertThat(entity).usingRecursiveComparison().isEqualTo(dto);
-    }
-
-    @Test
-    public void assertThatCollectionSizeIsEqualAfterConvertationFromEntityToDto() {
-        CompanyBranch companyBranch = new CompanyBranch();
-        companyBranch.addDepartment(new Department());
-
-        CompanyBranchDTO dto = companyBranchMapper.toDto(companyBranch);
-
-        Assertions.assertEquals(companyBranch.getDepartments().size(), dto.getDepartments().size());
+        assertThat(entity).hasFieldOrPropertyWithValue("phoneNumber", "+79999999999");
+        assertThat(entity).hasFieldOrPropertyWithValue("id", 1L);
     }
 }

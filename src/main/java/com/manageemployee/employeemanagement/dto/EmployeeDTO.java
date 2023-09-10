@@ -20,7 +20,5 @@ public class EmployeeDTO {
     private String email;
     private Money salary;
     private EmployeeStatusDTO employeeStatus;
-    private Set<PaymentLogDto> payments;
-    private Set<PositionDTO> positions;
     private Long departmentId;
 }
