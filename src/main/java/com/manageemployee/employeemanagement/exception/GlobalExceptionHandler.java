@@ -10,9 +10,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     public ModelAndView handleResourceAlreadyExistsException(ResourceAlreadyExistsException e, HttpSession session) {
-        ModelAndView modelAndView = new ModelAndView("createCompanyBranch");
+        ModelAndView modelAndView = new ModelAndView((String) session.getAttribute("viewName"));
         modelAndView.addObject("errorMessage", e.getMessage());
-        modelAndView.addObject(session.getAttribute("companyBranchDTO"));
+        modelAndView.addObject(session.getAttribute("dtoClass"));
         return modelAndView;
     }
 }

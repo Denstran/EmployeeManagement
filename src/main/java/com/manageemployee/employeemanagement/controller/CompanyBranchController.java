@@ -10,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -42,7 +39,7 @@ public class CompanyBranchController {
     }
 
     @GetMapping("/new")
-    public String createBranch(Model model) {
+    public String createBranchForm(Model model) {
         CompanyBranchDTO companyBranchDTO = new CompanyBranchDTO();
 
         model.addAttribute("companyBranchDTO", companyBranchDTO);
@@ -50,14 +47,50 @@ public class CompanyBranchController {
     }
 
     @PostMapping("/new")
-    public String createBranchPost(@ModelAttribute("companyBranchDTO") @Valid CompanyBranchDTO companyBranchDTO,
+    public String createBranch(@ModelAttribute("companyBranchDTO") @Valid CompanyBranchDTO companyBranchDTO,
                                    BindingResult bindingResult, HttpSession session) {
         if (bindingResult.hasErrors()) return "createCompanyBranch";
 
-        session.setAttribute("companyBranchDTO", companyBranchDTO);
+        session.setAttribute("viewName", "createCompanyBranch");
+        session.setAttribute("dtoClass", companyBranchDTO);
         CompanyBranch companyBranchEntity = companyBranchMapper.toEntity(companyBranchDTO);
         CompanyBranch companyBranch = companyBranchService.createCompanyBranch(companyBranchEntity);
-        session.removeAttribute("companyBranchDTO");
+        session.removeAttribute("dtoClass");
+        session.removeAttribute("viewName");
+
+        return "redirect:/companyBranches";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deleteCompanyBranch(@PathVariable("id") Long id) {
+        companyBranchService.deleteCompanyBranchById(id);
+        return "redirect:/companyBranches";
+    }
+
+    @GetMapping("/update/{id}")
+    public String updateCompanyBranchForm(@PathVariable("id") Long id, Model model) {
+        CompanyBranch companyBranch = companyBranchService.getCompanyBranchById(id);
+        System.out.println(companyBranch.getCompanyBranchAddress());
+        CompanyBranchDTO companyBranchDTO = companyBranchMapper.toDto(companyBranch);
+        boolean isUpdating = true;
+        model.addAttribute("companyBranchDTO", companyBranchDTO);
+        model.addAttribute("isUpdating", isUpdating);
+
+        return "createCompanyBranch";
+    }
+
+    @PostMapping("/update/{id}")
+    public String updateCompanyBranch(@ModelAttribute("companyBranchDTO") @Valid CompanyBranchDTO companyBranchDTO,
+                                      BindingResult bindingResult,
+                                      HttpSession session) {
+        if (bindingResult.hasErrors()) return "createCompanyBranch";
+
+        session.setAttribute("viewName", "createCompanyBranch");
+        session.setAttribute("dtoClass", companyBranchDTO);
+        CompanyBranch companyBranchEntity = companyBranchMapper.toEntity(companyBranchDTO);
+        CompanyBranch companyBranch = companyBranchService.updateCompanyBranch(companyBranchEntity);
+        session.removeAttribute("dtoClass");
+        session.removeAttribute("viewName");
 
         return "redirect:/companyBranches";
     }

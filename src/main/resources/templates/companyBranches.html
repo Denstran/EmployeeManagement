@@ -12,7 +12,9 @@
     </header>
 
     <div class="container">
-        <a class="btn btn-dark" th:href="@{/companyBranches/new}" role="button">Link</a>
+        <hr/>
+        <a class="btn btn-dark" th:href="@{/companyBranches/new}" role="button">Добавить филиал</a>
+        <hr/>
         <table class="table">
             <thead class="table-dark">
             <tr>
@@ -20,6 +22,8 @@
                 <th scope="col">Адрес</th>
                 <th scope="col">Номер телефона</th>
                 <th scope="col">Отделы</th>
+                <th scope="col">Удаление</th>
+                <th scope="col">Обновление</th>
             </tr>
             </thead>
             <tbody>
@@ -28,6 +32,16 @@
                 <td th:text="${companyBranch.companyBranchAddress}"></td>
                 <td th:text="${companyBranch.phoneNumber}"></td>
                 <td><a th:href="@{/companyBranch/{id}(id = ${companyBranch.id})/departments}">Отделы</a></td>
+                <td>
+                    <button type="submit" class="btn btn-dark">
+                        <a th:href="@{/companyBranches/update/{id}(id = ${companyBranch.id})}">Обновить</a>
+                    </button>
+                </td>
+                <td>
+                    <form th:action="@{/companyBranches/delete/{id}(id = ${companyBranch.id})}" method="post">
+                        <button type="submit" class="btn btn-danger">Удалить</button>
+                    </form>
+                </td>
             </tr>
             </tbody>
         </table>

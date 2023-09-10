@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CompanyBranchService {
@@ -28,6 +29,24 @@ public class CompanyBranchService {
         }
 
         return  companyBranchRepository.saveAndFlush(companyBranch);
+    }
+
+    public CompanyBranch updateCompanyBranch(CompanyBranch companyBranch) {
+        CompanyBranch companyBranchByAddress= getCompanyBranchByAddress(companyBranch.getCompanyBranchAddress());
+        CompanyBranch companyBranchByPhone = getCompanyBranchByPhoneNumber(companyBranch.getPhoneNumber());
+
+        if (companyBranchByAddress != null && companyBranchByAddress.getId() != companyBranch.getId()) {
+            if (companyBranchByAddress.getCompanyBranchAddress().equals(companyBranch.getCompanyBranchAddress()))
+                throw new ResourceAlreadyExistsException("Филиал по такому адрессу уже существует!");
+        }
+
+        if (companyBranchByPhone != null && companyBranchByPhone.getId() != companyBranch.getId()) {
+            if (companyBranchByPhone.getPhoneNumber().equals(companyBranch.getPhoneNumber()))
+                throw new ResourceAlreadyExistsException(String.format("Филиал с номером телефона %s уже существует",
+                        companyBranch.getPhoneNumber()));
+        }
+
+        return companyBranchRepository.saveAndFlush(companyBranch);
     }
 
     public CompanyBranch getCompanyBranchByAddress(Address address) {
