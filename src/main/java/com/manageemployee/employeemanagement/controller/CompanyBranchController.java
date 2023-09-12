@@ -43,15 +43,15 @@ public class CompanyBranchController {
         CompanyBranchDTO companyBranchDTO = new CompanyBranchDTO();
 
         model.addAttribute("companyBranchDTO", companyBranchDTO);
-        return "createCompanyBranch";
+        return "createOrUpdateCompanyBranch";
     }
 
     @PostMapping("/new")
     public String createBranch(@ModelAttribute("companyBranchDTO") @Valid CompanyBranchDTO companyBranchDTO,
                                    BindingResult bindingResult, HttpSession session) {
-        if (bindingResult.hasErrors()) return "createCompanyBranch";
+        if (bindingResult.hasErrors()) return "createOrUpdateCompanyBranch";
 
-        session.setAttribute("viewName", "createCompanyBranch");
+        session.setAttribute("viewName", "createOrUpdateCompanyBranch");
         session.setAttribute("dtoClass", companyBranchDTO);
         CompanyBranch companyBranchEntity = companyBranchMapper.toEntity(companyBranchDTO);
         CompanyBranch companyBranch = companyBranchService.createCompanyBranch(companyBranchEntity);
@@ -76,16 +76,16 @@ public class CompanyBranchController {
         model.addAttribute("companyBranchDTO", companyBranchDTO);
         model.addAttribute("isUpdating", isUpdating);
 
-        return "createCompanyBranch";
+        return "createOrUpdateCompanyBranch";
     }
 
     @PostMapping("/update/{id}")
     public String updateCompanyBranch(@ModelAttribute("companyBranchDTO") @Valid CompanyBranchDTO companyBranchDTO,
                                       BindingResult bindingResult,
                                       HttpSession session) {
-        if (bindingResult.hasErrors()) return "createCompanyBranch";
+        if (bindingResult.hasErrors()) return "createOrUpdateCompanyBranch";
 
-        session.setAttribute("viewName", "createCompanyBranch");
+        session.setAttribute("viewName", "createOrUpdateCompanyBranch");
         session.setAttribute("dtoClass", companyBranchDTO);
         CompanyBranch companyBranchEntity = companyBranchMapper.toEntity(companyBranchDTO);
         CompanyBranch companyBranch = companyBranchService.updateCompanyBranch(companyBranchEntity);
