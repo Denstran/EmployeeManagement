@@ -31,7 +31,7 @@
                 <td th:text="${companyBranch.budget}"></td>
                 <td th:text="${companyBranch.companyBranchAddress}"></td>
                 <td th:text="${companyBranch.phoneNumber}"></td>
-                <td><a th:href="@{/companyBranch/{id}(id = ${companyBranch.id})/departments}">Отделы</a></td>
+                <td><a th:href="@{/companyBranches/{id}/departments(id = ${companyBranch.id})}">Отделы</a></td>
                 <td>
                     <button type="submit" class="btn btn-dark">
                         <a th:href="@{/companyBranches/update/{id}(id = ${companyBranch.id})}">Обновить</a>

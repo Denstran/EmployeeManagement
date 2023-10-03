@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Филиалы</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body>
+    <header th:replace="fragments/header :: header(text='ДОБАВЛЕНИЕ ФИЛИАЛА')">
+    </header>
+    <div class="container">
+        <form th:action="${isUpdating} ? @{/companyBranches/{id}/departments/{depId}/update(id = ${companyBranchId}, depId = ${departmentDTO.id})}
+        : @{/companyBranches/{id}/departments/new(id = ${companyBranchId})}"
+              th:object="${departmentDTO}" method="post">
+            <hr/>
+            <div class="form-group" th:if="${errorMessage}">
+                <small  th:text="${errorMessage}" class="form-text text-danger">Error</small>
+            </div>
+            <h2>Название отдела</h2>
+            <div class="form-group">
+                <label for="nameInput">Название отдела</label>
+                <input type="text" th:field="*{departmentName}" class="form-control" id="nameInput"
+                       aria-describedby="nameError" placeholder="Введите название отдела"
+                       th:value="${isUpdating} ? ${departmentDTO.departmentName} : ''">
+
+                <small th:if="${#fields.hasErrors('departmentName')}" th:errors="*{departmentName}"
+                       id="nameError"
+                       class="form-text text-danger">Error</small>
+            </div>
+            <hr/>
+            <h2>Номер телефона</h2>
+            <div class="form-group">
+                <label for="phoneNumberInput">Номер телефона</label>
+                <input type="text" th:field="*{phoneNumber}" class="form-control" id="phoneNumberInput"
+                       aria-describedby="phoneNumberError" placeholder="Введите название отдела"
+                       th:value="${isUpdating} ? ${departmentDTO.phoneNumber} : ''">
+
+                <small th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"
+                       id="phoneNumberError"
+                       class="form-text text-danger">Error</small>
+            </div>
+            <input type="hidden" name="isUpdating" th:value="${isUpdating}" />
+            <input type="hidden" th:if="${isUpdating}" th:field="*{id}" th:value="${departmentDTO.id}">
+            <button type="submit" class="btn btn-primary">Подтвердить</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Отделы</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body>
+<header th:replace="fragments/header :: header(text='ФИЛИАЛЫ КОМПАНИИ')">
+</header>
+
+<div class="container">
+    <hr/>
+    <a class="btn btn-dark" th:href="@{/companyBranches/{companyBranchId}/departments/new(
+    companyBranchId=${companyBranchId})}" role="button">Добавить филиал</a>
+    <hr/>
+    <table class="table">
+        <thead class="table-dark">
+        <tr>
+            <th scope="col">Название отдела</th>
+            <th scope="col">Дата обновления</th>
+            <th scope="col">Номер телефона</th>
+            <th scope="col">Удаление</th>
+            <th scope="col">Обновление</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="department : ${departments}">
+            <td th:text="${department.departmentName}"></td>
+            <td th:text="${department.lastModified}"></td>
+            <td th:text="${department.phoneNumber}"></td>
+            <td>
+                <button type="submit" class="btn btn-dark">
+                    <a th:href="@{/companyBranches/{companyBranchId}/departments/{depId}/update(
+                companyBranchId=${department.companyBranchId}, depId=${department.id})}">Обновить</a>
+                </button>
+            </td>
+            <td>
+                <form th:action="@{/companyBranches/{companyBranchId}/departments/{depId}/delete(
+                companyBranchId=${department.companyBranchId}, depId=${department.id})}" method="post">
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+</body>
+</html>

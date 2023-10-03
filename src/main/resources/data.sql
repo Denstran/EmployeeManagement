@@ -8,3 +8,24 @@ insert into COMPANY_BRANCH (COMPANY_BRANCH_BUDGET, COMPANY_BRANCH_CITY, COMPANY_
 insert into COMPANY_BRANCH (COMPANY_BRANCH_BUDGET, COMPANY_BRANCH_CITY, COMPANY_BRANCH_ZIP_CODE, COMPANY_BRANCH_STREET, COMPANY_BRANCH_COUNTRY, COMPANY_BRANCH_PHONE_NUMBER) values ('10000 USD', 'Babiak', '62-620', 'Kings', 'Poland', '164-798-1662');
 insert into COMPANY_BRANCH (COMPANY_BRANCH_BUDGET, COMPANY_BRANCH_CITY, COMPANY_BRANCH_ZIP_CODE, COMPANY_BRANCH_STREET, COMPANY_BRANCH_COUNTRY, COMPANY_BRANCH_PHONE_NUMBER) values ('10000 USD', 'Kalnibolotskaya', '663019', 'Mifflin', 'Russia', '815-214-4585');
 insert into COMPANY_BRANCH (COMPANY_BRANCH_BUDGET, COMPANY_BRANCH_CITY, COMPANY_BRANCH_ZIP_CODE, COMPANY_BRANCH_STREET, COMPANY_BRANCH_COUNTRY, COMPANY_BRANCH_PHONE_NUMBER) values ('10000 USD', 'Bantian', null, 'Victoria', 'China', '611-271-2141');
+
+INSERT INTO department (company_branch_id, last_modified, department_name, department_phone_number) VALUES (1, '2021-07-01', 'Sales', '555-1234');
+INSERT INTO department (company_branch_id, last_modified, department_name, department_phone_number) VALUES (1, '2021-07-01', 'Marketing', '555-5678');
+INSERT INTO department (company_branch_id, last_modified, department_name, department_phone_number) VALUES (1, '2021-07-01', 'Human Resources', '555-9012');
+INSERT INTO department (company_branch_id, last_modified, department_name, department_phone_number) VALUES (1, '2021-07-01', 'Finance', '555-3456');
+INSERT INTO department (company_branch_id, last_modified, department_name, department_phone_number) VALUES (2, '2021-07-01', 'Sales', '555-1234');
+INSERT INTO department (company_branch_id, last_modified, department_name, department_phone_number) VALUES (2, '2021-07-01', 'Marketing', '555-5678');
+INSERT INTO department (company_branch_id, last_modified, department_name, department_phone_number) VALUES (2, '2021-07-01', 'Human Resources', '555-9012');
+INSERT INTO department (company_branch_id, last_modified, department_name, department_phone_number) VALUES (2, '2021-07-01', 'Finance', '555-3456');
+INSERT INTO department (company_branch_id, last_modified, department_name, department_phone_number) VALUES (3, '2021-07-01', 'Sales', '555-1234');
+INSERT INTO department (company_branch_id, last_modified, department_name, department_phone_number) VALUES (3, '2021-07-01', 'Marketing', '555-5678');
+INSERT INTO department (company_branch_id, last_modified, department_name, department_phone_number) VALUES (3, '2021-07-01', 'Human Resources', '555-9012');
+INSERT INTO department (company_branch_id, last_modified, department_name, department_phone_number) VALUES (3, '2021-07-01', 'Finance', '555-3456');
+INSERT INTO department (company_branch_id, last_modified, department_name, department_phone_number) VALUES (4, '2021-07-01', 'Sales', '555-1234');
+INSERT INTO department (company_branch_id, last_modified, department_name, department_phone_number) VALUES (4, '2021-07-01', 'Marketing', '555-5678');
+INSERT INTO department (company_branch_id, last_modified, department_name, department_phone_number) VALUES (4, '2021-07-01', 'Human Resources', '555-9012');
+INSERT INTO department (company_branch_id, last_modified, department_name, department_phone_number) VALUES (4, '2021-07-01', 'Finance', '555-3456');
+INSERT INTO department (company_branch_id, last_modified, department_name, department_phone_number) VALUES (5, '2021-07-01', 'Sales', '555-1234');
+INSERT INTO department (company_branch_id, last_modified, department_name, department_phone_number) VALUES (5, '2021-07-01', 'Marketing', '555-5678');
+INSERT INTO department (company_branch_id, last_modified, department_name, department_phone_number) VALUES (5, '2021-07-01', 'Human Resources', '555-9012');
+INSERT INTO department (company_branch_id, last_modified, department_name, department_phone_number) VALUES (5, '2021-07-01', 'Finance', '555-3456');

@@ -20,6 +20,10 @@ public class CompanyBranchController {
     private final CompanyBranchService companyBranchService;
     private final CompanyBranchMapper companyBranchMapper;
 
+    private final String SHOW_VIEW = "companyBranch/companyBranches";
+    private final String VIEW_FOR_UPDATE_OR_CREATE = "companyBranch/createOrUpdateCompanyBranch";
+    private final String REDIRECT_URL = "redirect:/companyBranches";
+
     @Autowired
     public CompanyBranchController(CompanyBranchService companyBranchService,
                                    CompanyBranchMapper companyBranchMapper) {
@@ -35,7 +39,7 @@ public class CompanyBranchController {
 
         model.addAttribute("companyBranches", companyBranches);
 
-        return "companyBranches";
+        return SHOW_VIEW;
     }
 
     @GetMapping("/new")
@@ -43,55 +47,59 @@ public class CompanyBranchController {
         CompanyBranchDTO companyBranchDTO = new CompanyBranchDTO();
 
         model.addAttribute("companyBranchDTO", companyBranchDTO);
-        return "createOrUpdateCompanyBranch";
+        return VIEW_FOR_UPDATE_OR_CREATE;
     }
 
     @PostMapping("/new")
     public String createBranch(@ModelAttribute("companyBranchDTO") @Valid CompanyBranchDTO companyBranchDTO,
                                    BindingResult bindingResult, HttpSession session) {
-        if (bindingResult.hasErrors()) return "createOrUpdateCompanyBranch";
+        if (bindingResult.hasErrors()) return VIEW_FOR_UPDATE_OR_CREATE;
 
-        session.setAttribute("viewName", "createOrUpdateCompanyBranch");
+        session.setAttribute("viewName", VIEW_FOR_UPDATE_OR_CREATE);
         session.setAttribute("dtoClass", companyBranchDTO);
         CompanyBranch companyBranchEntity = companyBranchMapper.toEntity(companyBranchDTO);
         CompanyBranch companyBranch = companyBranchService.createCompanyBranch(companyBranchEntity);
         session.removeAttribute("dtoClass");
         session.removeAttribute("viewName");
 
-        return "redirect:/companyBranches";
+        return REDIRECT_URL;
     }
 
     @PostMapping("/delete/{id}")
     public String deleteCompanyBranch(@PathVariable("id") Long id) {
         companyBranchService.deleteCompanyBranchById(id);
-        return "redirect:/companyBranches";
+        return REDIRECT_URL;
     }
 
     @GetMapping("/update/{id}")
     public String updateCompanyBranchForm(@PathVariable("id") Long id, Model model) {
         CompanyBranch companyBranch = companyBranchService.getCompanyBranchById(id);
-        System.out.println(companyBranch.getCompanyBranchAddress());
         CompanyBranchDTO companyBranchDTO = companyBranchMapper.toDto(companyBranch);
+
         boolean isUpdating = true;
         model.addAttribute("companyBranchDTO", companyBranchDTO);
         model.addAttribute("isUpdating", isUpdating);
 
-        return "createOrUpdateCompanyBranch";
+        return VIEW_FOR_UPDATE_OR_CREATE;
     }
 
     @PostMapping("/update/{id}")
     public String updateCompanyBranch(@ModelAttribute("companyBranchDTO") @Valid CompanyBranchDTO companyBranchDTO,
                                       BindingResult bindingResult,
+                                      @RequestParam("isUpdating") boolean isUpdating, Model model,
                                       HttpSession session) {
-        if (bindingResult.hasErrors()) return "createOrUpdateCompanyBranch";
+        if (bindingResult.hasErrors()){
+            model.addAttribute("isUpdating", isUpdating);
+            return VIEW_FOR_UPDATE_OR_CREATE;
+        }
 
-        session.setAttribute("viewName", "createOrUpdateCompanyBranch");
+        session.setAttribute("viewName", VIEW_FOR_UPDATE_OR_CREATE);
         session.setAttribute("dtoClass", companyBranchDTO);
+        session.setAttribute("isUpdating", isUpdating);
         CompanyBranch companyBranchEntity = companyBranchMapper.toEntity(companyBranchDTO);
         CompanyBranch companyBranch = companyBranchService.updateCompanyBranch(companyBranchEntity);
-        session.removeAttribute("dtoClass");
-        session.removeAttribute("viewName");
+        session.invalidate();
 
-        return "redirect:/companyBranches";
+        return REDIRECT_URL;
     }
 }

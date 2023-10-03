@@ -96,6 +96,9 @@
                        class="form-text text-danger">Error</small>
             </div>
             <hr/>
+
+            <input type="hidden" name="isUpdating" th:value="${isUpdating}" />
+            <input type="hidden" th:if="${isUpdating}" th:field="*{id}" th:value="${companyBranchDTO.id}">
             <button type="submit" class="btn btn-primary">Подтвердить</button>
         </form>
     </div>

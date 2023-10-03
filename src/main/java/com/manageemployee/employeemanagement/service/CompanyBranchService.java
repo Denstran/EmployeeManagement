@@ -2,6 +2,7 @@ package com.manageemployee.employeemanagement.service;
 
 import com.manageemployee.employeemanagement.exception.ResourceAlreadyExistsException;
 import com.manageemployee.employeemanagement.model.CompanyBranch;
+import com.manageemployee.employeemanagement.model.Department;
 import com.manageemployee.employeemanagement.model.embeddable.Address;
 import com.manageemployee.employeemanagement.repository.CompanyBranchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +63,16 @@ public class CompanyBranchService {
 
     public List<CompanyBranch> getAllCompanyBranches(){
         return companyBranchRepository.findAll();
+    }
+
+    public void removeDepartment(CompanyBranch companyBranch, Department department) {
+        companyBranch.removeDepartment(department);
+        companyBranchRepository.saveAndFlush(companyBranch);
+    }
+
+    public void addDepartment(CompanyBranch companyBranch, Department department) {
+        companyBranch.addDepartment(department);
+        companyBranchRepository.saveAndFlush(companyBranch);
     }
 
     public void deleteCompanyBranchById(Long id) {
