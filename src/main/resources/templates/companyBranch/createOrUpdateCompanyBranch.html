@@ -21,6 +21,9 @@
                 <small  th:text="${errorMessage}" class="form-text text-danger">Error</small>
             </div>
             <h2>Адресс</h2>
+            <small th:if="${#fields.hasErrors('companyBranchAddress')}" th:errors="*{companyBranchAddress}"
+                   id="cityErrorDB"
+                   class="form-text text-danger">Error</small>
             <div class="form-group">
                 <label for="cityInput">Город</label>
                 <input type="text" th:field="*{companyBranchAddress.city}" class="form-control" id="cityInput"

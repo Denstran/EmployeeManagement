@@ -6,7 +6,7 @@ import com.manageemployee.employeemanagement.model.CompanyBranch;
 import com.manageemployee.employeemanagement.model.Department;
 import com.manageemployee.employeemanagement.service.CompanyBranchService;
 import com.manageemployee.employeemanagement.service.DepartmentService;
-import jakarta.servlet.http.HttpSession;
+import com.manageemployee.employeemanagement.util.DepartmentValidator;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +22,7 @@ public class DepartmentController {
     private final DepartmentService departmentService;
     private final CompanyBranchService companyBranchService;
     private final DepartmentMapper departmentMapper;
+    private final DepartmentValidator departmentValidator;
 
     // Patterns for return values
     private final String VIEW_FOR_UPDATE_OR_CREATE = "department/createOrUpdateDepartment";
@@ -31,10 +32,11 @@ public class DepartmentController {
 
     @Autowired
     public DepartmentController(DepartmentService departmentService, CompanyBranchService companyBranchService,
-                                DepartmentMapper departmentMapper) {
+                                DepartmentMapper departmentMapper, DepartmentValidator departmentValidator) {
         this.departmentService = departmentService;
         this.companyBranchService = companyBranchService;
         this.departmentMapper = departmentMapper;
+        this.departmentValidator = departmentValidator;
     }
 
     @GetMapping()
@@ -59,17 +61,13 @@ public class DepartmentController {
 
     @PostMapping("/new")
     public String createDepartment(@ModelAttribute("departmentDTO") @Valid DepartmentDTO departmentDTO,
-                                   BindingResult bindingResult, @PathVariable("companyBranchId") Long companyBranchId,
-                                   HttpSession session) {
+                                   BindingResult bindingResult, @PathVariable("companyBranchId") Long companyBranchId) {
+        departmentValidator.validate(departmentDTO, bindingResult);
         if (bindingResult.hasErrors()) return VIEW_FOR_UPDATE_OR_CREATE;
-
-        session.setAttribute("viewName", VIEW_FOR_UPDATE_OR_CREATE);
-        session.setAttribute("dtoClass", departmentDTO);
 
         Department department = departmentMapper.toEntity(departmentDTO);
         CompanyBranch companyBranch = companyBranchService.getCompanyBranchById(companyBranchId);
         departmentService.createDepartment(department, companyBranch);
-        session.invalidate();
 
         return String.format(REDIRECT_PATTERN, companyBranchId);
     }
@@ -92,19 +90,16 @@ public class DepartmentController {
     @PostMapping("/{depId}/update")
     public String updateDepartment(@ModelAttribute("departmentDTO") @Valid DepartmentDTO departmentDTO,
                                    BindingResult bindingResult, @RequestParam("isUpdating") boolean isUpdating,
-                                   HttpSession session, @PathVariable("companyBranchId") Long companyBranchId,
+                                   @PathVariable("companyBranchId") Long companyBranchId,
                                    Model model) {
+        departmentValidator.validate(departmentDTO, bindingResult);
         if (bindingResult.hasErrors()) {
             model.addAttribute("isUpdating", isUpdating);
             return VIEW_FOR_UPDATE_OR_CREATE;
         }
 
         Department department = departmentMapper.toEntity(departmentDTO);
-        session.setAttribute("viewName", VIEW_FOR_UPDATE_OR_CREATE);
-        session.setAttribute("dtoClass", departmentDTO);
-        session.setAttribute("isUpdating", isUpdating);
-        departmentService.updateDepartment(department, companyBranchId);
-        session.invalidate();
+        departmentService.updateDepartment(department);
 
         return String.format(REDIRECT_PATTERN, companyBranchId);
     }

@@ -9,4 +9,6 @@ import java.util.List;
 public interface CompanyBranchRepository extends JpaRepository<CompanyBranch, Long> {
     CompanyBranch findCompanyBranchByPhoneNumber(String phoneNumber);
     CompanyBranch findCompanyBranchByCompanyBranchAddress(Address address);
+    boolean existsByPhoneNumber(String phoneNumber);
+    boolean existsByCompanyBranchAddress(Address address);
 }
