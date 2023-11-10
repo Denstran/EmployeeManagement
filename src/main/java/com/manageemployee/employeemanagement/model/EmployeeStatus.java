@@ -21,7 +21,7 @@ public class EmployeeStatus {
     private Long id;
 
     @NotNull
-    @Column(name = "EMPLOYEE_STATUS")
+    @Column(name = "EMPLOYEE_STATUS", unique = true)
     @Enumerated(value = EnumType.STRING)
     private EEmployeeStatus employeeStatus;
 

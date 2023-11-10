@@ -51,7 +51,7 @@ public class CompanyBranch {
     @NotBlank(message = "Номер телефона не должен быть пустым")
     @Pattern(regexp = "^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$",
             message = "Неверный формат номера!")
-    @Column(name = "COMPANY_BRANCH_PHONE_NUMBER")
+    @Column(name = "COMPANY_BRANCH_PHONE_NUMBER", unique = true)
     private String phoneNumber;
 
 

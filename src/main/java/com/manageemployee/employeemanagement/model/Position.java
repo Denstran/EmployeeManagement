@@ -26,7 +26,7 @@ public class Position {
     @NotNull
     @NotBlank(message = "Названи должности не должно быть пустым!")
     @Min(value = 3, message = "Название должности должно быть больше 3 символов!")
-    @Column(name = "POSITION_NAME")
+    @Column(name = "POSITION_NAME", unique = true)
     private String positionName;
 
     @ManyToMany(mappedBy = "positions")

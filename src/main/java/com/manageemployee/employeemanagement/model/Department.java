@@ -33,7 +33,7 @@ public class Department {
     @NotBlank(message = "Номер телефона не должен быть пустым")
     @Pattern(regexp = "^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$",
             message = "Неверный формат номера!")
-    @Column(name = "DEPARTMENT_PHONE_NUMBER")
+    @Column(name = "DEPARTMENT_PHONE_NUMBER", unique = true)
     private String phoneNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)

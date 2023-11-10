@@ -19,7 +19,7 @@ public class PaymentType {
 
     @NotNull
     @Enumerated(value = EnumType.STRING)
-    @Column(name = "PAYMENT_TYPE")
+    @Column(name = "PAYMENT_TYPE", unique = true)
     private EPaymentType paymentType;
 
     @OneToMany(mappedBy = "paymentType", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
