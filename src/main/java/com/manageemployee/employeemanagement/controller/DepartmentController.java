@@ -43,7 +43,7 @@ public class DepartmentController {
     public String getAllDepartmentsOfBranch(@PathVariable("companyBranchId") Long companyBranchId,
                                             Model model) {
         List<Department> departmentList = departmentService.getAllDepartmentsByCompanyBranchId(companyBranchId);
-        List<DepartmentDTO> departmentDTOS = departmentMapper.toDtoCollection(departmentList);
+        List<DepartmentDTO> departmentDTOS = departmentMapper.toDtoList(departmentList);
 
         model.addAttribute("companyBranchId", companyBranchId);
         model.addAttribute("departments", departmentDTOS);
@@ -67,7 +67,7 @@ public class DepartmentController {
 
         Department department = departmentMapper.toEntity(departmentDTO);
         CompanyBranch companyBranch = companyBranchService.getCompanyBranchById(companyBranchId);
-        departmentService.createDepartment(department, companyBranch);
+        companyBranchService.addDepartment(companyBranch, department);
 
         return String.format(REDIRECT_PATTERN, companyBranchId);
     }

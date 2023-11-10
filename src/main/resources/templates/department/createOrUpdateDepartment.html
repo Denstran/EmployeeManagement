@@ -4,12 +4,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Филиалы</title>
+    <title>Добавление отдела</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 </head>
 <body>
-    <header th:replace="fragments/header :: header(text='ДОБАВЛЕНИЕ ФИЛИАЛА')">
+    <header th:replace="fragments/header :: header(text='ДОБАВЛЕНИЕ ОТДЕЛА')">
     </header>
     <div class="container">
         <form th:action="${isUpdating} ? @{/companyBranches/{id}/departments/{depId}/update(id = ${companyBranchId}, depId = ${departmentDTO.id})}
@@ -35,7 +35,7 @@
             <div class="form-group">
                 <label for="phoneNumberInput">Номер телефона</label>
                 <input type="text" th:field="*{phoneNumber}" class="form-control" id="phoneNumberInput"
-                       aria-describedby="phoneNumberError" placeholder="Введите название отдела"
+                       aria-describedby="phoneNumberError" placeholder="Введите номер отдела"
                        th:value="${isUpdating} ? ${departmentDTO.phoneNumber} : ''">
 
                 <small th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"

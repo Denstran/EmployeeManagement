@@ -37,7 +37,7 @@ public class CompanyBranchController {
     @GetMapping
     public String getAllCompanyBranches(Model model){
         List<CompanyBranch> companyBranchesEntities = companyBranchService.getAllCompanyBranches();
-        List<CompanyBranchDTO> companyBranches = companyBranchMapper.toDtoCollection(companyBranchesEntities);
+        List<CompanyBranchDTO> companyBranches = companyBranchMapper.toDtoList(companyBranchesEntities);
 
 
         model.addAttribute("companyBranches", companyBranches);

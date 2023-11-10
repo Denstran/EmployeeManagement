@@ -61,6 +61,9 @@ public class Department {
 
     @PreRemove
     protected void changeEmploysStatus() {
-        this.employees.forEach(employee -> employee.getEmployeeStatus().setEmployeeStatus(EEmployeeStatus.FIRED));
+        this.employees.forEach(employee -> {
+            employee.getEmployeeStatus().setEmployeeStatus(EEmployeeStatus.FIRED);
+            employee.setDepartment(null);
+        });
     }
 }

@@ -39,9 +39,17 @@ public class Name {
     @PrePersist
     @PreUpdate
     private void setDefaultMiddleName(){
-        if (middleName.isEmpty() || middleName == null) {
+        if (middleName == null || middleName.isEmpty()) {
             middleName = "ОТСУТСТВУЕТ";
         }
+    }
+
+    @Override
+    public String toString() {
+        if (middleName == null || middleName.isEmpty() || middleName.equals("ОТСУТСТВУЕТ"))
+            return String.format("%s %s", firstName, lastName);
+
+        return String.format("%s %s %S", firstName, lastName, middleName);
     }
 
     @Override

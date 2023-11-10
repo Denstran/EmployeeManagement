@@ -17,9 +17,6 @@
              @{/companyBranches/new}" th:object="${companyBranchDTO}" method="post">
 
             <hr/>
-            <div class="form-group" th:if="${errorMessage}">
-                <small  th:text="${errorMessage}" class="form-text text-danger">Error</small>
-            </div>
             <h2>Адресс</h2>
             <small th:if="${#fields.hasErrors('companyBranchAddress')}" th:errors="*{companyBranchAddress}"
                    id="cityErrorDB"
@@ -65,7 +62,7 @@
                        class="form-text text-danger">Error</small>
             </div>
             <hr/>
-            <h3>Бюджет</h3>
+            <h2>Бюджет</h2>
             <div class="form-group">
                 <label for="amountInput">Количество средств</label>
                 <input type="number" th:field="*{budget.amount}" class="form-control" id="amountInput"

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Добавление сотрудника</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body>
+<header th:replace="fragments/header :: header(text='ДОБАВЛЕНИЕ СОТРУДНИКА')">
+</header>
+<div class="container">
+    <form th:action="${isUpdating} ? @{/companyBranches/{cmpId}/departments/{depId}/employees/{empId}/update(cmpId = ${companyBranchId}, depId = ${depId}, empId = ${employeeDTO.id})}
+        : @{/companyBranches/{cmpId}/departments/{depId}/employees/new(cmpId = ${companyBranchId}, depId = ${depId})}"
+          th:object="${employeeDTO}" method="post">
+        <hr/>
+        <h2>Имя сотрудника</h2>
+        <div class="form-group">
+            <label for="firstName">Имя</label>
+            <input type="text" th:field="*{name.firstName}" class="form-control" id="firstName"
+                   aria-describedby="firstNameError" placeholder="Введите имя сотрудника"
+                   th:value="${isUpdating} ? ${employeeDTO.name.firstName} : ''">
+
+            <small th:if="${#fields.hasErrors('name.firstName')}" th:errors="*{name.firstName}"
+                   id="firstNameError"
+                   class="form-text text-danger">Error</small>
+            <br/>
+
+            <label for="lastName">Фамилия</label>
+            <input type="text" th:field="*{name.lastName}" class="form-control" id="lastName"
+                   aria-describedby="lastNameError" placeholder="Введите фамилию сотрудника"
+                   th:value="${isUpdating} ? ${employeeDTO.name.lastName} : ''">
+
+            <small th:if="${#fields.hasErrors('name.lastName')}" th:errors="*{name.lastName}"
+                   id="lastNameError"
+                   class="form-text text-danger">Error</small>
+
+            <br/>
+
+            <label for="middleName">Отчество (опционально)</label>
+            <input type="text" th:field="*{name.middleName}" class="form-control" id="middleName"
+                   aria-describedby="middleNameError" placeholder="Введите отчество сотрудника"
+                   th:value="${isUpdating} ? ${employeeDTO.name.middleName} : ''">
+
+            <small th:if="${#fields.hasErrors('name.middleName')}" th:errors="*{name.middleName}"
+                   id="middleNameError"
+                   class="form-text text-danger">Error</small>
+        </div>
+        <hr/>
+        <h2>Номер телефона</h2>
+        <div class="form-group">
+            <label for="phoneNumberInput">Номер телефона</label>
+            <input type="text" th:field="*{phoneNumber}" class="form-control" id="phoneNumberInput"
+                   aria-describedby="phoneNumberError" placeholder="Введите номер сотрудника"
+                   th:value="${isUpdating} ? ${employeeDTO.phoneNumber} : ''">
+
+            <small th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"
+                   id="phoneNumberError"
+                   class="form-text text-danger">Error</small>
+        </div>
+
+        <hr/>
+        <h2>Email</h2>
+        <div class="form-group">
+            <label for="emailInput">Email</label>
+            <input type="text" th:field="*{email}" class="form-control" id="emailInput"
+                   aria-describedby="emailError" placeholder="Введите email сотрудника"
+                   th:value="${isUpdating} ? ${employeeDTO.email} : ''">
+
+            <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
+                   id="emailError"
+                   class="form-text text-danger">Error</small>
+        </div>
+
+        <hr/>
+
+        <h2>Зарплата</h2>
+        <div class="form-group">
+            <label for="amountInput">Количество средств</label>
+            <input type="number" th:field="*{salary.amount}" class="form-control" id="amountInput"
+                   aria-describedby="budgetError" placeholder="Введите количество средств"
+                   th:value="${isUpdating} ? ${employeeDTO.salary.amount} : ''">
+
+            <small th:if="${#fields.hasErrors('salary.amount')}" th:errors="*{salary.amount}"
+                   id="budgetError"
+                   class="form-text text-danger">Error</small>
+        </div>
+        <div class="form-group">
+            <label for="currencyInput">Валюта</label>
+            <input type="text" th:field="*{salary.currency}" class="form-control" id="currencyInput"
+                   aria-describedby="currencyError" placeholder="Введите валюту"
+                   th:value="${isUpdating} ? ${employeeDTO.salary.currency} : ''" th:readonly="${isUpdating}">
+
+            <small th:if="${#fields.hasErrors('salary.currency')}" th:errors="*{salary.currency}"
+                   id="currencyError"
+                   class="form-text text-danger">Error</small>
+        </div>
+
+        <h2>Адресс</h2>
+        <small th:if="${#fields.hasErrors('homeAddress')}" th:errors="*{homeAddress}"
+               id="homeAddressErrorDB"
+               class="form-text text-danger">Error</small>
+
+        <div class="form-group">
+            <label for="cityInput">Город</label>
+            <input type="text" th:field="*{homeAddress.city}" class="form-control" id="cityInput"
+                   aria-describedby="cityError" placeholder="Введите город"
+                   th:value="${isUpdating} ? ${employeeDTO.homeAddress.city} : ''">
+
+            <small th:if="${#fields.hasErrors('homeAddress.city')}" th:errors="*{homeAddress.city}"
+                   id="cityError"
+                   class="form-text text-danger">Error</small>
+        </div>
+
+        <div class="form-group">
+            <label for="streetInput">Улица</label>
+            <input type="text" th:field="*{homeAddress.street}" class="form-control" id="streetInput"
+                   aria-describedby="streetError" placeholder="Введите улицу"
+                   th:value="${isUpdating} ? ${employeeDTO.homeAddress.street} : ''">
+
+            <small th:if="${#fields.hasErrors('homeAddress.street')}" th:errors="*{homeAddress.street}"
+                   id="streetError"
+                   class="form-text text-danger">Error</small>
+        </div>
+
+        <div class="form-group">
+            <label for="zipCodeInput">ZIP CODE</label>
+            <input type="number" th:field="*{homeAddress.zipCode}" class="form-control" id="zipCodeInput"
+                   aria-describedby="zipCodeError" placeholder="Введите ZIP CODE"
+                   th:value="${isUpdating} ? ${employeeDTO.homeAddress.zipCode} : ''">
+
+            <small th:if="${#fields.hasErrors('homeAddress.zipCode')}" th:errors="*{homeAddress.zipCode}"
+                   id="zipCodeError"
+                   class="form-text text-danger">Error</small>
+        </div>
+
+        <div class="form-group">
+            <label for="countryInput">Страна</label>
+            <input type="text" th:field="*{homeAddress.country}" class="form-control" id="countryInput"
+                   aria-describedby="countryError" placeholder="Введите страну"
+                   th:value="${isUpdating} ? ${employeeDTO.homeAddress.country} : ''">
+
+            <small th:if="${#fields.hasErrors('homeAddress.country')}" th:errors="*{homeAddress.country}"
+                   id="countryError"
+                   class="form-text text-danger">Error</small>
+        </div>
+        <hr/>
+
+        <div th:if="${isUpdating}">
+            <h2>Статус сотрудника</h2>
+
+            <div class="form-group">
+                <label for="statusSelect" aria-describedby="statusError">Статус</label>
+                <select class="form-control" id="statusSelect" name="statusSelect" th:field="*{employeeStatus}">
+                    <option th:each="status : ${employeeStatusDTOS}" th:value="${status.employeeStatus}"
+                            th:text="${status.employeeStatus}"></option>
+                </select>
+
+                <small th:if="${#fields.hasErrors('employeeStatus')}" th:errors="*{employeeStatus}"
+                       id="statusError"
+                       class="form-text text-danger">Error</small>
+            </div>
+        </div>
+
+        <input type="hidden" th:field="*{departmentId}" th:value="${employeeDTO.departmentId}">
+        <input type="hidden" name="isUpdating" th:value="${isUpdating}" />
+        <input type="hidden" th:if="${isUpdating}" th:field="*{id}" th:value="${employeeDTO.id}">
+        <button type="submit" class="btn btn-primary">Подтвердить</button>
+    </form>
+</div>
+</body>
+</html>

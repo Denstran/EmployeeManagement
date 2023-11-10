@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>СОТРУДНИКИ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body>
+<header th:replace="fragments/header :: header(text='СОТРУДНИКИ')">
+</header>
+
+<div class="container">
+    <hr/>
+    <a class="btn btn-dark" th:href="@{/companyBranches/{companyBranchId}/departments/{depId}/employees/new(
+    companyBranchId=${companyBranchId}, depId=${depId})}" role="button">Добавить Сотрудника</a>
+    <hr/>
+    <table class="table">
+        <thead class="table-dark">
+        <tr>
+            <th scope="col">Имя</th>
+            <th scope="col">Номер телефона</th>
+            <th scope="col">Почта</th>
+            <th scope="col">Адрес</th>
+            <th scope="col">Зарплата</th>
+            <th scope="col">Статус</th>
+            <th scope="col">ОБНОВИТЬ</th>
+            <th scope="col">УДАЛИТЬ</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="employee : ${employees}">
+            <td th:text="${employee.name}"></td>
+            <td th:text="${employee.phoneNumber}"></td>
+            <td th:text="${employee.email}"></td>
+            <td th:text="${employee.homeAddress}"></td>
+            <td th:text="${employee.salary}"></td>
+            <td th:text="${employee.employeeStatus.employeeStatus}"></td>
+            <td>
+                <button type="submit" class="btn btn-dark">
+                    <a th:href="@{/companyBranches/{companyBranchId}/departments/{depId}/employees/{empId}/update(
+                companyBranchId=${companyBranchId}, depId=${depId}, empId=${employee.id})}">Обновить</a>
+                </button>
+            </td>
+            <td>
+                <form th:action="@{/companyBranches/{companyBranchId}/departments/{depId}/employees/{empId}/delete(
+                companyBranchId=${companyBranchId}, depId=${depId}, empId=${employee.id})}" method="post">
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+</body>
+</html>

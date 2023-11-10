@@ -33,7 +33,7 @@ public abstract class AbstractMapper<E, D> implements Mapper<E, D> {
     }
 
     @Override
-    public List<E> toEntityCollection(List<D> dtoCollection) {
+    public List<E> toEntityList(List<D> dtoCollection) {
         if (dtoCollection == null) {
             return null;
         }
@@ -44,7 +44,7 @@ public abstract class AbstractMapper<E, D> implements Mapper<E, D> {
     }
 
     @Override
-    public List<D> toDtoCollection(List<E> entityCollection) {
+    public List<D> toDtoList(List<E> entityCollection) {
         if (entityCollection == null) {
             return null;
         }

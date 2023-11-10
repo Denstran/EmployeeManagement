@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 </head>
 <body>
-<header th:replace="fragments/header :: header(text='ФИЛИАЛЫ КОМПАНИИ')">
+<header th:replace="fragments/header :: header(text='ОТДЕЛЫ')">
 </header>
 
 <div class="container">
@@ -22,6 +22,7 @@
             <th scope="col">Название отдела</th>
             <th scope="col">Дата обновления</th>
             <th scope="col">Номер телефона</th>
+            <th scope="col">Сотрудники</th>
             <th scope="col">Удаление</th>
             <th scope="col">Обновление</th>
         </tr>
@@ -31,6 +32,8 @@
             <td th:text="${department.departmentName}"></td>
             <td th:text="${department.lastModified}"></td>
             <td th:text="${department.phoneNumber}"></td>
+            <td><a th:href="@{/companyBranches/{companyId}/departments/{depId}/employees
+            (companyId = ${department.companyBranchId}, depId = ${department.id})}">Сотрудники</a></td>
             <td>
                 <button type="submit" class="btn btn-dark">
                     <a th:href="@{/companyBranches/{companyBranchId}/departments/{depId}/update(

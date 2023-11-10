@@ -1,27 +1,21 @@
 package com.manageemployee.employeemanagement.service;
 
-import com.manageemployee.employeemanagement.model.CompanyBranch;
 import com.manageemployee.employeemanagement.model.Department;
+import com.manageemployee.employeemanagement.model.Employee;
 import com.manageemployee.employeemanagement.repository.DepartmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 public class DepartmentService {
     private final DepartmentRepository departmentRepository;
-    private final CompanyBranchService companyBranchService;
 
     @Autowired
-    public DepartmentService(DepartmentRepository departmentRepository, CompanyBranchService companyBranchService) {
+    public DepartmentService(DepartmentRepository departmentRepository) {
         this.departmentRepository = departmentRepository;
-        this.companyBranchService = companyBranchService;
-    }
-
-    public void createDepartment(Department department, CompanyBranch companyBranch) {
-
-        companyBranchService.addDepartment(companyBranch, department);
     }
 
     public void updateDepartment(Department department) {
@@ -35,6 +29,16 @@ public class DepartmentService {
 
     public List<Department> getAllDepartmentsByCompanyBranchId(Long companyBranchId) {
         return departmentRepository.findByCompanyBranch_Id(companyBranchId);
+    }
+
+    @Transactional
+    public void addEmployee(Employee employee, Department department) {
+        department.addEmployee(employee);
+    }
+
+    public void removeEmployee(Employee employee, Department department) {
+        department.removeEmployee(employee);
+        departmentRepository.saveAndFlush(department);
     }
 
     public List<Department> getAllDepartments() {

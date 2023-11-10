@@ -35,6 +35,9 @@ public class Address {
 
     @Override
     public String toString() {
+        if (zipCode == null || zipCode.isEmpty())
+            return String.format("%s, %s, %s", country, city, street);
+
         return String.format("%s, %s, %s, %s", country, city, street, zipCode);
     }
 

@@ -7,7 +7,7 @@ public interface Mapper<E, D> {
 
     D toDto(E entity);
 
-    List<E> toEntityCollection(List<D> dtoCollection);
+    List<E> toEntityList(List<D> dtoCollection);
 
-    List<D> toDtoCollection(List<E> entityCollection);
+    List<D> toDtoList(List<E> entityCollection);
 }

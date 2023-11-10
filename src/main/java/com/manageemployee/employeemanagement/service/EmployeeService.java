@@ -16,16 +16,17 @@ public class EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
-    public Employee createOrUpdateEmployee(Employee employee) {
+    public Employee updateEmployee(Employee employee) {
         return employeeRepository.saveAndFlush(employee);
     }
+
 
     public Employee getEmployeeById(Long id) {
         return employeeRepository.findById(id).orElse(null);
     }
 
-    public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
+    public List<Employee> getAllEmployeesInDepartment(Long depId) {
+        return employeeRepository.findAllByDepartment_Id(depId);
     }
 
     public void deleteEmployeeById(Long id) {

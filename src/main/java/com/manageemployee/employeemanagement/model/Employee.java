@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
@@ -50,7 +51,7 @@ public class Employee {
 
     @Email(message = "Неверный формат почты!")
     @NotNull
-    @Column(name = "EMAIL")
+    @Column(unique = true, name = "EMAIL")
     private String email;
 
     @Temporal(value = TemporalType.DATE)
@@ -58,6 +59,7 @@ public class Employee {
     @CreationTimestamp
     private Date employmentDate;
 
+    @BatchSize(size = 4)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "EMPLOYEE_STATUS_ID")
     private EmployeeStatus employeeStatus;

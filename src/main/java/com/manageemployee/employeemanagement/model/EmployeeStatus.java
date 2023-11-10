@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "EMPLOYEE_STATUSES")
 @NoArgsConstructor
 @Getter
 @Setter
@@ -32,12 +33,12 @@ public class EmployeeStatus {
     @OneToMany(mappedBy = "employeeStatus", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Set<Employee> employees = new HashSet<>();
 
-    private void addEmployee(Employee employee) {
+    public void addEmployee(Employee employee) {
         this.employees.add(employee);
         employee.setEmployeeStatus(this);
     }
 
-    private void deleteEmployee(Employee employee) {
+    public void removeEmployee(Employee employee) {
         this.employees.remove(employee);
         employee.setEmployeeStatus(null);
     }
