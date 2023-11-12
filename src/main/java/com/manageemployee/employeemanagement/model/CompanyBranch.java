@@ -15,7 +15,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "COMPANY_BRANCH")
+@Table(name = "COMPANY_BRANCH", uniqueConstraints = {
+        @UniqueConstraint(name = "AddressUniqueConstraint", columnNames = {"COMPANY_BRANCH_CITY",
+                "COMPANY_BRANCH_ZIP_CODE", "COMPANY_BRANCH_STREET", "COMPANY_BRANCH_COUNTRY"})
+})
 @Getter
 @Setter
 @AllArgsConstructor
