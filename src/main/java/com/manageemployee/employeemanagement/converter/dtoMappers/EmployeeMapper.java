@@ -27,7 +27,8 @@ public class EmployeeMapper extends AbstractMapperWithSpecificFields<Employee, E
      * Set up method for creating specific type maps for model mapper for mapping specific fields
      */
     @PostConstruct
-    public void setUpMapper() {
+    @Override
+    public void setupMapper() {
         mapper.createTypeMap(Employee.class, EmployeeDTO.class)
                 .addMappings(m -> m.skip(EmployeeDTO::setDepartmentId)).setPostConverter(toDtoConverter());
 
@@ -41,7 +42,7 @@ public class EmployeeMapper extends AbstractMapperWithSpecificFields<Employee, E
      * @param destination - dto object
      */
     @Override
-    void mapSpecificFieldsForDto(Employee source, EmployeeDTO destination) {
+    protected void mapSpecificFieldsForDto(Employee source, EmployeeDTO destination) {
         destination.setDepartmentId(Objects.isNull(source) ||
                 Objects.isNull(source.getDepartment()) ? null : source.getDepartment().getId());
 
@@ -53,7 +54,7 @@ public class EmployeeMapper extends AbstractMapperWithSpecificFields<Employee, E
      * @param destination - entity object
      */
     @Override
-    void mapSpecificFieldsForEntity(EmployeeDTO source, Employee destination) {
+    protected void mapSpecificFieldsForEntity(EmployeeDTO source, Employee destination) {
         destination.setDepartment(Objects.isNull(source.getDepartmentId()) ? null :
                 departmentService.getDepartmentById(source.getDepartmentId()));
     }

@@ -24,9 +24,10 @@ public class DepartmentMapper extends AbstractMapperWithSpecificFields<Departmen
     }
 
     /**
-     * Set up method for creating specific type maps for model mapper for mapping specific fields
+     * @see AbstractMapperWithSpecificFields#setupMapper()
      */
     @PostConstruct
+    @Override
     public void setupMapper() {
         mapper.createTypeMap(Department.class, DepartmentDTO.class)
                 .addMappings(m -> m.skip(DepartmentDTO::setCompanyBranchId)).setPostConverter(toDtoConverter());
@@ -40,7 +41,7 @@ public class DepartmentMapper extends AbstractMapperWithSpecificFields<Departmen
      * @param destination - dto object
      */
     @Override
-    public void mapSpecificFieldsForDto(Department source, DepartmentDTO destination) {
+    protected void mapSpecificFieldsForDto(Department source, DepartmentDTO destination) {
         destination.setCompanyBranchId(Objects.isNull(source) ||
                 Objects.isNull(source.getCompanyBranch()) ? null : source.getCompanyBranch().getId());
     }
@@ -51,7 +52,7 @@ public class DepartmentMapper extends AbstractMapperWithSpecificFields<Departmen
      * @param destination - entity object
      */
     @Override
-    public void mapSpecificFieldsForEntity(DepartmentDTO source, Department destination) {
+    protected void mapSpecificFieldsForEntity(DepartmentDTO source, Department destination) {
         destination.setCompanyBranch(companyBranchService.getCompanyBranchById(source.getCompanyBranchId()));
     }
 

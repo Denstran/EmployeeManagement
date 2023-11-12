@@ -32,7 +32,7 @@ public class EmployeeMapperTest {
                 .setFieldMatchingEnabled(true)
                 .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE);
         employeeMapper = new EmployeeMapper(modelMapper, departmentService);
-        employeeMapper.setUpMapper();
+        employeeMapper.setupMapper();
     }
 
     @Test
