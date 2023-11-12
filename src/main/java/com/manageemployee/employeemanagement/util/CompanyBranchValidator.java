@@ -10,6 +10,9 @@ import org.springframework.validation.Validator;
 
 import java.util.Objects;
 
+/**
+ * Validator for CompanyBranchDTO
+ */
 @Component
 public class CompanyBranchValidator extends BasicEntryValidation<CompanyBranchDTO> implements Validator {
 

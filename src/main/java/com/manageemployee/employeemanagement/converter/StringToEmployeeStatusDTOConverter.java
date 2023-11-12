@@ -8,13 +8,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+/**
+ * Class for converting String to EmployeeStatusDTO
+ */
 @Component
-public class StringToEmployeeDTOConverter implements Converter<String, EmployeeStatusDTO> {
+public class StringToEmployeeStatusDTOConverter implements Converter<String, EmployeeStatusDTO> {
     private final EmployeeStatusService employeeStatusService;
     private final EmployeeStatusMapper employeeStatusMapper;
 
     @Autowired
-    public StringToEmployeeDTOConverter(EmployeeStatusService employeeStatusService, EmployeeStatusMapper employeeStatusMapper) {
+    public StringToEmployeeStatusDTOConverter(EmployeeStatusService employeeStatusService,
+                                              EmployeeStatusMapper employeeStatusMapper) {
         this.employeeStatusService = employeeStatusService;
         this.employeeStatusMapper = employeeStatusMapper;
     }

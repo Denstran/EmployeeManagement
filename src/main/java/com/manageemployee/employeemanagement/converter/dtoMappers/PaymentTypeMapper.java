@@ -6,6 +6,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * Implementation of AbstractMapper for PaymentType and PaymentTypeDTO
+ */
 @Component
 public class PaymentTypeMapper extends AbstractMapper<PaymentType, PaymentTypeDTO> {
 

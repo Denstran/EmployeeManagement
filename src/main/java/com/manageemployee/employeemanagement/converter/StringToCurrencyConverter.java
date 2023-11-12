@@ -5,6 +5,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Currency;
 
+/**
+ * Class for converting Strings to Currency objects
+ */
 @Component
 public class StringToCurrencyConverter implements Converter<String, Currency> {
     @Override

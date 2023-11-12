@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
+/**
+ * Implementation of AbstractMapperWithSpecificFields for Employee and EmployeeDTO
+ */
 @Component
 public class EmployeeMapper extends AbstractMapperWithSpecificFields<Employee, EmployeeDTO> {
     private final DepartmentService departmentService;
@@ -20,6 +23,9 @@ public class EmployeeMapper extends AbstractMapperWithSpecificFields<Employee, E
         this.departmentService = departmentService;
     }
 
+    /**
+     * Set up method for creating specific type maps for model mapper for mapping specific fields
+     */
     @PostConstruct
     public void setUpMapper() {
         mapper.createTypeMap(Employee.class, EmployeeDTO.class)
@@ -29,6 +35,11 @@ public class EmployeeMapper extends AbstractMapperWithSpecificFields<Employee, E
                 .addMappings(m -> m.skip(Employee::setDepartment)).setPostConverter(toEntityConverter());
     }
 
+    /**
+     * @see AbstractMapperWithSpecificFields#mapSpecificFieldsForDto(Object, Object)
+     * @param source - entity object, which will be mapped to dto
+     * @param destination - dto object
+     */
     @Override
     void mapSpecificFieldsForDto(Employee source, EmployeeDTO destination) {
         destination.setDepartmentId(Objects.isNull(source) ||
@@ -36,6 +47,11 @@ public class EmployeeMapper extends AbstractMapperWithSpecificFields<Employee, E
 
     }
 
+    /**
+     * @see AbstractMapperWithSpecificFields#mapSpecificFieldsForEntity(Object, Object)
+     * @param source - dto object, which will be mapped to entity
+     * @param destination - entity object
+     */
     @Override
     void mapSpecificFieldsForEntity(EmployeeDTO source, Employee destination) {
         destination.setDepartment(Objects.isNull(source.getDepartmentId()) ? null :

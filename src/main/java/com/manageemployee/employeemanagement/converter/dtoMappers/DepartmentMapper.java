@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
+/**
+ * Implementation of AbstractMapperWithSpecificFields for Department and DepartmentDTO
+ */
 @Component
 public class DepartmentMapper extends AbstractMapperWithSpecificFields<Department, DepartmentDTO> {
     private final CompanyBranchService companyBranchService;
@@ -20,6 +23,9 @@ public class DepartmentMapper extends AbstractMapperWithSpecificFields<Departmen
         this.companyBranchService = companyBranchService;
     }
 
+    /**
+     * Set up method for creating specific type maps for model mapper for mapping specific fields
+     */
     @PostConstruct
     public void setupMapper() {
         mapper.createTypeMap(Department.class, DepartmentDTO.class)
@@ -28,12 +34,22 @@ public class DepartmentMapper extends AbstractMapperWithSpecificFields<Departmen
                 .addMappings(m -> m.skip(Department::setCompanyBranch)).setPostConverter(toEntityConverter());
     }
 
+    /**
+     * @see AbstractMapperWithSpecificFields#mapSpecificFieldsForDto(Object, Object)
+     * @param source - entity object, which will be mapped to dto
+     * @param destination - dto object
+     */
     @Override
     public void mapSpecificFieldsForDto(Department source, DepartmentDTO destination) {
         destination.setCompanyBranchId(Objects.isNull(source) ||
                 Objects.isNull(source.getCompanyBranch()) ? null : source.getCompanyBranch().getId());
     }
 
+    /**
+     * @see AbstractMapperWithSpecificFields#mapSpecificFieldsForEntity(Object, Object)
+     * @param source - dto object, which will be mapped to entity
+     * @param destination - entity object
+     */
     @Override
     public void mapSpecificFieldsForEntity(DepartmentDTO source, Department destination) {
         destination.setCompanyBranch(companyBranchService.getCompanyBranchById(source.getCompanyBranchId()));

@@ -14,6 +14,9 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Validator for EmployeeDTO
+ */
 @Component
 public class EmployeeValidator extends BasicEntryValidation<EmployeeDTO> implements Validator {
     private final EmployeeRepository employeeRepository;

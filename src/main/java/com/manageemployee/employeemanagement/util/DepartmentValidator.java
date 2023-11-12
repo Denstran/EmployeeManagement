@@ -11,6 +11,9 @@ import org.springframework.validation.Validator;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Validator for DepartmentDTO
+ */
 @Component
 public class DepartmentValidator extends BasicEntryValidation<DepartmentDTO>  implements Validator {
 
