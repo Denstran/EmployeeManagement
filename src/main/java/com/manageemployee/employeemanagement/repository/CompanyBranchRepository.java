@@ -11,8 +11,8 @@ import java.util.Optional;
 
 public interface CompanyBranchRepository extends JpaRepository<CompanyBranch, Long> {
 
-    CompanyBranch findCompanyBranchByPhoneNumber(String phoneNumber);
-    CompanyBranch findCompanyBranchByCompanyBranchAddress(Address address);
+    Optional<CompanyBranch> findCompanyBranchByPhoneNumber(String phoneNumber);
+    Optional<CompanyBranch> findCompanyBranchByCompanyBranchAddress(Address address);
     boolean existsByPhoneNumber(String phoneNumber);
     boolean existsByCompanyBranchAddress(Address address);
 

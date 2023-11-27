@@ -17,10 +17,6 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     @Modifying
     @Query(value = "DELETE Department d WHERE d.companyBranch.id = :companyBranchId")
     void deleteAllByCompanyBranch_Id(Long companyBranchId);
-    @Query(value = "SELECT e FROM Employee e " +
-            "JOIN Department d ON e.department.id = d.id " +
-            "WHERE d.id = :depId")
-    List<Employee> findAllEmployees(@Param("depId") Long depId);
 
     boolean existsByPhoneNumberAndCompanyBranch_Id(String phoneNumber, Long branchId);
     boolean existsByDepartmentNameAndCompanyBranch_Id(String departmentName, Long branchId);

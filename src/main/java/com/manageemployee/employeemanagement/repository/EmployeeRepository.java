@@ -15,9 +15,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-    void deleteAllByDepartment(Department department);
 
-    @Modifying
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query(value = "DELETE Employee e WHERE e.department = :department")
+    void deleteAllByDepartment(@Param("department") Department department);
+
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "DELETE FROM Employee e WHERE e.department.id IN (SELECT d.id from Department d where d.companyBranch.id = :companyBranchId)")
     void deleteAllByCompanyBranchId(@Param("companyBranchId") Long companyBranchId);
     List<Employee> findAllByDepartment_Id(Long depId);

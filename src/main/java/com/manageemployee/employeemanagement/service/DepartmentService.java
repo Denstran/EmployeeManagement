@@ -4,9 +4,7 @@ import com.manageemployee.employeemanagement.model.CompanyBranch;
 import com.manageemployee.employeemanagement.model.Department;
 import com.manageemployee.employeemanagement.model.Employee;
 import com.manageemployee.employeemanagement.model.Money;
-import com.manageemployee.employeemanagement.repository.CompanyBranchRepository;
 import com.manageemployee.employeemanagement.repository.DepartmentRepository;
-import com.manageemployee.employeemanagement.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,56 +16,72 @@ import java.util.Optional;
 @Service
 public class DepartmentService {
     private final DepartmentRepository departmentRepository;
-    private final EmployeeRepository employeeRepository;
-    private final CompanyBranchRepository companyBranchRepository;
+    private final EmployeeService employeeService;
+    private final CompanyBranchService companyBranchService;
+
 
     @Autowired
     public DepartmentService(DepartmentRepository departmentRepository,
-                             EmployeeRepository employeeRepository,
-                             CompanyBranchRepository companyBranchRepository) {
+                             EmployeeService employeeService,
+                             CompanyBranchService companyBranchService) {
         this.departmentRepository = departmentRepository;
-        this.employeeRepository = employeeRepository;
-        this.companyBranchRepository = companyBranchRepository;
+        this.employeeService = employeeService;
+        this.companyBranchService = companyBranchService;
     }
 
     @Transactional
     public void updateDepartment(Department department) {
+        if (department == null)
+            throw new IllegalArgumentException("Не валидный отдел для обновления!");
 
         departmentRepository.saveAndFlush(department);
     }
 
     public Department getDepartmentById(Long id) {
-        return departmentRepository.findById(id).orElse(null);
+        return departmentRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("Выбран не существующий отдел!"));
     }
 
     public List<Department> getAllDepartmentsByCompanyBranchId(Long companyBranchId) {
+        if (companyBranchId == null || companyBranchId < 1)
+            throw new IllegalArgumentException("Выбран несуществующий филиал!");
+
         return departmentRepository.findByCompanyBranch_Id(companyBranchId);
     }
 
     @Transactional
     public void saveDepartment(Department department) {
         if (department == null)
-            throw new IllegalArgumentException("Illegal department for saving!");
+            throw new IllegalArgumentException("Не валидный отдел для сохранения!");
 
         departmentRepository.saveAndFlush(department);
     }
 
     public Department getDepartmentReferenceById(Long depId) {
+        if (depId == null || depId < 1)
+            throw new IllegalArgumentException("Выбран несуществующий отдел!");
+
         return departmentRepository.getReferenceById(depId);
+    }
+
+    @Transactional
+    public void deleteAllByCompanyBranchId(Long companyBranchId) {
+        if (companyBranchId == null || companyBranchId < 1)
+            throw new IllegalArgumentException("Выбран несуществующий филиал!");
+
+        departmentRepository.deleteAllByCompanyBranch_Id(companyBranchId);
     }
 
     @Transactional
     public void deleteDepartment(Department department) {
         if (department == null)
-            throw new IllegalArgumentException("Illegal department for removal!");
-        Optional<CompanyBranch> companyBranchOptional =
-                companyBranchRepository.findCompanyBranchByDepartmentId(department.getId());
+            throw new IllegalArgumentException("Не валидный отдел для удаления!");
 
-        if (companyBranchOptional.isEmpty())
-            throw new IllegalArgumentException("Department is not bounded to any company branches!");
+        CompanyBranch companyBranch =
+                companyBranchService.findByDepartmentId(department.getId())
+                        .orElseThrow(() -> new IllegalArgumentException("Отдел не закреплён ни за одним филиалом!"));
 
-        CompanyBranch companyBranch = companyBranchOptional.get();
-        List<Employee> employees = employeeRepository.findAllByDepartment_Id(department.getId());
+        List<Employee> employees = employeeService.getAllEmployeesInDepartment(department.getId());
 
         BigDecimal totalSalary = employees.stream()
                         .map(Employee::getSalary)
@@ -75,8 +89,37 @@ public class DepartmentService {
                                         .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         companyBranch.getBudget().setAmount(companyBranch.getBudget().getAmount().add(totalSalary));
-        employeeRepository.deleteAllByDepartment(department);
+        employeeService.deleteAllByDepartment(department);
 
         departmentRepository.delete(department);
+    }
+
+    public boolean existsByPhoneNumberAndCompanyBranchId(String phoneNumber, Long companyBranchId) {
+        if (companyBranchId == null || companyBranchId < 1)
+            throw new IllegalArgumentException("Выбран несуществующий филиал!");
+
+        return departmentRepository.existsByPhoneNumberAndCompanyBranch_Id(phoneNumber, companyBranchId);
+    }
+
+    public boolean existsByDepartmentNameAndCompanyBranchId(String depName, Long companyBranchId) {
+        if (companyBranchId == null || companyBranchId < 1)
+            throw new IllegalArgumentException("Выбран несуществующий филиал!");
+
+        return departmentRepository.existsByDepartmentNameAndCompanyBranch_Id(depName, companyBranchId);
+    }
+
+    public Optional<Department> findDepartmentByPhoneNumberAndCompanyBranch_Id(String phoneNumber,
+                                                                               Long companyBranchId) {
+        if (companyBranchId == null || companyBranchId < 1)
+            throw new IllegalArgumentException("Выбран несуществующий филиал!");
+
+        return departmentRepository.findDepartmentByPhoneNumberAndCompanyBranch_Id(phoneNumber, companyBranchId);
+    }
+
+    public Optional<Department> findDepartmentByDepartmentNameAndCompanyBranch_Id(String name, Long companyBranchId) {
+        if (companyBranchId == null || companyBranchId < 1)
+            throw new IllegalArgumentException("Выбран несуществующий филиал!");
+
+        return departmentRepository.findDepartmentByDepartmentNameAndCompanyBranch_Id(name, companyBranchId);
     }
 }

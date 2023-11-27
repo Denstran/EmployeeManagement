@@ -67,7 +67,7 @@ public class EmployeeMapperTest {
         departmentEntity.setLastModified(new Date());
 
         Employee entity = new Employee();
-        departmentEntity.addEmployee(entity);
+        entity.setDepartment(departmentEntity);
 
         EmployeeDTO dto = employeeMapper.toDto(entity);
 

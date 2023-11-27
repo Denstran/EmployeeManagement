@@ -1,46 +1,55 @@
 package com.manageemployee.employeemanagement.service;
 
 import com.manageemployee.employeemanagement.model.CompanyBranch;
+import com.manageemployee.employeemanagement.model.embeddable.Address;
 import com.manageemployee.employeemanagement.repository.CompanyBranchRepository;
-import com.manageemployee.employeemanagement.repository.DepartmentRepository;
-import com.manageemployee.employeemanagement.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CompanyBranchService {
     private final CompanyBranchRepository companyBranchRepository;
-    private final DepartmentRepository departmentRepository;
-    private final EmployeeRepository employeeRepository;
+    private final DepartmentService departmentService;
+    private final EmployeeService employeeService;
 
     public CompanyBranchService(CompanyBranchRepository companyBranchRepository,
-                                DepartmentRepository departmentRepository,
-                                EmployeeRepository employeeRepository) {
+                                DepartmentService departmentService,
+                                EmployeeService employeeService) {
         this.companyBranchRepository = companyBranchRepository;
-        this.departmentRepository = departmentRepository;
-        this.employeeRepository = employeeRepository;
+        this.departmentService = departmentService;
+        this.employeeService = employeeService;
     }
 
 
     @Transactional
     public CompanyBranch createCompanyBranch(CompanyBranch companyBranch) {
+        if (companyBranch == null)
+            throw new IllegalArgumentException("Некорректный объект для создания филиала!");
 
         return  companyBranchRepository.saveAndFlush(companyBranch);
     }
 
     @Transactional
     public CompanyBranch updateCompanyBranch(CompanyBranch companyBranch) {
+        if (companyBranch == null)
+            throw new IllegalArgumentException("Выбран некорректный филиал для обновления!");
 
         return companyBranchRepository.saveAndFlush(companyBranch);
     }
 
     public CompanyBranch getCompanyBranchById(Long id) {
-        return companyBranchRepository.findById(id).orElse(null);
+
+        return companyBranchRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("Выбран несуществующий филиал!"));
     }
 
     public CompanyBranch getCompanyBranchReferenceById(Long id) {
+        if (id == null || id < 1)
+            throw new IllegalArgumentException("Выбран несуществующий филиал!");
+
         return companyBranchRepository.getReferenceById(id);
     }
 
@@ -50,8 +59,35 @@ public class CompanyBranchService {
 
     @Transactional
     public void deleteCompanyBranchById(Long id) {
-        employeeRepository.deleteAllByCompanyBranchId(id);
-        departmentRepository.deleteAllByCompanyBranch_Id(id);
+        if (id == null || id < 1)
+            throw new IllegalArgumentException("Выбран несуществующий филиал!");
+
+        employeeService.deleteAllByCompanyBranchId(id);
+        departmentService.deleteAllByCompanyBranchId(id);
         companyBranchRepository.deleteById(id);
+    }
+
+    public Optional<CompanyBranch> findByDepartmentId(Long depId) {
+        return companyBranchRepository.findCompanyBranchByDepartmentId(depId);
+    }
+
+    public Optional<CompanyBranch> findByPhoneNumber(String phoneNumber) {
+        return companyBranchRepository.findCompanyBranchByPhoneNumber(phoneNumber);
+    }
+
+    public Optional<CompanyBranch> findByAddress(Address address) {
+        return companyBranchRepository.findCompanyBranchByCompanyBranchAddress(address);
+    }
+
+    public boolean existsByPhoneNumber(String phoneNumber) {
+        if (phoneNumber == null || phoneNumber.isEmpty()) return false;
+
+        return companyBranchRepository.existsByPhoneNumber(phoneNumber);
+    }
+
+    public boolean existsByAddress(Address address) {
+        if (address == null) return false;
+
+        return companyBranchRepository.existsByCompanyBranchAddress(address);
     }
 }

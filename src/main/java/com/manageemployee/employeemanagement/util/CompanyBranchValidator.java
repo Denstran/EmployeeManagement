@@ -9,6 +9,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Validator for CompanyBranchDTO
@@ -50,15 +51,17 @@ public class CompanyBranchValidator extends BasicEntryValidation<CompanyBranchDT
 
     @Override
     protected void validateUpdatingEntry(CompanyBranchDTO companyBranchDTO, Errors errors) {
-        CompanyBranch companyBranchByAddress = companyBranchRepository
+        Optional<CompanyBranch> companyBranchByAddress = companyBranchRepository
                 .findCompanyBranchByCompanyBranchAddress(companyBranchDTO.getCompanyBranchAddress());
-        CompanyBranch companyBranchByPhone = companyBranchRepository
+        Optional<CompanyBranch> companyBranchByPhone = companyBranchRepository
                 .findCompanyBranchByPhoneNumber(companyBranchDTO.getPhoneNumber());
 
-        if (companyBranchByAddress != null && !Objects.equals(companyBranchByAddress.getId(), companyBranchDTO.getId()))
+        if (companyBranchByAddress.isPresent() && !Objects.equals(companyBranchByAddress.get().getId(),
+                companyBranchDTO.getId()))
             errors.rejectValue("phoneNumber", "", "Филиал с таким номером телефона уже существует!");
 
-        if (companyBranchByPhone != null && !Objects.equals(companyBranchByPhone.getId(), companyBranchDTO.getId()))
+        if (companyBranchByPhone.isPresent() && !Objects.equals(companyBranchByPhone.get().getId(),
+                companyBranchDTO.getId()))
             errors.rejectValue("phoneNumber", "", "Филиал с таким номером телефона уже существует!");
     }
 }
