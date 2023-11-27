@@ -17,16 +17,13 @@ import java.util.Optional;
 public class DepartmentService {
     private final DepartmentRepository departmentRepository;
     private final EmployeeService employeeService;
-    private final CompanyBranchService companyBranchService;
 
 
     @Autowired
     public DepartmentService(DepartmentRepository departmentRepository,
-                             EmployeeService employeeService,
-                             CompanyBranchService companyBranchService) {
+                             EmployeeService employeeService) {
         this.departmentRepository = departmentRepository;
         this.employeeService = employeeService;
-        this.companyBranchService = companyBranchService;
     }
 
     @Transactional
@@ -78,7 +75,7 @@ public class DepartmentService {
             throw new IllegalArgumentException("Не валидный отдел для удаления!");
 
         CompanyBranch companyBranch =
-                companyBranchService.findByDepartmentId(department.getId())
+                departmentRepository.findCompanyBranchByDepartmentId(department.getId())
                         .orElseThrow(() -> new IllegalArgumentException("Отдел не закреплён ни за одним филиалом!"));
 
         List<Employee> employees = employeeService.getAllEmployeesInDepartment(department.getId());
@@ -92,6 +89,10 @@ public class DepartmentService {
         employeeService.deleteAllByDepartment(department);
 
         departmentRepository.delete(department);
+    }
+
+    public Optional<CompanyBranch> findCompanyBranchByDepartmentId(Long depId) {
+        return departmentRepository.findCompanyBranchByDepartmentId(depId);
     }
 
     public boolean existsByPhoneNumberAndCompanyBranchId(String phoneNumber, Long companyBranchId) {

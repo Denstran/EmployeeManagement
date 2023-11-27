@@ -1,5 +1,6 @@
 package com.manageemployee.employeemanagement.repository;
 
+import com.manageemployee.employeemanagement.model.CompanyBranch;
 import com.manageemployee.employeemanagement.model.Department;
 import com.manageemployee.employeemanagement.model.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +14,12 @@ import java.util.Optional;
 public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
     List<Department> findByCompanyBranch_Id(Long companyBranchId);
+
+    @Query("SELECT c FROM CompanyBranch c " +
+            "JOIN Department d " +
+            "ON c.id = d.companyBranch.id " +
+            "WHERE d.id = :depId")
+    Optional<CompanyBranch> findCompanyBranchByDepartmentId(@Param("depId") Long depId);
 
     @Modifying
     @Query(value = "DELETE Department d WHERE d.companyBranch.id = :companyBranchId")

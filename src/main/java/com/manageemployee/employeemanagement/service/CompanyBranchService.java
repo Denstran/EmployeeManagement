@@ -67,10 +67,6 @@ public class CompanyBranchService {
         companyBranchRepository.deleteById(id);
     }
 
-    public Optional<CompanyBranch> findByDepartmentId(Long depId) {
-        return companyBranchRepository.findCompanyBranchByDepartmentId(depId);
-    }
-
     public Optional<CompanyBranch> findByPhoneNumber(String phoneNumber) {
         return companyBranchRepository.findCompanyBranchByPhoneNumber(phoneNumber);
     }

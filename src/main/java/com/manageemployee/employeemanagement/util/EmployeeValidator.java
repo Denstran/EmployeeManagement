@@ -3,8 +3,8 @@ package com.manageemployee.employeemanagement.util;
 import com.manageemployee.employeemanagement.dto.EmployeeDTO;
 import com.manageemployee.employeemanagement.model.CompanyBranch;
 import com.manageemployee.employeemanagement.model.Employee;
-import com.manageemployee.employeemanagement.repository.CompanyBranchRepository;
 import com.manageemployee.employeemanagement.repository.EmployeeRepository;
+import com.manageemployee.employeemanagement.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -20,12 +20,12 @@ import java.util.Optional;
 @Component
 public class EmployeeValidator extends BasicEntryValidation<EmployeeDTO> implements Validator {
     private final EmployeeRepository employeeRepository;
-    private final CompanyBranchRepository companyBranchRepository;
+    private final DepartmentService departmentService;
 
     @Autowired
-    public EmployeeValidator(EmployeeRepository employeeRepository, CompanyBranchRepository companyBranchRepository) {
+    public EmployeeValidator(EmployeeRepository employeeRepository, DepartmentService departmentService) {
         this.employeeRepository = employeeRepository;
-        this.companyBranchRepository = companyBranchRepository;
+        this.departmentService = departmentService;
     }
 
     @Override
@@ -74,7 +74,7 @@ public class EmployeeValidator extends BasicEntryValidation<EmployeeDTO> impleme
     }
 
     private void validateMoney(EmployeeDTO employeeDTO, Errors errors) {
-        Optional<CompanyBranch> companyBranch = companyBranchRepository
+        Optional<CompanyBranch> companyBranch = departmentService
                 .findCompanyBranchByDepartmentId(employeeDTO.getDepartmentId());
 
         if (companyBranch.isPresent()) {
