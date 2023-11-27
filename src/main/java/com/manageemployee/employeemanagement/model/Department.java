@@ -37,21 +37,8 @@ public class Department {
     private String phoneNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "COMPANY_BRANCH_ID")
+    @JoinColumn(name = "COMPANY_BRANCH_ID", nullable = false)
     private CompanyBranch companyBranch;
-
-    @OneToMany(mappedBy = "department", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Set<Employee> employees = new HashSet<>();
-
-    public void addEmployee(Employee employee) {
-        this.employees.add(employee);
-        employee.setDepartment(this);
-    }
-
-    public void removeEmployee(Employee employee) {
-        this.employees.remove(employee);
-        employee.setDepartment(null);
-    }
 
     @PrePersist
     @PreUpdate
@@ -59,11 +46,4 @@ public class Department {
         lastModified = new Date();
     }
 
-    @PreRemove
-    protected void changeEmploysStatus() {
-        this.employees.forEach(employee -> {
-            employee.getEmployeeStatus().setEmployeeStatus(EEmployeeStatus.FIRED);
-            employee.setDepartment(null);
-        });
-    }
 }

@@ -20,22 +20,16 @@ public class EmployeeStatusService {
         this.employeeStatusRepository = employeeStatusRepository;
     }
 
-    @Transactional
-    public void addEmployee(Employee employee, EmployeeStatus employeeStatus) {
-        employeeStatus.addEmployee(employee);
-    }
-
-    public void removeEmployee(Employee employee, EmployeeStatus employeeStatus) {
-        employeeStatus.removeEmployee(employee);
-        employeeStatusRepository.saveAndFlush(employeeStatus);
-    }
-
     public EmployeeStatus createOrUpdateEmployeeStatus(EmployeeStatus employeeStatus) {
         return employeeStatusRepository.saveAndFlush(employeeStatus);
     }
 
     public EmployeeStatus getStatusByName(EEmployeeStatus employeeStatus) {
         return employeeStatusRepository.findEmployeeStatusByEmployeeStatus(employeeStatus);
+    }
+
+    public EmployeeStatus getEmployeeStatusReferenceById(Long id) {
+        return employeeStatusRepository.getReferenceById(id);
     }
 
     public EmployeeStatus getEmployeeStatusById(Long id) {

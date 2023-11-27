@@ -66,8 +66,9 @@ public class DepartmentController {
         if (bindingResult.hasErrors()) return VIEW_FOR_UPDATE_OR_CREATE;
 
         Department department = departmentMapper.toEntity(departmentDTO);
-        CompanyBranch companyBranch = companyBranchService.getCompanyBranchById(companyBranchId);
-        companyBranchService.addDepartment(companyBranch, department);
+        CompanyBranch companyBranch = companyBranchService.getCompanyBranchReferenceById(companyBranchId);
+        department.setCompanyBranch(companyBranch);
+        departmentService.saveDepartment(department);
 
         return String.format(REDIRECT_PATTERN, companyBranchId);
     }
@@ -107,10 +108,9 @@ public class DepartmentController {
     @PostMapping("/{depId}/delete")
     public String deleteDepartment(@PathVariable("companyBranchId") Long companyBranchId,
                                    @PathVariable("depId") Long depId) {
-        CompanyBranch companyBranch = companyBranchService.getCompanyBranchById(companyBranchId);
         Department department = departmentService.getDepartmentById(depId);
-        companyBranchService.removeDepartment(companyBranch, department);
 
+        departmentService.deleteDepartment(department);
         return String.format(REDIRECT_PATTERN, companyBranchId);
     }
 }

@@ -11,11 +11,10 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Check;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "EMPLOYEE")
@@ -61,7 +60,7 @@ public class Employee {
 
     @BatchSize(size = 4)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "EMPLOYEE_STATUS_ID")
+    @JoinColumn(name = "EMPLOYEE_STATUS_ID", nullable = false)
     private EmployeeStatus employeeStatus;
 
     @NotNull
@@ -71,41 +70,7 @@ public class Employee {
     @Column(name = "SALARY", length = 63)
     private Money salary;
 
-    @ManyToMany(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
-    })
-    @JoinTable(
-            name = "EMPLOYEE_POSITION",
-            joinColumns = {@JoinColumn(name = "EMPLOYEE_ID")},
-            inverseJoinColumns = {@JoinColumn(name = "POSITION_ID")}
-    )
-    private Set<Position> positions = new HashSet<>();
-
-    public void addPosition(Position position) {
-        this.positions.add(position);
-        position.getEmployees().add(this);
-    }
-
-    public void removePosition(Position position) {
-        this.positions.remove(position);
-        position.getEmployees().remove(this);
-    }
-
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<PaymentLog> payments = new HashSet<>();
-
-    public void addPayment(PaymentLog paymentLog) {
-        this.payments.add(paymentLog);
-        paymentLog.setEmployee(this);
-    }
-
-    public void removePayment(PaymentLog paymentLog) {
-        this.payments.remove(paymentLog);
-        paymentLog.setEmployee(null);
-    }
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "DEPARTMENT_ID")
+    @JoinColumn(name = "DEPARTMENT_ID", nullable = false)
     private Department department;
 }

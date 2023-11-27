@@ -34,7 +34,6 @@ public class CompanyBranchValidator extends BasicEntryValidation<CompanyBranchDT
 
         if (companyBranchDTO.getId() == null) {
            validateNewEntry(companyBranchDTO, errors);
-
         }else {
             validateUpdatingEntry(companyBranchDTO, errors);
         }

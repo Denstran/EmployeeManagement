@@ -30,16 +30,4 @@ public class EmployeeStatus {
         this.employeeStatus = employeeStatus;
     }
 
-    @OneToMany(mappedBy = "employeeStatus", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    private Set<Employee> employees = new HashSet<>();
-
-    public void addEmployee(Employee employee) {
-        this.employees.add(employee);
-        employee.setEmployeeStatus(this);
-    }
-
-    public void removeEmployee(Employee employee) {
-        this.employees.remove(employee);
-        employee.setEmployeeStatus(null);
-    }
 }

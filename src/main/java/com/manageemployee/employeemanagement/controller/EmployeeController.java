@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -81,14 +82,18 @@ public class EmployeeController {
                                  @PathVariable("companyBranchId") Long companyBranchId,
                                  @PathVariable("depId") Long depId) {
         employeeValidator.validate(employeeDTO, bindingResult);
-        if (bindingResult.hasErrors()) return VIEW_FOR_UPDATE_OR_CREATE;
+        if (bindingResult.hasErrors())
+            return VIEW_FOR_UPDATE_OR_CREATE;
 
         Employee employee = employeeMapper.toEntity(employeeDTO);
-        Department department = departmentService.getDepartmentById(depId);
-        EmployeeStatus employeeStatus = employeeStatusService.getStatusByName(EEmployeeStatus.WORKING);
+        Department department = departmentService.getDepartmentReferenceById(depId);
+        EmployeeStatus employeeStatus = employeeStatusService.getEmployeeStatusReferenceById(1L);
 
-        departmentService.addEmployee(employee, department);
-        employeeStatusService.addEmployee(employee, employeeStatus);
+        employee.setDepartment(department);
+        employee.setEmployeeStatus(employeeStatus);
+        employeeService.saveEmployee(employee);
+        handleSalaryChanges(employeeDTO, companyBranchId);
+
         return String.format(REDIRECT_PATH, companyBranchId, depId);
     }
 
@@ -137,25 +142,40 @@ public class EmployeeController {
     public String deleteEmployee(@PathVariable("companyBranchId") Long companyBranchId,
                                  @PathVariable("depId") Long depId,
                                  @PathVariable("empId") Long empId) {
-        Department department = departmentService.getDepartmentById(depId);
         Employee employee = employeeService.getEmployeeById(empId);
-        departmentService.removeEmployee(employee, department);
+        CompanyBranch companyBranch = companyBranchService.getCompanyBranchById(companyBranchId);
+        companyBranch.getBudget().setAmount(companyBranch.getBudget().getAmount()
+                .add(employee.getSalary().getAmount()));
 
+        companyBranchService.updateCompanyBranch(companyBranch);
+        employeeService.deleteEmployeeById(empId);
         return String.format(REDIRECT_PATH, companyBranchId, depId);
     }
 
     private void handleSalaryChanges(EmployeeDTO employeeDTO, Long companyBranchId) {
-        Employee employeeWithOldSalary = employeeService.getEmployeeById(employeeDTO.getId());
-        if (employeeDTO.getSalary().getAmount().compareTo(employeeWithOldSalary.getSalary().getAmount()) > 0) {
-            BigDecimal salaryIncrease = employeeDTO.getSalary().getAmount()
-                    .subtract(employeeWithOldSalary.getSalary().getAmount());
+        CompanyBranch companyBranch = companyBranchService.getCompanyBranchById(companyBranchId);
+        if (employeeDTO.getId() == null) {
+            companyBranch.getBudget().setAmount(companyBranch.getBudget().getAmount()
+                    .subtract(employeeDTO.getSalary().getAmount()));
+        }else {
+            Employee employeeWithOldSalary = employeeService.getEmployeeById(employeeDTO.getId());
+            if (employeeDTO.getSalary().getAmount().compareTo(employeeWithOldSalary.getSalary().getAmount()) > 0) {
+                BigDecimal salaryIncrease = employeeDTO.getSalary().getAmount()
+                        .subtract(employeeWithOldSalary.getSalary().getAmount());
 
-            CompanyBranch companyBranch = companyBranchService.getCompanyBranchById(companyBranchId);
-            BigDecimal companyBranchBudget = companyBranch.getBudget().getAmount();
-            BigDecimal companyBranchNewBudget = companyBranchBudget.subtract(salaryIncrease);
-            companyBranch.getBudget().setAmount(companyBranchNewBudget);
+                BigDecimal companyBranchBudget = companyBranch.getBudget().getAmount();
+                BigDecimal companyBranchNewBudget = companyBranchBudget.subtract(salaryIncrease);
+                companyBranch.getBudget().setAmount(companyBranchNewBudget);
+            }else {
+                BigDecimal salaryDecrease = employeeWithOldSalary.getSalary().getAmount()
+                        .subtract(employeeDTO.getSalary().getAmount());
 
-            companyBranchService.updateCompanyBranch(companyBranch);
+                BigDecimal companyBranchBudget = companyBranch.getBudget().getAmount();
+                BigDecimal companyBranchNewBudget = companyBranchBudget.subtract(salaryDecrease);
+                companyBranch.getBudget().setAmount(companyBranchNewBudget);
+            }
         }
+
+        companyBranchService.updateCompanyBranch(companyBranch);
     }
 }

@@ -29,6 +29,11 @@ public class Position {
     @Column(name = "POSITION_NAME", unique = true)
     private String positionName;
 
-    @ManyToMany(mappedBy = "positions")
-    private Set<Employee> employees = new HashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CMP_BRANCH_ID", nullable = false)
+    private CompanyBranch companyBranch;
+
+    @ManyToOne
+    @JoinColumn(name = "DEP_ID", nullable = false)
+    private Department department;
 }

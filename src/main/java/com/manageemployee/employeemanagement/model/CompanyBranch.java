@@ -56,18 +56,4 @@ public class CompanyBranch {
             message = "Неверный формат номера!")
     @Column(name = "COMPANY_BRANCH_PHONE_NUMBER", unique = true)
     private String phoneNumber;
-
-
-    @OneToMany(mappedBy = "companyBranch", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Department> departments = new HashSet<>();
-
-    public void addDepartment(Department department) {
-        this.departments.add(department);
-        department.setCompanyBranch(this);
-    }
-
-    public void removeDepartment(Department department) {
-        department.setCompanyBranch(null);
-        departments.remove(department);
-    }
 }

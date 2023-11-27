@@ -22,16 +22,4 @@ public class PaymentType {
     @Column(name = "PAYMENT_TYPE", unique = true)
     private EPaymentType paymentType;
 
-    @OneToMany(mappedBy = "paymentType", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    Set<PaymentLog> payments = new HashSet<>();
-
-    public void addPayment(PaymentLog paymentLog) {
-        this.payments.add(paymentLog);
-        paymentLog.setPaymentType(this);
-    }
-    public void removePayment(PaymentLog paymentLog) {
-        this.payments.remove(paymentLog);
-        paymentLog.setPaymentType(this);
-    }
-
 }

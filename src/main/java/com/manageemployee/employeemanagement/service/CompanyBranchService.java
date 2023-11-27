@@ -1,27 +1,36 @@
 package com.manageemployee.employeemanagement.service;
 
 import com.manageemployee.employeemanagement.model.CompanyBranch;
-import com.manageemployee.employeemanagement.model.Department;
 import com.manageemployee.employeemanagement.repository.CompanyBranchRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.manageemployee.employeemanagement.repository.DepartmentRepository;
+import com.manageemployee.employeemanagement.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 public class CompanyBranchService {
     private final CompanyBranchRepository companyBranchRepository;
+    private final DepartmentRepository departmentRepository;
+    private final EmployeeRepository employeeRepository;
 
-    @Autowired
-    public CompanyBranchService(CompanyBranchRepository companyBranchRepository) {
+    public CompanyBranchService(CompanyBranchRepository companyBranchRepository,
+                                DepartmentRepository departmentRepository,
+                                EmployeeRepository employeeRepository) {
         this.companyBranchRepository = companyBranchRepository;
+        this.departmentRepository = departmentRepository;
+        this.employeeRepository = employeeRepository;
     }
 
+
+    @Transactional
     public CompanyBranch createCompanyBranch(CompanyBranch companyBranch) {
 
         return  companyBranchRepository.saveAndFlush(companyBranch);
     }
 
+    @Transactional
     public CompanyBranch updateCompanyBranch(CompanyBranch companyBranch) {
 
         return companyBranchRepository.saveAndFlush(companyBranch);
@@ -31,22 +40,18 @@ public class CompanyBranchService {
         return companyBranchRepository.findById(id).orElse(null);
     }
 
+    public CompanyBranch getCompanyBranchReferenceById(Long id) {
+        return companyBranchRepository.getReferenceById(id);
+    }
 
     public List<CompanyBranch> getAllCompanyBranches(){
         return companyBranchRepository.findAll();
     }
 
-    public void removeDepartment(CompanyBranch companyBranch, Department department) {
-        companyBranch.removeDepartment(department);
-        companyBranchRepository.saveAndFlush(companyBranch);
-    }
-
-    public void addDepartment(CompanyBranch companyBranch, Department department) {
-        companyBranch.addDepartment(department);
-        companyBranchRepository.saveAndFlush(companyBranch);
-    }
-
+    @Transactional
     public void deleteCompanyBranchById(Long id) {
+        employeeRepository.deleteAllByCompanyBranchId(id);
+        departmentRepository.deleteAllByCompanyBranch_Id(id);
         companyBranchRepository.deleteById(id);
     }
 }

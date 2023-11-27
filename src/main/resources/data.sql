@@ -30,8 +30,8 @@ INSERT INTO department (company_branch_id, last_modified, department_name, depar
 INSERT INTO department (company_branch_id, last_modified, department_name, department_phone_number) VALUES (5, '2021-07-01', 'Human Resources', '555-9023412');
 INSERT INTO department (company_branch_id, last_modified, department_name, department_phone_number) VALUES (5, '2021-07-01', 'Finance', '555-3455436');
 
-insert into EMPLOYEE_STATUSES (employee_status) values ('HEALING');
 insert into EMPLOYEE_STATUSES (employee_status) values ('FIRED');
+insert into EMPLOYEE_STATUSES (employee_status) values ('HEALING');
 insert into EMPLOYEE_STATUSES (employee_status) values ('WORKING');
 insert into EMPLOYEE_STATUSES (employee_status) values ('VACATION');
 

@@ -41,7 +41,6 @@ public class EmployeeDTO {
     private Money salary;
 
     @Valid
-    @NotNull
     private EmployeeStatusDTO employeeStatus;
     private Long departmentId;
 }
