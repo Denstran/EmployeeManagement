@@ -1,16 +1,12 @@
 package com.manageemployee.employeemanagement.repository;
 
-import com.manageemployee.employeemanagement.model.CompanyBranch;
 import com.manageemployee.employeemanagement.model.Department;
 import com.manageemployee.employeemanagement.model.Employee;
-import com.manageemployee.employeemanagement.model.embeddable.Name;
-import jakarta.validation.Valid;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 

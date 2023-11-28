@@ -2,7 +2,6 @@ package com.manageemployee.employeemanagement.repository;
 
 import com.manageemployee.employeemanagement.model.CompanyBranch;
 import com.manageemployee.employeemanagement.model.Department;
-import com.manageemployee.employeemanagement.model.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

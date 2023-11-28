@@ -2,7 +2,7 @@ package com.manageemployee.employeemanagement.util;
 
 import com.manageemployee.employeemanagement.dto.DepartmentDTO;
 import com.manageemployee.employeemanagement.model.Department;
-import com.manageemployee.employeemanagement.repository.DepartmentRepository;
+import com.manageemployee.employeemanagement.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -17,11 +17,11 @@ import java.util.Optional;
 @Component
 public class DepartmentValidator extends BasicEntryValidation<DepartmentDTO>  implements Validator {
 
-    private final DepartmentRepository departmentRepository;
+    private final DepartmentService departmentService;
 
     @Autowired
-    public DepartmentValidator(DepartmentRepository departmentRepository) {
-        this.departmentRepository = departmentRepository;
+    public DepartmentValidator(DepartmentService departmentService) {
+        this.departmentService = departmentService;
     }
 
     @Override
@@ -42,21 +42,21 @@ public class DepartmentValidator extends BasicEntryValidation<DepartmentDTO>  im
 
     @Override
     protected void validateNewEntry(DepartmentDTO departmentDTO, Errors errors) {
-        if (departmentRepository.existsByDepartmentNameAndCompanyBranch_Id(departmentDTO.getDepartmentName(),
+        if (departmentService.existsByDepartmentNameAndCompanyBranchId(departmentDTO.getDepartmentName(),
                 departmentDTO.getCompanyBranchId()))
             errors.rejectValue("departmentName", "", "Отдел с таким названием уже существует!");
 
-        if (departmentRepository.existsByPhoneNumberAndCompanyBranch_Id(departmentDTO.getPhoneNumber(),
+        if (departmentService.existsByPhoneNumberAndCompanyBranchId(departmentDTO.getPhoneNumber(),
                 departmentDTO.getCompanyBranchId()))
             errors.rejectValue("phoneNumber", "", "Отдел с такими телефоном уже существует!");
     }
 
     @Override
     protected void validateUpdatingEntry(DepartmentDTO departmentDTO, Errors errors) {
-        Optional<Department> departmentByPhone = departmentRepository.findDepartmentByPhoneNumberAndCompanyBranch_Id(
+        Optional<Department> departmentByPhone = departmentService.findDepartmentByPhoneNumberAndCompanyBranch_Id(
                 departmentDTO.getPhoneNumber(), departmentDTO.getCompanyBranchId()
         );
-        Optional<Department> departmentByName = departmentRepository
+        Optional<Department> departmentByName = departmentService
                 .findDepartmentByDepartmentNameAndCompanyBranch_Id(
                         departmentDTO.getDepartmentName(), departmentDTO.getCompanyBranchId()
                 );

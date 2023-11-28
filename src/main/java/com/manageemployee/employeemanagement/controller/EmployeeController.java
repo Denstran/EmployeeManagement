@@ -87,7 +87,7 @@ public class EmployeeController {
 
         Employee employee = employeeMapper.toEntity(employeeDTO);
         Department department = departmentService.getDepartmentReferenceById(depId);
-        EmployeeStatus employeeStatus = employeeStatusService.getEmployeeStatusReferenceById(1L);
+        EmployeeStatus employeeStatus = employeeStatusService.getEmployeeStatusReferenceById(3L);
 
         employee.setDepartment(department);
         employee.setEmployeeStatus(employeeStatus);

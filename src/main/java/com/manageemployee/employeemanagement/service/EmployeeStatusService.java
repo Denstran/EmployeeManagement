@@ -1,15 +1,12 @@
 package com.manageemployee.employeemanagement.service;
 
-import com.manageemployee.employeemanagement.model.Employee;
 import com.manageemployee.employeemanagement.model.EmployeeStatus;
 import com.manageemployee.employeemanagement.model.enumTypes.EEmployeeStatus;
 import com.manageemployee.employeemanagement.repository.EmployeeStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class EmployeeStatusService {

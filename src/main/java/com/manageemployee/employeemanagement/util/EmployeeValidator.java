@@ -3,8 +3,8 @@ package com.manageemployee.employeemanagement.util;
 import com.manageemployee.employeemanagement.dto.EmployeeDTO;
 import com.manageemployee.employeemanagement.model.CompanyBranch;
 import com.manageemployee.employeemanagement.model.Employee;
-import com.manageemployee.employeemanagement.repository.EmployeeRepository;
 import com.manageemployee.employeemanagement.service.DepartmentService;
+import com.manageemployee.employeemanagement.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -19,21 +19,21 @@ import java.util.Optional;
  */
 @Component
 public class EmployeeValidator extends BasicEntryValidation<EmployeeDTO> implements Validator {
-    private final EmployeeRepository employeeRepository;
+    private final EmployeeService employeeService;
     private final DepartmentService departmentService;
 
     @Autowired
-    public EmployeeValidator(EmployeeRepository employeeRepository, DepartmentService departmentService) {
-        this.employeeRepository = employeeRepository;
+    public EmployeeValidator(EmployeeService employeeService, DepartmentService departmentService) {
+        this.employeeService = employeeService;
         this.departmentService = departmentService;
     }
 
     @Override
     protected void validateNewEntry(EmployeeDTO employeeDTO, Errors errors) {
-        if (employeeRepository.existsByEmail(employeeDTO.getEmail()))
+        if (employeeService.existsByEmail(employeeDTO.getEmail()))
             errors.rejectValue("email", "", "Работник с таким email уже существует!");
 
-        if (employeeRepository.existsByPhoneNumber(employeeDTO.getPhoneNumber()))
+        if (employeeService.existsByPhoneNumber(employeeDTO.getPhoneNumber()))
             errors.rejectValue("phoneNumber", "", "Работник с таким номером телефона уже существует!");
 
         if (employeeDTO.getSalary().getAmount() != null)
@@ -43,9 +43,9 @@ public class EmployeeValidator extends BasicEntryValidation<EmployeeDTO> impleme
 
     @Override
     protected void validateUpdatingEntry(EmployeeDTO employeeDTO, Errors errors) {
-        Optional<Employee> employeeByEmail = employeeRepository.findEmployeeByEmail(employeeDTO.getEmail());
+        Optional<Employee> employeeByEmail = employeeService.findByEmail(employeeDTO.getEmail());
 
-        Optional<Employee> employeeByPhoneNumber = employeeRepository.findEmployeeByPhoneNumber(
+        Optional<Employee> employeeByPhoneNumber = employeeService.findByPhoneNumber(
                 employeeDTO.getPhoneNumber());
 
         if (employeeByEmail.isPresent() && !Objects.equals(employeeByEmail.get().getId(), employeeDTO.getId()))
@@ -97,17 +97,14 @@ public class EmployeeValidator extends BasicEntryValidation<EmployeeDTO> impleme
     }
 
     private void validateMoneyForUpdatedEntry(EmployeeDTO employeeDTO, CompanyBranch companyBranch, Errors errors) {
-        Optional<Employee> employeeOptional = employeeRepository.findById(employeeDTO.getId());
+        Employee employee = employeeService.getEmployeeById(employeeDTO.getId());
 
-        if (employeeOptional.isPresent()) {
-            Employee employee = employeeOptional.get();
-            if (employeeDTO.getSalary().getAmount().compareTo(employee.getSalary().getAmount()) > 0) {
-                BigDecimal salaryIncrease = employeeDTO.getSalary().getAmount()
-                        .subtract(employee.getSalary().getAmount());
+        if (employeeDTO.getSalary().getAmount().compareTo(employee.getSalary().getAmount()) > 0) {
+            BigDecimal salaryIncrease = employeeDTO.getSalary().getAmount()
+                    .subtract(employee.getSalary().getAmount());
 
-                if (companyBranch.getBudget().getAmount().compareTo(salaryIncrease) < 0)
-                    errors.rejectValue("salary.amount", "", "Надбавка превышает бюджет!");
-            }
+            if (companyBranch.getBudget().getAmount().compareTo(salaryIncrease) < 0)
+                errors.rejectValue("salary.amount", "", "Надбавка превышает бюджет!");
         }
     }
 }

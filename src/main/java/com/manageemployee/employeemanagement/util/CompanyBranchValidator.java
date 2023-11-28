@@ -2,7 +2,7 @@ package com.manageemployee.employeemanagement.util;
 
 import com.manageemployee.employeemanagement.dto.CompanyBranchDTO;
 import com.manageemployee.employeemanagement.model.CompanyBranch;
-import com.manageemployee.employeemanagement.repository.CompanyBranchRepository;
+import com.manageemployee.employeemanagement.service.CompanyBranchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -17,11 +17,11 @@ import java.util.Optional;
 @Component
 public class CompanyBranchValidator extends BasicEntryValidation<CompanyBranchDTO> implements Validator {
 
-    private final CompanyBranchRepository companyBranchRepository;
+    private final CompanyBranchService companyBranchService;
 
     @Autowired
-    public CompanyBranchValidator(CompanyBranchRepository companyBranchRepository) {
-        this.companyBranchRepository = companyBranchRepository;
+    public CompanyBranchValidator(CompanyBranchService companyBranchService) {
+        this.companyBranchService = companyBranchService;
     }
 
     @Override
@@ -42,19 +42,19 @@ public class CompanyBranchValidator extends BasicEntryValidation<CompanyBranchDT
 
     @Override
     protected void validateNewEntry(CompanyBranchDTO companyBranchDTO, Errors errors) {
-        if (companyBranchRepository.existsByCompanyBranchAddress(companyBranchDTO.getCompanyBranchAddress()))
+        if (companyBranchService.existsByAddress(companyBranchDTO.getCompanyBranchAddress()))
             errors.rejectValue("companyBranchAddress", "", "Филиал с таким адресом уже существует!");
 
-        if (companyBranchRepository.existsByPhoneNumber(companyBranchDTO.getPhoneNumber()))
+        if (companyBranchService.existsByPhoneNumber(companyBranchDTO.getPhoneNumber()))
             errors.rejectValue("phoneNumber", "", "Филиал с таким номером телефона уже существует!");
     }
 
     @Override
     protected void validateUpdatingEntry(CompanyBranchDTO companyBranchDTO, Errors errors) {
-        Optional<CompanyBranch> companyBranchByAddress = companyBranchRepository
-                .findCompanyBranchByCompanyBranchAddress(companyBranchDTO.getCompanyBranchAddress());
-        Optional<CompanyBranch> companyBranchByPhone = companyBranchRepository
-                .findCompanyBranchByPhoneNumber(companyBranchDTO.getPhoneNumber());
+        Optional<CompanyBranch> companyBranchByAddress = companyBranchService
+                .findByAddress(companyBranchDTO.getCompanyBranchAddress());
+        Optional<CompanyBranch> companyBranchByPhone = companyBranchService
+                .findByPhoneNumber(companyBranchDTO.getPhoneNumber());
 
         if (companyBranchByAddress.isPresent() && !Objects.equals(companyBranchByAddress.get().getId(),
                 companyBranchDTO.getId()))
