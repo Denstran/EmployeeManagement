@@ -4,6 +4,7 @@ import com.manageemployee.employeemanagement.model.CompanyBranch;
 import com.manageemployee.employeemanagement.model.Department;
 import com.manageemployee.employeemanagement.model.Employee;
 import com.manageemployee.employeemanagement.model.Money;
+import com.manageemployee.employeemanagement.model.enumTypes.EEmployeeStatus;
 import com.manageemployee.employeemanagement.repository.DepartmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -81,6 +82,7 @@ public class DepartmentService {
         List<Employee> employees = employeeService.getAllEmployeesInDepartment(department.getId());
 
         BigDecimal totalSalary = employees.stream()
+                .filter(employee -> !employee.getEmployeeStatus().getEmployeeStatus().equals(EEmployeeStatus.FIRED))
                         .map(Employee::getSalary)
                                 .map(Money::getAmount)
                                         .reduce(BigDecimal.ZERO, BigDecimal::add);

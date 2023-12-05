@@ -15,7 +15,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Money {
+public class Money implements Comparable<Money> {
 
     @Min(value = 1, message = "Количество средств должно быть больше нуля!")
     @NotNull(message = "Количество средств не может быть пустым")
@@ -46,5 +46,13 @@ public class Money {
         String[] strings = s.split(" ");
 
         return new Money(new BigDecimal(strings[0]), Currency.getInstance(strings[1]));
+    }
+
+    @Override
+    public int compareTo(Money o) {
+        if (o.getCurrency() == null || !o.getCurrency().equals(this.currency))
+            throw new IllegalArgumentException("Операция сравнения денежных единиц различных валют не поддерживается!");
+
+        return this.amount.compareTo(o.getAmount());
     }
 }

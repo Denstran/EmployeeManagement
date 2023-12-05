@@ -3,14 +3,15 @@ package com.manageemployee.employeemanagement.util;
 import com.manageemployee.employeemanagement.dto.EmployeeDTO;
 import com.manageemployee.employeemanagement.model.CompanyBranch;
 import com.manageemployee.employeemanagement.model.Employee;
+import com.manageemployee.employeemanagement.model.Money;
 import com.manageemployee.employeemanagement.service.DepartmentService;
 import com.manageemployee.employeemanagement.service.EmployeeService;
+import com.manageemployee.employeemanagement.service.MoneyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -21,11 +22,13 @@ import java.util.Optional;
 public class EmployeeValidator extends BasicEntryValidation<EmployeeDTO> implements Validator {
     private final EmployeeService employeeService;
     private final DepartmentService departmentService;
+    private final MoneyService moneyService;
 
     @Autowired
-    public EmployeeValidator(EmployeeService employeeService, DepartmentService departmentService) {
+    public EmployeeValidator(EmployeeService employeeService, DepartmentService departmentService, MoneyService moneyService) {
         this.employeeService = employeeService;
         this.departmentService = departmentService;
+        this.moneyService = moneyService;
     }
 
     @Override
@@ -87,7 +90,7 @@ public class EmployeeValidator extends BasicEntryValidation<EmployeeDTO> impleme
     }
 
     private void validateMoneyForNewEntry(CompanyBranch companyBranch, EmployeeDTO employeeDTO, Errors errors) {
-        if (companyBranch.getBudget().getAmount().compareTo(employeeDTO.getSalary().getAmount()) < 0) {
+        if (companyBranch.getBudget().compareTo(employeeDTO.getSalary()) < 0) {
             errors.rejectValue("salary.amount", "", "Зарплата превышает бюджет!");
         }
 
@@ -99,11 +102,10 @@ public class EmployeeValidator extends BasicEntryValidation<EmployeeDTO> impleme
     private void validateMoneyForUpdatedEntry(EmployeeDTO employeeDTO, CompanyBranch companyBranch, Errors errors) {
         Employee employee = employeeService.getEmployeeById(employeeDTO.getId());
 
-        if (employeeDTO.getSalary().getAmount().compareTo(employee.getSalary().getAmount()) > 0) {
-            BigDecimal salaryIncrease = employeeDTO.getSalary().getAmount()
-                    .subtract(employee.getSalary().getAmount());
+        if (employeeDTO.getSalary().compareTo(employee.getSalary()) > 0) {
+            Money salaryIncrease = moneyService.subtractMoney(employeeDTO.getSalary(), employee.getSalary());
 
-            if (companyBranch.getBudget().getAmount().compareTo(salaryIncrease) < 0)
+            if (companyBranch.getBudget().compareTo(salaryIncrease) < 0)
                 errors.rejectValue("salary.amount", "", "Надбавка превышает бюджет!");
         }
     }

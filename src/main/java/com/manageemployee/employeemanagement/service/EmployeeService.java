@@ -31,6 +31,7 @@ public class EmployeeService {
     public void updateEmployee(Employee employee) {
         if (employee == null)
             throw new IllegalArgumentException("Невалидный сотрудник для обновления!");
+
         employeeRepository.saveAndFlush(employee);
     }
 

@@ -5,21 +5,15 @@ import com.manageemployee.employeemanagement.converter.dtoMappers.EmployeeStatus
 import com.manageemployee.employeemanagement.dto.EmployeeDTO;
 import com.manageemployee.employeemanagement.dto.EmployeeStatusDTO;
 import com.manageemployee.employeemanagement.model.*;
-import com.manageemployee.employeemanagement.model.enumTypes.EEmployeeStatus;
-import com.manageemployee.employeemanagement.service.CompanyBranchService;
-import com.manageemployee.employeemanagement.service.DepartmentService;
-import com.manageemployee.employeemanagement.service.EmployeeService;
-import com.manageemployee.employeemanagement.service.EmployeeStatusService;
+import com.manageemployee.employeemanagement.service.*;
 import com.manageemployee.employeemanagement.util.EmployeeValidator;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Controller
@@ -32,6 +26,7 @@ public class EmployeeController {
     private final EmployeeStatusService employeeStatusService;
     private final CompanyBranchService companyBranchService;
     private final EmployeeStatusMapper employeeStatusMapper;
+    private final MoneyService moneyService;
 
     private final String REDIRECT_PATH = "redirect:/companyBranches/%d/departments/%d/employees";
     private final String SHOW_EMPLOYEE = "employee/employee";
@@ -41,7 +36,7 @@ public class EmployeeController {
     public EmployeeController(EmployeeService employeeService, EmployeeMapper employeeMapper,
                               EmployeeValidator employeeValidator, DepartmentService departmentService,
                               EmployeeStatusService employeeStatusService, CompanyBranchService companyBranchService,
-                              EmployeeStatusMapper employeeStatusMapper) {
+                              EmployeeStatusMapper employeeStatusMapper, MoneyService moneyService) {
         this.employeeService = employeeService;
         this.employeeMapper = employeeMapper;
         this.employeeValidator = employeeValidator;
@@ -49,6 +44,7 @@ public class EmployeeController {
         this.employeeStatusService = employeeStatusService;
         this.companyBranchService = companyBranchService;
         this.employeeStatusMapper = employeeStatusMapper;
+        this.moneyService = moneyService;
     }
 
     @GetMapping()
@@ -92,7 +88,7 @@ public class EmployeeController {
         employee.setDepartment(department);
         employee.setEmployeeStatus(employeeStatus);
         employeeService.saveEmployee(employee);
-        handleSalaryChanges(employeeDTO, companyBranchId);
+        moneyService.handleEmployeeSalaryChanges(employeeDTO, companyBranchId);
 
         return String.format(REDIRECT_PATH, companyBranchId, depId);
     }
@@ -130,7 +126,7 @@ public class EmployeeController {
             model.addAttribute("isUpdating", true);
             return VIEW_FOR_UPDATE_OR_CREATE;
         }
-        handleSalaryChanges(employeeDTO, companyBranchId);
+        moneyService.handleEmployeeSalaryChanges(employeeDTO, companyBranchId);
 
         Employee employee = employeeMapper.toEntity(employeeDTO);
         employeeService.updateEmployee(employee);
@@ -150,32 +146,5 @@ public class EmployeeController {
         companyBranchService.updateCompanyBranch(companyBranch);
         employeeService.deleteEmployeeById(empId);
         return String.format(REDIRECT_PATH, companyBranchId, depId);
-    }
-
-    private void handleSalaryChanges(EmployeeDTO employeeDTO, Long companyBranchId) {
-        CompanyBranch companyBranch = companyBranchService.getCompanyBranchById(companyBranchId);
-        if (employeeDTO.getId() == null) {
-            companyBranch.getBudget().setAmount(companyBranch.getBudget().getAmount()
-                    .subtract(employeeDTO.getSalary().getAmount()));
-        }else {
-            Employee employeeWithOldSalary = employeeService.getEmployeeById(employeeDTO.getId());
-            if (employeeDTO.getSalary().getAmount().compareTo(employeeWithOldSalary.getSalary().getAmount()) > 0) {
-                BigDecimal salaryIncrease = employeeDTO.getSalary().getAmount()
-                        .subtract(employeeWithOldSalary.getSalary().getAmount());
-
-                BigDecimal companyBranchBudget = companyBranch.getBudget().getAmount();
-                BigDecimal companyBranchNewBudget = companyBranchBudget.subtract(salaryIncrease);
-                companyBranch.getBudget().setAmount(companyBranchNewBudget);
-            }else {
-                BigDecimal salaryDecrease = employeeWithOldSalary.getSalary().getAmount()
-                        .subtract(employeeDTO.getSalary().getAmount());
-
-                BigDecimal companyBranchBudget = companyBranch.getBudget().getAmount();
-                BigDecimal companyBranchNewBudget = companyBranchBudget.subtract(salaryDecrease);
-                companyBranch.getBudget().setAmount(companyBranchNewBudget);
-            }
-        }
-
-        companyBranchService.updateCompanyBranch(companyBranch);
     }
 }
