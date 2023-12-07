@@ -37,7 +37,8 @@ public class Department {
     private String phoneNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "COMPANY_BRANCH_ID", nullable = false)
+    @JoinColumn(name = "COMPANY_BRANCH_ID", nullable = false,
+            foreignKey = @ForeignKey(name = "FK_DEPARTMENT_COMPANY_BRANCH"))
     private CompanyBranch companyBranch;
 
     @PrePersist

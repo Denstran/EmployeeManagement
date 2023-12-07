@@ -31,11 +31,11 @@ public class PaymentLog {
     private Date dateOfPayment;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PAYMENT_TYPE_ID", nullable = false)
+    @JoinColumn(name = "PAYMENT_TYPE_ID", nullable = false, foreignKey = @ForeignKey(name = "FK_PAYMENT_PAYMENT_TYPE"))
     private PaymentType paymentType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "EMPLOYEE_ID", nullable = false)
+    @JoinColumn(name = "EMPLOYEE_ID", nullable = false, foreignKey =  @ForeignKey(name = "FK_PAYMENT_EMPLOYEE"))
     private Employee employee;
 
     @PrePersist

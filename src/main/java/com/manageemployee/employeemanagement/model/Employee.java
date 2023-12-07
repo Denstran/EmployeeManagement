@@ -15,6 +15,8 @@ import org.hibernate.annotations.Check;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "EMPLOYEE")
@@ -60,7 +62,8 @@ public class Employee {
 
     @BatchSize(size = 4)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "EMPLOYEE_STATUS_ID", nullable = false)
+    @JoinColumn(name = "EMPLOYEE_STATUS_ID", nullable = false,
+            foreignKey =  @ForeignKey(name = "FK_EMPLOYEE_EMPLOYEE_STATUS"))
     private EmployeeStatus employeeStatus;
 
     @NotNull
@@ -71,6 +74,10 @@ public class Employee {
     private Money salary;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "DEPARTMENT_ID", nullable = false)
+    @JoinColumn(name = "DEPARTMENT_ID", nullable = false, foreignKey =  @ForeignKey(name = "FK_EMPLOYEE_DEPARTMENT"))
     private Department department;
+
+
+    @ManyToMany(mappedBy = "employees")
+    private Set<Position> positions = new HashSet<>();
 }

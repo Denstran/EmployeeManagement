@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Formula;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,16 +25,30 @@ public class Position {
     private Long id;
 
     @NotNull
-    @NotBlank(message = "Названи должности не должно быть пустым!")
+    @NotBlank(message = "Название должности не должно быть пустым!")
     @Min(value = 3, message = "Название должности должно быть больше 3 символов!")
     @Column(name = "POSITION_NAME", unique = true)
     private String positionName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CMP_BRANCH_ID", nullable = false)
-    private CompanyBranch companyBranch;
+    @Min(value = 0, message = "Минимальное необходимое количество сотрудников не может быть ниже 0!")
+    @Column(name = "REQUIRED_EMPLOYEE_AMOUNT", nullable = false, columnDefinition = "default 0")
+    private int requiredEmployeeAmount;
+
+    @Formula("SELECT COUNT(*) FROM POSITION_EMPLOYEE WHERE POSITION_EMPLOYEE.POSITION_ID = ID")
+    private int amountOfEmployees;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "POSITION_EMPLOYEE",
+        joinColumns = @JoinColumn(name = "POSITION_ID", foreignKey =  @ForeignKey(name = "FK_POSITION")),
+        inverseJoinColumns = @JoinColumn(name = "EMPLOYEE_ID", foreignKey =  @ForeignKey(name = "FK_EMPLOYEE"))
+    )
+    private Set<Employee> employees = new HashSet<>();
 
     @ManyToOne
-    @JoinColumn(name = "DEP_ID", nullable = false)
+    @NotNull(message = "Отдел, для которого предназначена должность не должен быть пустым!")
+    @JoinColumn(name = "DEP_ID", nullable = false, foreignKey =  @ForeignKey(name = "FK_POSITION_DEPARTMENT"))
     private Department department;
 }
