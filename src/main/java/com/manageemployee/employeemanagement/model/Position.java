@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "POSITION")
+@Table(name = "POSITIONS")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,12 +27,12 @@ public class Position {
 
     @NotNull
     @NotBlank(message = "Название должности не должно быть пустым!")
-    @Min(value = 3, message = "Название должности должно быть больше 3 символов!")
-    @Column(name = "POSITION_NAME", unique = true)
+    @Size(min = 3, message = "Название должности должно быть больше 3 символов!")
+    @Column(name = "POSITION_NAME")
     private String positionName;
 
     @Min(value = 0, message = "Минимальное необходимое количество сотрудников не может быть ниже 0!")
-    @Column(name = "REQUIRED_EMPLOYEE_AMOUNT", nullable = false, columnDefinition = "default 0")
+    @Column(name = "REQUIRED_EMPLOYEE_AMOUNT", nullable = false, columnDefinition = "integer default 0")
     private int requiredEmployeeAmount;
 
     @Formula("SELECT COUNT(*) FROM POSITION_EMPLOYEE WHERE POSITION_EMPLOYEE.POSITION_ID = ID")
@@ -42,8 +43,10 @@ public class Position {
             CascadeType.MERGE
     })
     @JoinTable(name = "POSITION_EMPLOYEE",
-        joinColumns = @JoinColumn(name = "POSITION_ID", foreignKey =  @ForeignKey(name = "FK_POSITION")),
-        inverseJoinColumns = @JoinColumn(name = "EMPLOYEE_ID", foreignKey =  @ForeignKey(name = "FK_EMPLOYEE"))
+        joinColumns = @JoinColumn(name = "POSITION_ID", foreignKey =  @ForeignKey(name = "FK_POSITION"),
+                nullable = false),
+        inverseJoinColumns = @JoinColumn(name = "EMPLOYEE_ID", foreignKey =  @ForeignKey(name = "FK_EMPLOYEE"),
+                nullable = false)
     )
     private Set<Employee> employees = new HashSet<>();
 

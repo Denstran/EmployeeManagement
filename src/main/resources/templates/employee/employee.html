@@ -38,10 +38,8 @@
             <td th:text="${employee.salary}"></td>
             <td th:text="${employee.employeeStatus.employeeStatus}"></td>
             <td>
-                <button type="submit" class="btn btn-dark">
-                    <a th:href="@{/companyBranches/{companyBranchId}/departments/{depId}/employees/{empId}/update(
-                companyBranchId=${companyBranchId}, depId=${depId}, empId=${employee.id})}">Обновить</a>
-                </button>
+                <a class="btn btn-dark" role="button" th:href="@{/companyBranches/{companyBranchId}/departments/{depId}/employees/{empId}/update(
+                    companyBranchId=${companyBranchId}, depId=${depId}, empId=${employee.id})}">Обновить</a>
             </td>
             <td>
                 <form th:action="@{/companyBranches/{companyBranchId}/departments/{depId}/employees/{empId}/delete(

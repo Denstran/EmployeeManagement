@@ -30,6 +30,13 @@ INSERT INTO department (company_branch_id, last_modified, department_name, depar
 INSERT INTO department (company_branch_id, last_modified, department_name, department_phone_number) VALUES (5, '2021-07-01', 'Human Resources', '555-9023412');
 INSERT INTO department (company_branch_id, last_modified, department_name, department_phone_number) VALUES (5, '2021-07-01', 'Finance', '555-3455436');
 
+INSERT INTO POSITIONS (POSITION_NAME, REQUIRED_EMPLOYEE_AMOUNT, DEP_ID) VALUES ('TEST1', 5, 1);
+INSERT INTO POSITIONS (POSITION_NAME, REQUIRED_EMPLOYEE_AMOUNT, DEP_ID) VALUES ('TEST2', 2, 1);
+INSERT INTO POSITIONS (POSITION_NAME, REQUIRED_EMPLOYEE_AMOUNT, DEP_ID) VALUES ('TEST3', 3, 1);
+INSERT INTO POSITIONS (POSITION_NAME, REQUIRED_EMPLOYEE_AMOUNT, DEP_ID) VALUES ('TEST4', 4, 1);
+INSERT INTO POSITIONS (POSITION_NAME, REQUIRED_EMPLOYEE_AMOUNT, DEP_ID) VALUES ('TEST5', 1, 1);
+INSERT INTO POSITIONS (POSITION_NAME, REQUIRED_EMPLOYEE_AMOUNT, DEP_ID) VALUES ('TEST6', 2, 1);
+
 insert into EMPLOYEE_STATUSES (employee_status) values ('FIRED');
 insert into EMPLOYEE_STATUSES (employee_status) values ('HEALING');
 insert into EMPLOYEE_STATUSES (employee_status) values ('WORKING');

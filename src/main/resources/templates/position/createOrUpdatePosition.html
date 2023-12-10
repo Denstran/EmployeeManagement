@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Добавление должности</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body>
+    <header th:replace="fragments/header :: header(text='ДОБАВЛЕНИЕ ДОЛЖНОСТИ')"></header>
+    <div class="container">
+        <form th:action="${isUpdating} ? @{/companyBranches/{id}/departments/{depId}/positions/{positionId}/update
+        (id = ${companyBranchId}, depId = ${depId}, positionId = ${positionId})}
+        : @{/companyBranches/{id}/departments/{depId}/positions/new(id = ${companyBranchId}, depId = ${depId})}"
+              th:object="${position}" method="post">
+            <hr/>
+            <h2>Название должности</h2>
+            <div class="form-group">
+                <label for="nameInput">Название должности</label>
+                <input type="text" th:field="*{positionName}" class="form-control" id="nameInput"
+                       aria-describedby="nameError" placeholder="Введите название должности"
+                       th:value="${isUpdating} ? ${position.positionName} : ''">
+
+                <small th:if="${#fields.hasErrors('positionName')}" th:errors="*{positionName}"
+                       id="nameError"
+                       class="form-text text-danger">Error</small>
+            </div>
+            <hr/>
+            <h2>Необходимое количество сотрудников</h2>
+            <div class="form-group">
+                <label for="requiredEmployeeAmountInput">Количество</label>
+                <input type="number" th:field="*{requiredEmployeeAmount}" class="form-control" id="requiredEmployeeAmountInput"
+                       aria-describedby="requiredEmployeeAmountInputError" placeholder="Введите количество сотрудников"
+                       th:value="${isUpdating} ? ${position.requiredEmployeeAmount} : ''">
+
+                <small th:if="${#fields.hasErrors('requiredEmployeeAmount')}" th:errors="*{requiredEmployeeAmount}"
+                       id="requiredEmployeeAmountInputError"
+                       class="form-text text-danger">Error</small>
+            </div>
+            <input type="hidden" name="isUpdating" th:value="${isUpdating}" />
+            <input type="hidden" th:if="${isUpdating}" th:field="*{id}" th:value="${position.id}">
+            <input type="hidden" th:field="*{departmentId}" th:value="${position.departmentId}">
+            <button type="submit" class="btn btn-primary">Подтвердить</button>
+        </form>
+    </div>
+</body>
+</html>

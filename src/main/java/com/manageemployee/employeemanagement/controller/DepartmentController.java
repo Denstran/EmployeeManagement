@@ -66,6 +66,7 @@ public class DepartmentController {
         if (bindingResult.hasErrors()) return VIEW_FOR_UPDATE_OR_CREATE;
 
         Department department = departmentMapper.toEntity(departmentDTO);
+
         CompanyBranch companyBranch = companyBranchService.getCompanyBranchReferenceById(companyBranchId);
         department.setCompanyBranch(companyBranch);
         departmentService.saveDepartment(department);
