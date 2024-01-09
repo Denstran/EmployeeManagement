@@ -2,29 +2,21 @@ package com.manageemployee.employeemanagement.service;
 
 import com.manageemployee.employeemanagement.model.CompanyBranch;
 import com.manageemployee.employeemanagement.model.Department;
-import com.manageemployee.employeemanagement.model.Employee;
-import com.manageemployee.employeemanagement.model.Money;
-import com.manageemployee.employeemanagement.model.enumTypes.EEmployeeStatus;
 import com.manageemployee.employeemanagement.repository.DepartmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class DepartmentService {
     private final DepartmentRepository departmentRepository;
-    private final EmployeeService employeeService;
-
 
     @Autowired
-    public DepartmentService(DepartmentRepository departmentRepository,
-                             EmployeeService employeeService) {
+    public DepartmentService(DepartmentRepository departmentRepository) {
         this.departmentRepository = departmentRepository;
-        this.employeeService = employeeService;
     }
 
     @Transactional
@@ -63,33 +55,12 @@ public class DepartmentService {
     }
 
     @Transactional
-    public void deleteAllByCompanyBranchId(Long companyBranchId) {
-        if (companyBranchId == null || companyBranchId < 1)
-            throw new IllegalArgumentException("Выбран несуществующий филиал!");
-
-        departmentRepository.deleteAllByCompanyBranch_Id(companyBranchId);
-    }
-
-    @Transactional
     public void deleteDepartment(Department department) {
         if (department == null)
             throw new IllegalArgumentException("Не валидный отдел для удаления!");
 
-        CompanyBranch companyBranch =
-                departmentRepository.findCompanyBranchByDepartmentId(department.getId())
-                        .orElseThrow(() -> new IllegalArgumentException("Отдел не закреплён ни за одним филиалом!"));
-
-        List<Employee> employees = employeeService.getAllEmployeesInDepartment(department.getId());
-
-        BigDecimal totalSalary = employees.stream()
-                .filter(employee -> !employee.getEmployeeStatus().getEmployeeStatus().equals(EEmployeeStatus.FIRED))
-                        .map(Employee::getSalary)
-                                .map(Money::getAmount)
-                                        .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        companyBranch.getBudget().setAmount(companyBranch.getBudget().getAmount().add(totalSalary));
-        employeeService.deleteAllByDepartment(department);
-
+        departmentRepository.deleteAllEmployeesByDepartment(department);
+        departmentRepository.deleteAllPositionsByDepartment(department);
         departmentRepository.delete(department);
     }
 

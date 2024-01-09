@@ -2,10 +2,15 @@ package com.manageemployee.employeemanagement.service;
 
 import com.manageemployee.employeemanagement.dto.EmployeeDTO;
 import com.manageemployee.employeemanagement.model.CompanyBranch;
+import com.manageemployee.employeemanagement.model.Department;
 import com.manageemployee.employeemanagement.model.Employee;
 import com.manageemployee.employeemanagement.model.Money;
+import com.manageemployee.employeemanagement.model.enumTypes.EEmployeeStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class MoneyService {
@@ -33,6 +38,23 @@ public class MoneyService {
             else handleDecreasedSalary(employeeDTO, employeeOld, companyBranch);
         }
 
+        companyBranchService.updateCompanyBranch(companyBranch);
+    }
+
+    @Transactional
+    public void handleDeletedDepartmentSalaryChanges(CompanyBranch companyBranch, Department department) {
+        List<Employee> employees = employeeService.getAllEmployeesInDepartment(department.getId());
+
+        BigDecimal totalSalary = employees.stream()
+                .filter(employee -> !employee.getEmployeeStatus().getEmployeeStatus().equals(EEmployeeStatus.FIRED))
+                .map(Employee::getSalary)
+                .map(Money::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        Money companyBranchBudget = companyBranch.getBudget();
+
+        companyBranch.setBudget(addMoney(companyBranchBudget,
+                new Money(totalSalary, companyBranchBudget.getCurrency())));
         companyBranchService.updateCompanyBranch(companyBranch);
     }
 

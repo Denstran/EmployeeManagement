@@ -6,8 +6,13 @@ import com.manageemployee.employeemanagement.converter.dtoMappers.PositionMapper
 import com.manageemployee.employeemanagement.dto.EmployeeDTO;
 import com.manageemployee.employeemanagement.dto.EmployeeStatusDTO;
 import com.manageemployee.employeemanagement.dto.PositionDTO;
-import com.manageemployee.employeemanagement.model.*;
-import com.manageemployee.employeemanagement.service.*;
+import com.manageemployee.employeemanagement.model.Employee;
+import com.manageemployee.employeemanagement.model.EmployeeStatus;
+import com.manageemployee.employeemanagement.model.Position;
+import com.manageemployee.employeemanagement.service.EmployeeService;
+import com.manageemployee.employeemanagement.service.EmployeeStatusService;
+import com.manageemployee.employeemanagement.service.MoneyService;
+import com.manageemployee.employeemanagement.service.PositionService;
 import com.manageemployee.employeemanagement.util.EmployeeValidator;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -18,7 +23,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.util.ArrayUtils;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -28,9 +32,7 @@ public class EmployeeController {
     private final EmployeeService employeeService;
     private final EmployeeMapper employeeMapper;
     private final EmployeeValidator employeeValidator;
-    private final DepartmentService departmentService;
     private final EmployeeStatusService employeeStatusService;
-    private final CompanyBranchService companyBranchService;
     private final EmployeeStatusMapper employeeStatusMapper;
     private final MoneyService moneyService;
     private final PositionService positionService;
@@ -42,16 +44,13 @@ public class EmployeeController {
 
     @Autowired
     public EmployeeController(EmployeeService employeeService, EmployeeMapper employeeMapper,
-                              EmployeeValidator employeeValidator, DepartmentService departmentService,
-                              EmployeeStatusService employeeStatusService, CompanyBranchService companyBranchService,
+                              EmployeeValidator employeeValidator, EmployeeStatusService employeeStatusService,
                               EmployeeStatusMapper employeeStatusMapper, MoneyService moneyService,
                               PositionService positionService, PositionMapper positionMapper) {
         this.employeeService = employeeService;
         this.employeeMapper = employeeMapper;
         this.employeeValidator = employeeValidator;
-        this.departmentService = departmentService;
         this.employeeStatusService = employeeStatusService;
-        this.companyBranchService = companyBranchService;
         this.employeeStatusMapper = employeeStatusMapper;
         this.moneyService = moneyService;
         this.positionService = positionService;
@@ -106,15 +105,9 @@ public class EmployeeController {
             model.addAttribute("positionsError", "Не выбрана ни одна должность!");
             return VIEW_FOR_UPDATE_OR_CREATE;
         }
-
         Employee employee = employeeMapper.toEntity(employeeDTO);
-        Department department = departmentService.getDepartmentReferenceById(depId);
-        EmployeeStatus employeeStatus = employeeStatusService.getEmployeeStatusReferenceById(3L);
 
-        employee.addPositions(positionService.findPositionsByIds(selectedPositions));
-        employee.setDepartment(department);
-        employee.setEmployeeStatus(employeeStatus);
-        employeeService.saveEmployee(employee);
+        employeeService.saveEmployee(employee, depId, selectedPositions);
         moneyService.handleEmployeeSalaryChanges(employeeDTO, companyBranchId);
 
         clearSession(session);
@@ -160,7 +153,7 @@ public class EmployeeController {
                                  @PathVariable("depId") Long depId,
                                  @PathVariable("empId") Long empId, Model model, HttpSession session,
                                  @RequestParam(required = false, name = "selectedPositions")Long[] selectedPositions,
-                                 @RequestParam(required = false, name = "takenPositions")Long[] takenPositionsIds) {
+                                 @RequestParam(required = false, name = "positionsForRemoval")Long[] positionsForRemoval) {
 
         List<PositionDTO> takenPositions = (List<PositionDTO>) session.getAttribute("takenPositions");
         List<EmployeeStatusDTO> employeeStatusDTOS =
@@ -173,7 +166,7 @@ public class EmployeeController {
         model.addAttribute("employeeStatusDTOS", employeeStatusDTOS);
         model.addAttribute("isUpdating", true);
 
-        if (takenPositionsIds != null && takenPositions.size() == takenPositionsIds.length) {
+        if (positionsForRemoval != null && takenPositions.size() == positionsForRemoval.length) {
             model.addAttribute("takenPositionsError", "Убраны все должности!");
             return VIEW_FOR_UPDATE_OR_CREATE;
         }
@@ -184,13 +177,8 @@ public class EmployeeController {
         moneyService.handleEmployeeSalaryChanges(employeeDTO, companyBranchId);
 
         Employee employee = employeeMapper.toEntity(employeeDTO);
-        employee.setPositions(new HashSet<>(takenPositionsEntities));
 
-        if (selectedPositions != null) employee.addPositions(positionService.findPositionsByIds(selectedPositions));
-        if (takenPositionsIds != null && takenPositionsIds.length > 0)
-            employee.removePositions(positionService.findPositionsByIds(takenPositionsIds));
-
-        employeeService.updateEmployee(employee);
+        employeeService.updateEmployee(employee, selectedPositions, positionsForRemoval, takenPositionsEntities);
         clearSession(session);
         return String.format(REDIRECT_PATH, companyBranchId, depId);
     }
@@ -199,13 +187,8 @@ public class EmployeeController {
     public String deleteEmployee(@PathVariable("companyBranchId") Long companyBranchId,
                                  @PathVariable("depId") Long depId,
                                  @PathVariable("empId") Long empId) {
-        Employee employee = employeeService.getEmployeeById(empId);
-        CompanyBranch companyBranch = companyBranchService.getCompanyBranchById(companyBranchId);
-        companyBranch.getBudget().setAmount(companyBranch.getBudget().getAmount()
-                .add(employee.getSalary().getAmount()));
 
-        companyBranchService.updateCompanyBranch(companyBranch);
-        employeeService.deleteEmployeeById(empId);
+        employeeService.deleteEmployeeById(empId, companyBranchId);
         return String.format(REDIRECT_PATH, companyBranchId, depId);
     }
 

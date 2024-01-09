@@ -6,6 +6,7 @@ import com.manageemployee.employeemanagement.model.CompanyBranch;
 import com.manageemployee.employeemanagement.model.Department;
 import com.manageemployee.employeemanagement.service.CompanyBranchService;
 import com.manageemployee.employeemanagement.service.DepartmentService;
+import com.manageemployee.employeemanagement.service.MoneyService;
 import com.manageemployee.employeemanagement.util.DepartmentValidator;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ public class DepartmentController {
     private final CompanyBranchService companyBranchService;
     private final DepartmentMapper departmentMapper;
     private final DepartmentValidator departmentValidator;
+    private final MoneyService moneyService;
 
     // Patterns for return values
     private final String VIEW_FOR_UPDATE_OR_CREATE = "department/createOrUpdateDepartment";
@@ -32,11 +34,13 @@ public class DepartmentController {
 
     @Autowired
     public DepartmentController(DepartmentService departmentService, CompanyBranchService companyBranchService,
-                                DepartmentMapper departmentMapper, DepartmentValidator departmentValidator) {
+                                DepartmentMapper departmentMapper, DepartmentValidator departmentValidator,
+                                MoneyService moneyService) {
         this.departmentService = departmentService;
         this.companyBranchService = companyBranchService;
         this.departmentMapper = departmentMapper;
         this.departmentValidator = departmentValidator;
+        this.moneyService = moneyService;
     }
 
     @GetMapping()
@@ -110,6 +114,12 @@ public class DepartmentController {
     public String deleteDepartment(@PathVariable("companyBranchId") Long companyBranchId,
                                    @PathVariable("depId") Long depId) {
         Department department = departmentService.getDepartmentById(depId);
+
+        CompanyBranch companyBranch = departmentService
+                .findCompanyBranchByDepartmentId(department.getId())
+                        .orElseThrow(() -> new IllegalArgumentException("Отдел не закреплён ни за одним филиалом!"));
+
+        moneyService.handleDeletedDepartmentSalaryChanges(companyBranch, department);
 
         departmentService.deleteDepartment(department);
         return String.format(REDIRECT_PATTERN, companyBranchId);

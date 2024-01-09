@@ -183,7 +183,7 @@
             <h2>Текущие должности (кликните, чтобы удалить)</h2>
             <div class="list-group">
                 <label class="list-group-item" th:each="position : ${takenPositions}" aria-describedby="takenPositionError">
-                    <input class="form-check-input me-1" name="takenPositions"
+                    <input class="form-check-input me-1" name="positionsForRemoval"
                            type="checkbox" th:text="${position.positionName}" th:value="${position.id}">
                 </label>
                 <small th:if="${takenPositionsError}" class="form-text text-danger" id="takenPositionError"

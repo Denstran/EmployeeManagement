@@ -20,9 +20,13 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
             "WHERE d.id = :depId")
     Optional<CompanyBranch> findCompanyBranchByDepartmentId(@Param("depId") Long depId);
 
-    @Modifying
-    @Query(value = "DELETE Department d WHERE d.companyBranch.id = :companyBranchId")
-    void deleteAllByCompanyBranch_Id(Long companyBranchId);
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query(value = "DELETE Employee e WHERE e.department = :department")
+    void deleteAllEmployeesByDepartment(@Param("department") Department department);
+
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("DELETE Position p WHERE p.department = :department")
+    void deleteAllPositionsByDepartment(@Param("department") Department department);
 
     boolean existsByPhoneNumberAndCompanyBranch_Id(String phoneNumber, Long branchId);
     boolean existsByDepartmentNameAndCompanyBranch_Id(String departmentName, Long branchId);

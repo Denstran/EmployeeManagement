@@ -12,17 +12,10 @@ import java.util.Optional;
 @Service
 public class CompanyBranchService {
     private final CompanyBranchRepository companyBranchRepository;
-    private final DepartmentService departmentService;
-    private final EmployeeService employeeService;
 
-    public CompanyBranchService(CompanyBranchRepository companyBranchRepository,
-                                DepartmentService departmentService,
-                                EmployeeService employeeService) {
+    public CompanyBranchService(CompanyBranchRepository companyBranchRepository) {
         this.companyBranchRepository = companyBranchRepository;
-        this.departmentService = departmentService;
-        this.employeeService = employeeService;
     }
-
 
     @Transactional
     public CompanyBranch createCompanyBranch(CompanyBranch companyBranch) {
@@ -62,8 +55,8 @@ public class CompanyBranchService {
         if (id == null || id < 1)
             throw new IllegalArgumentException("Выбран несуществующий филиал!");
 
-        employeeService.deleteAllByCompanyBranchId(id);
-        departmentService.deleteAllByCompanyBranchId(id);
+        companyBranchRepository.deleteAllEmployeesByCompanyBranchId(id);
+        companyBranchRepository.deleteAllDepartmentsByCompanyBranch_Id(id);
         companyBranchRepository.deleteById(id);
     }
 
