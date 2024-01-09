@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +26,11 @@ public class PositionService {
         return positionRepository.saveAndFlush(position);
     }
 
+    public List<Position> findPositionsByIds(Long[] ids) {
+
+        return positionRepository.findAllById(Arrays.asList(ids));
+    }
+
     @Transactional
     public Position updatePosition(Position position) {
         return positionRepository.saveAndFlush(position);
@@ -35,8 +41,8 @@ public class PositionService {
                 new IllegalArgumentException("Выбрана не существующая должность!"));
     }
 
-    public Page<Position> getPositionsByDepartment(Pageable pageable, Long departmentId) {
-        return positionRepository.findAllByDepartment_Id(pageable, departmentId);
+    public Page<Position> getPositionsByDepartment(Pageable pageable, Long depId) {
+        return positionRepository.findAllByDepartment_Id(pageable, depId);
     }
 
     public boolean existsByNameAndDepartmentId(String positionName, Long depId) {
@@ -45,6 +51,31 @@ public class PositionService {
 
     public Optional<Position> findByNameAndDepartmentId(String positionName, Long depId) {
         return positionRepository.findByPositionNameIgnoreCaseAndDepartment_Id(positionName, depId);
+    }
+
+    public Position getReference(Long positionId) {
+        if (positionId == null || positionId <= 0)
+            throw new IllegalArgumentException("Выбрана несуществующая должность");
+        return positionRepository.getReferenceById(positionId);
+    }
+
+    public List<Position> findAvailablePositionsByDepartment(Long depId) {
+        if (depId == null || depId <= 0)  throw new IllegalArgumentException("Выбранного отдела не существует!");
+
+        return positionRepository.findAvailablePositionsByDepartment(depId);
+    }
+
+    public List<Position> findAvailablePositionsByDepartmentExceptEmployee(Long depId, Long empId) {
+        if (depId == null || depId <= 0) throw new IllegalArgumentException("Выбран не существующий отдел!");
+        if (empId == null || empId <= 0) throw new IllegalArgumentException("Выбран не существующий сотрудник!");
+
+        return positionRepository.findAvailablePositionsByDepartmentExceptEmployee(depId, empId);
+    }
+
+    public List<Position> findByEmployeeId(Long empId) {
+        if (empId == null || empId <= 0) throw new IllegalArgumentException("Выбран не корректный сотрудник");
+
+        return positionRepository.findPositionsByEmployeeId(empId);
     }
 
     public void deletePositionById(Long id) {

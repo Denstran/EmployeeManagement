@@ -42,5 +42,6 @@ public class EmployeeDTO {
 
     @Valid
     private EmployeeStatusDTO employeeStatus;
+
     private Long departmentId;
 }

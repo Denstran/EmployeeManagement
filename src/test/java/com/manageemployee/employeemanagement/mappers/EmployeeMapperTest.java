@@ -114,4 +114,15 @@ public class EmployeeMapperTest {
         Assertions.assertEquals(dto.getEmployeeStatus().getEmployeeStatus(),
                 entity.getEmployeeStatus().getEmployeeStatus());
     }
+
+    @Test
+    void assertThatEmployeeDtoWithPositionIdMappingCorrectlyToEmployeeEntity() {
+        EmployeeDTO employeeDTO = new EmployeeDTO();
+            employeeDTO.setId(1L);
+            employeeDTO.setPositionId(1L);
+
+        Employee entity = employeeMapper.toEntity(employeeDTO);
+
+        Assertions.assertEquals(employeeDTO.getId(), entity.getId());
+    }
 }

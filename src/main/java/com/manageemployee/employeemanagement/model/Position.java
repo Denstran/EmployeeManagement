@@ -12,14 +12,13 @@ import lombok.Setter;
 import org.hibernate.annotations.Formula;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "POSITIONS")
+@Table(name = "POSITION")
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Position {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,23 +34,26 @@ public class Position {
     @Column(name = "REQUIRED_EMPLOYEE_AMOUNT", nullable = false, columnDefinition = "integer default 0")
     private int requiredEmployeeAmount;
 
-    @Formula("SELECT COUNT(*) FROM POSITION_EMPLOYEE WHERE POSITION_EMPLOYEE.POSITION_ID = ID")
+    @Formula("SELECT COUNT(*) FROM EMPLOYEE_POSITION WHERE EMPLOYEE_POSITION.POSITION_ID = ID")
     private int amountOfEmployees;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
-    })
-    @JoinTable(name = "POSITION_EMPLOYEE",
-        joinColumns = @JoinColumn(name = "POSITION_ID", foreignKey =  @ForeignKey(name = "FK_POSITION"),
-                nullable = false),
-        inverseJoinColumns = @JoinColumn(name = "EMPLOYEE_ID", foreignKey =  @ForeignKey(name = "FK_EMPLOYEE"),
-                nullable = false)
-    )
+    @ManyToMany(mappedBy = "positions")
     private Set<Employee> employees = new HashSet<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull(message = "Отдел, для которого предназначена должность не должен быть пустым!")
     @JoinColumn(name = "DEP_ID", nullable = false, foreignKey =  @ForeignKey(name = "FK_POSITION_DEPARTMENT"))
     private Department department;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Position position)) return false;
+        return Objects.equals(id, position.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

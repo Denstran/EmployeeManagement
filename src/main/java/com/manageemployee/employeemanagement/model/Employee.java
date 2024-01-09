@@ -11,12 +11,9 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Check;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "EMPLOYEE")
@@ -78,6 +75,44 @@ public class Employee {
     private Department department;
 
 
-    @ManyToMany(mappedBy = "employees")
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "EMPLOYEE_POSITION",
+            joinColumns = @JoinColumn(name = "EMPLOYEE_ID", foreignKey =  @ForeignKey(name = "FK_EMPLOYEE"),
+                    nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "POSITION_ID", foreignKey =  @ForeignKey(name = "FK_POSITION"),
+                    nullable = false)
+    )
     private Set<Position> positions = new HashSet<>();
+
+    public void addPosition(Position position) {
+        this.positions.add(position);
+        position.setRequiredEmployeeAmount(position.getRequiredEmployeeAmount() - 1);
+    }
+
+    public void addPositions(List<Position> positions) {
+        this.positions.addAll(positions);
+        positions.forEach(position -> position.setRequiredEmployeeAmount(position.getRequiredEmployeeAmount() - 1));
+    }
+
+    public void removePosition(Position position) {
+        this.positions.remove(position);
+    }
+    public void removePositions(List<Position> positions) {
+        this.positions.removeAll(positions);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Employee employee)) return false;
+        return Objects.equals(id, employee.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

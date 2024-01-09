@@ -45,7 +45,6 @@ public class EmployeeMapper extends AbstractMapperWithSpecificFields<Employee, E
     protected void mapSpecificFieldsForDto(Employee source, EmployeeDTO destination) {
         destination.setDepartmentId(Objects.isNull(source) ||
                 Objects.isNull(source.getDepartment()) ? null : source.getDepartment().getId());
-
     }
 
     /**
