@@ -20,7 +20,8 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
     @Query("SELECT p FROM Position p WHERE p.department.id = :depId AND p.requiredEmployeeAmount > 0")
     List<Position> findAvailablePositionsByDepartment(@Param("depId") Long depId);
 
-    @Query("SELECT p FROM Position p WHERE p NOT IN (SELECT e.positions FROM Employee e WHERE e.id = :empId) AND p.department.id = :depId")
+    @Query("SELECT p FROM Position p WHERE p NOT IN (SELECT e.positions FROM Employee e WHERE e.id = :empId)" +
+            " AND p.department.id = :depId AND p.requiredEmployeeAmount > 0")
     List<Position> findAvailablePositionsByDepartmentExceptEmployee(@Param("depId") Long depId,
                                                                     @Param("empId") Long empId);
 
