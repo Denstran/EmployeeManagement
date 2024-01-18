@@ -13,7 +13,8 @@ import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.util.*;
+import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "EMPLOYEE")
@@ -43,7 +44,9 @@ public class Employee {
             @AttributeOverride(name = "street",
                 column = @Column(name = "HOME_STREET")),
             @AttributeOverride(name = "country",
-                column = @Column(name = "HOME_COUNTRY"))
+                column = @Column(name = "HOME_COUNTRY")),
+            @AttributeOverride(name = "buildingNumber",
+                column = @Column(name = "HOME_BUILDING_NUMBER"))
     })
     private Address homeAddress;
 
@@ -71,38 +74,12 @@ public class Employee {
     private Money salary;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "DEPARTMENT_ID", nullable = false, foreignKey =  @ForeignKey(name = "FK_EMPLOYEE_DEPARTMENT"))
-    private Department department;
+    @JoinColumn(name = "COMPANY_BRANCH_ID", nullable = false, foreignKey =  @ForeignKey(name = "FK_EMPLOYEE_COMPANY_BRANCH"))
+    private CompanyBranch companyBranch;
 
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
-    })
-    @JoinTable(name = "EMPLOYEE_POSITION",
-            joinColumns = @JoinColumn(name = "EMPLOYEE_ID", foreignKey =  @ForeignKey(name = "FK_EMPLOYEE"),
-                    nullable = false),
-            inverseJoinColumns = @JoinColumn(name = "POSITION_ID", foreignKey =  @ForeignKey(name = "FK_POSITION"),
-                    nullable = false)
-    )
-    private Set<Position> positions = new HashSet<>();
-
-    public void addPosition(Position position) {
-        this.positions.add(position);
-        position.setRequiredEmployeeAmount(position.getRequiredEmployeeAmount() - 1);
-    }
-
-    public void addPositions(List<Position> positions) {
-        this.positions.addAll(positions);
-        positions.forEach(position -> position.setRequiredEmployeeAmount(position.getRequiredEmployeeAmount() - 1));
-    }
-
-    public void removePosition(Position position) {
-        this.positions.remove(position);
-    }
-    public void removePositions(List<Position> positions) {
-        this.positions.removeAll(positions);
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "POSITION_ID", nullable = false, foreignKey = @ForeignKey(name = "FK_EMPLOYEE_POSITION"))
+    private Position position;
 
     @Override
     public boolean equals(Object o) {

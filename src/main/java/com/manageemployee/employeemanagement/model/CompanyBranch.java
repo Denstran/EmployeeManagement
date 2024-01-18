@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -46,7 +47,9 @@ public class CompanyBranch {
             @AttributeOverride(name = "street",
                 column = @Column(name = "COMPANY_BRANCH_STREET")),
             @AttributeOverride(name = "country",
-            column = @Column(name = "COMPANY_BRANCH_COUNTRY"))
+            column = @Column(name = "COMPANY_BRANCH_COUNTRY")),
+            @AttributeOverride(name = "buildingNumber",
+                    column = @Column(name = "COMPANY_BRANCH_BUILDING_NUMBER"))
     })
     private Address companyBranchAddress;
 
@@ -56,4 +59,16 @@ public class CompanyBranch {
             message = "Неверный формат номера!")
     @Column(name = "COMPANY_BRANCH_PHONE_NUMBER", unique = true)
     private String phoneNumber;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CompanyBranch that)) return false;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

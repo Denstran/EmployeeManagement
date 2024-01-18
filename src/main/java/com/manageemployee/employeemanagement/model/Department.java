@@ -9,6 +9,7 @@ import lombok.*;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -25,26 +26,15 @@ public class Department {
     @Column(name = "DEPARTMENT_NAME")
     private String departmentName;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "LAST_MODIFIED")
-    private Date lastModified;
-
-    @NotNull
-    @NotBlank(message = "Номер телефона не должен быть пустым")
-    @Pattern(regexp = "^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$",
-            message = "Неверный формат номера!")
-    @Column(name = "DEPARTMENT_PHONE_NUMBER", unique = true)
-    private String phoneNumber;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "COMPANY_BRANCH_ID", nullable = false,
-            foreignKey = @ForeignKey(name = "FK_DEPARTMENT_COMPANY_BRANCH"))
-    private CompanyBranch companyBranch;
-
-    @PrePersist
-    @PreUpdate
-    protected void setDefaultLastModified(){
-        lastModified = new Date();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Department that)) return false;
+        return Objects.equals(id, that.id);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "PAYMENT_LOG")
@@ -42,5 +43,17 @@ public class PaymentLog {
     @PreUpdate
     public void setDefaultDateOfPayment() {
         dateOfPayment = new Date();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PaymentLog that)) return false;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

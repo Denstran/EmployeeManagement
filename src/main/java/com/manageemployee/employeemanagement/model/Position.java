@@ -30,15 +30,8 @@ public class Position {
     @Column(name = "POSITION_NAME")
     private String positionName;
 
-    @Min(value = 0, message = "Минимальное необходимое количество сотрудников не может быть ниже 0!")
-    @Column(name = "REQUIRED_EMPLOYEE_AMOUNT", nullable = false, columnDefinition = "integer default 0")
-    private int requiredEmployeeAmount;
-
-    @Formula("SELECT COUNT(*) FROM EMPLOYEE_POSITION WHERE EMPLOYEE_POSITION.POSITION_ID = ID")
+    @Formula("SELECT COUNT(*) FROM EMPLOYEE WHERE EMPLOYEE.POSITION_ID = ID")
     private int amountOfEmployees;
-
-    @ManyToMany(mappedBy = "positions")
-    private Set<Employee> employees = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull(message = "Отдел, для которого предназначена должность не должен быть пустым!")

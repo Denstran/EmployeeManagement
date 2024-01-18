@@ -2,6 +2,7 @@ package com.manageemployee.employeemanagement.model.embeddable;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -27,6 +28,11 @@ public class Address {
     @NotBlank(message = "Улица не может быть пустой!")
     @Column(name = "STREET")
     private String street;
+
+    @NotNull
+    @Min(value = 1, message = "Номер дома не может быть меньше единицы!")
+    @Column(name = "BUILDING_NUMBER")
+    private int buildingNumber;
 
     @NotNull
     @NotBlank(message = "Страна не может быть пустой!")
