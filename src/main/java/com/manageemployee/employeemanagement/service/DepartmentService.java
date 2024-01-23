@@ -19,81 +19,22 @@ public class DepartmentService {
         this.departmentRepository = departmentRepository;
     }
 
-    @Transactional
-    public void updateDepartment(Department department) {
-        if (department == null)
-            throw new IllegalArgumentException("Не валидный отдел для обновления!");
-
-        departmentRepository.saveAndFlush(department);
+    public List<Department> getAllDepartments() {
+        return departmentRepository.findAll();
     }
 
-    public Department getDepartmentById(Long id) {
-        return departmentRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("Выбран не существующий отдел!"));
+    public boolean existsByName(String depName) {
+        return departmentRepository.existsByDepartmentName(depName);
     }
 
-    public List<Department> getAllDepartmentsByCompanyBranchId(Long companyBranchId) {
-        if (companyBranchId == null || companyBranchId < 1)
-            throw new IllegalArgumentException("Выбран несуществующий филиал!");
-
-        return departmentRepository.findByCompanyBranch_Id(companyBranchId);
+    public Optional<Department> findByName(String depName) {
+        return departmentRepository.findDepartmentByDepartmentName(depName);
     }
 
-    @Transactional
-    public void saveDepartment(Department department) {
-        if (department == null)
-            throw new IllegalArgumentException("Не валидный отдел для сохранения!");
+    public Department getReference(Long id) {
+        if (id == null || id <= 0)
+            throw new IllegalArgumentException("Выбранный отдел не существует!");
 
-        departmentRepository.saveAndFlush(department);
-    }
-
-    public Department getDepartmentReferenceById(Long depId) {
-        if (depId == null || depId < 1)
-            throw new IllegalArgumentException("Выбран несуществующий отдел!");
-
-        return departmentRepository.getReferenceById(depId);
-    }
-
-    @Transactional
-    public void deleteDepartment(Department department) {
-        if (department == null)
-            throw new IllegalArgumentException("Не валидный отдел для удаления!");
-
-        departmentRepository.deleteAllEmployeesByDepartment(department);
-        departmentRepository.deleteAllPositionsByDepartment(department);
-        departmentRepository.delete(department);
-    }
-
-    public Optional<CompanyBranch> findCompanyBranchByDepartmentId(Long depId) {
-        return departmentRepository.findCompanyBranchByDepartmentId(depId);
-    }
-
-    public boolean existsByPhoneNumberAndCompanyBranchId(String phoneNumber, Long companyBranchId) {
-        if (companyBranchId == null || companyBranchId < 1)
-            throw new IllegalArgumentException("Выбран несуществующий филиал!");
-
-        return departmentRepository.existsByPhoneNumberAndCompanyBranch_Id(phoneNumber, companyBranchId);
-    }
-
-    public boolean existsByDepartmentNameAndCompanyBranchId(String depName, Long companyBranchId) {
-        if (companyBranchId == null || companyBranchId < 1)
-            throw new IllegalArgumentException("Выбран несуществующий филиал!");
-
-        return departmentRepository.existsByDepartmentNameAndCompanyBranch_Id(depName, companyBranchId);
-    }
-
-    public Optional<Department> findDepartmentByPhoneNumberAndCompanyBranch_Id(String phoneNumber,
-                                                                               Long companyBranchId) {
-        if (companyBranchId == null || companyBranchId < 1)
-            throw new IllegalArgumentException("Выбран несуществующий филиал!");
-
-        return departmentRepository.findDepartmentByPhoneNumberAndCompanyBranch_Id(phoneNumber, companyBranchId);
-    }
-
-    public Optional<Department> findDepartmentByDepartmentNameAndCompanyBranch_Id(String name, Long companyBranchId) {
-        if (companyBranchId == null || companyBranchId < 1)
-            throw new IllegalArgumentException("Выбран несуществующий филиал!");
-
-        return departmentRepository.findDepartmentByDepartmentNameAndCompanyBranch_Id(name, companyBranchId);
+        return departmentRepository.getReferenceById(id);
     }
 }

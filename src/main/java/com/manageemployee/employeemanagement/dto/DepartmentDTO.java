@@ -21,13 +21,4 @@ public class DepartmentDTO {
     @Size(min = 1, max = 255, message = "Название отдела должно быть от 1 до 255 символов!")
     @NotBlank(message = "Название отдела не может быть пустым!")
     private String departmentName;
-
-    private Date lastModified;
-
-    @NotNull
-    @NotBlank(message = "Номер телефона не должен быть пустым")
-    @Pattern(regexp = "^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$",
-            message = "Неверный формат номера!")
-    private String phoneNumber;
-    private Long companyBranchId;
 }

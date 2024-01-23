@@ -15,11 +15,10 @@ import java.util.Optional;
  * Validator for DepartmentDTO
  */
 @Component
-public class DepartmentValidator extends BasicEntryValidation<DepartmentDTO>  implements Validator {
+public class DepartmentValidator implements Validator {
 
     private final DepartmentService departmentService;
 
-    @Autowired
     public DepartmentValidator(DepartmentService departmentService) {
         this.departmentService = departmentService;
     }
@@ -34,37 +33,13 @@ public class DepartmentValidator extends BasicEntryValidation<DepartmentDTO>  im
         DepartmentDTO departmentDTO = (DepartmentDTO) target;
 
         if (departmentDTO.getId() == null) {
-            validateNewEntry(departmentDTO, errors);
-        } else {
-            validateUpdatingEntry(departmentDTO, errors);
+            if (departmentService.existsByName(departmentDTO.getDepartmentName()))
+                errors.rejectValue("departmentName", "", "Отдел с таким название уже существует!");
+        }else {
+            Optional<Department> department = departmentService.findByName(departmentDTO.getDepartmentName());
+
+            if (department.isPresent() && !department.get().getId().equals(departmentDTO.getId()))
+                errors.rejectValue("departmentName", "", "Отдел с таким название уже существует!");
         }
-    }
-
-    @Override
-    protected void validateNewEntry(DepartmentDTO departmentDTO, Errors errors) {
-        if (departmentService.existsByDepartmentNameAndCompanyBranchId(departmentDTO.getDepartmentName(),
-                departmentDTO.getCompanyBranchId()))
-            errors.rejectValue("departmentName", "", "Отдел с таким названием уже существует!");
-
-        if (departmentService.existsByPhoneNumberAndCompanyBranchId(departmentDTO.getPhoneNumber(),
-                departmentDTO.getCompanyBranchId()))
-            errors.rejectValue("phoneNumber", "", "Отдел с такими телефоном уже существует!");
-    }
-
-    @Override
-    protected void validateUpdatingEntry(DepartmentDTO departmentDTO, Errors errors) {
-        Optional<Department> departmentByPhone = departmentService.findDepartmentByPhoneNumberAndCompanyBranch_Id(
-                departmentDTO.getPhoneNumber(), departmentDTO.getCompanyBranchId()
-        );
-        Optional<Department> departmentByName = departmentService
-                .findDepartmentByDepartmentNameAndCompanyBranch_Id(
-                        departmentDTO.getDepartmentName(), departmentDTO.getCompanyBranchId()
-                );
-
-        if (departmentByName.isPresent() && !Objects.equals(departmentByName.get().getId(), departmentDTO.getId()))
-            errors.rejectValue("departmentName", "", "Отдел с таким названием уже существует!");
-
-        if (departmentByPhone.isPresent() && !Objects.equals(departmentByPhone.get().getId(), departmentDTO.getId()))
-            errors.rejectValue("phoneNumber", "", "Отдел с такими телефоном уже существует!");
     }
 }

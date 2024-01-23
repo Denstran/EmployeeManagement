@@ -54,6 +54,7 @@ public class PositionMapper extends AbstractMapperWithSpecificFields<Position, P
      */
     @Override
     protected void mapSpecificFieldsForEntity(PositionDTO source, Position destination) {
-        destination.setDepartment(departmentService.getDepartmentById(source.getDepartmentId()));
+        destination.setDepartment(Objects.isNull(source) || Objects.isNull(source.getDepartmentId()) ?
+                null : departmentService.getReference(source.getDepartmentId()));
     }
 }

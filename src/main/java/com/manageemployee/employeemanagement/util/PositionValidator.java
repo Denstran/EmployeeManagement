@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Component
-public class PositionValidator extends BasicEntryValidation<PositionDTO> implements Validator {
+public class PositionValidator implements Validator {
 
     private final PositionService positionService;
 
@@ -30,25 +30,6 @@ public class PositionValidator extends BasicEntryValidation<PositionDTO> impleme
     public void validate(Object target, Errors errors) {
         PositionDTO positionDTO = (PositionDTO) target;
 
-        if (positionDTO.getId() == null) validateNewEntry(positionDTO, errors);
-        else validateUpdatingEntry(positionDTO, errors);
     }
 
-    @Override
-    protected void validateNewEntry(PositionDTO positionDTO, Errors errors) {
-        if (positionService.existsByNameAndDepartmentId(positionDTO.getPositionName(), positionDTO.getDepartmentId()))
-            errors.rejectValue("positionName", "", "Должность с таким названием уже существует!");
-    }
-
-    @Override
-    protected void validateUpdatingEntry(PositionDTO positionDTO, Errors errors) {
-        Optional<Position> positionByNameAndDep = positionService.findByNameAndDepartmentId(
-                positionDTO.getPositionName(), positionDTO.getDepartmentId()
-        );
-
-        if (positionByNameAndDep.isPresent() &&
-                !Objects.equals(positionByNameAndDep.get().getId(), positionDTO.getId())) {
-            errors.rejectValue("positionName", "", "Должность с таким названием уже существует!");
-        }
-    }
 }

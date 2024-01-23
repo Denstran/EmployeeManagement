@@ -43,5 +43,9 @@ public class EmployeeDTO {
     @Valid
     private EmployeeStatusDTO employeeStatus;
 
-    private Long departmentId;
+    @NotNull(message = "Сотрудник должен числиться в филиале!")
+    private Long companyBranchId;
+
+    @NotNull(message = "Сотрудник обязан иметь должность!")
+    private Long positionId;
 }

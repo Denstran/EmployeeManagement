@@ -13,37 +13,24 @@
 
 <div class="container">
     <hr/>
-    <a class="btn btn-dark" th:href="@{/companyBranches/{companyBranchId}/departments/new(
-    companyBranchId=${companyBranchId})}" role="button">Добавить отдел</a>
+    <a class="btn btn-dark" th:href="@{/departments/new}" role="button">Добавить отдел</a>
     <hr/>
     <table class="table">
         <thead class="table-dark">
         <tr>
             <th scope="col">Название отдела</th>
-            <th scope="col">Дата обновления</th>
-            <th scope="col">Номер телефона</th>
-            <th scope="col">Сотрудники</th>
-            <th scope="col">Должности</th>
             <th scope="col">Обновление</th>
             <th scope="col">Удаление</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="department : ${departments}">
+        <tr th:each="department : ${departmentDTOS}">
             <td th:text="${department.departmentName}"></td>
-            <td th:text="${department.lastModified}"></td>
-            <td th:text="${department.phoneNumber}"></td>
-            <td><a class="btn btn-dark" role="button" th:href="@{/companyBranches/{companyId}/departments/{depId}/employees
-            (companyId = ${department.companyBranchId}, depId = ${department.id})}">Сотрудники</a></td>
-            <td><a class="btn btn-dark" role="button" th:href="@{/companyBranches/{companyId}/departments/{depId}/positions
-            (companyId = ${department.companyBranchId}, depId = ${department.id})}">Должности</a></td>
             <td>
-                <a class="btn btn-dark" role="button" th:href="@{/companyBranches/{companyBranchId}/departments/{depId}/update(
-                    companyBranchId=${department.companyBranchId}, depId=${department.id})}">Обновить</a>
+                <a class="btn btn-dark" role="button" th:href="@{/departments/{depId}/update}">Обновить</a>
             </td>
             <td>
-                <form th:action="@{/companyBranches/{companyBranchId}/departments/{depId}/delete(
-                companyBranchId=${department.companyBranchId}, depId=${department.id})}" method="post">
+                <form th:action="@{/departments/{depId}/delete}" method="post">
                     <button type="submit" class="btn btn-danger">Удалить</button>
                 </form>
             </td>

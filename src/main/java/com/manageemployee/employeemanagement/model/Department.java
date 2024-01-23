@@ -23,7 +23,7 @@ public class Department {
 
     @NotNull
     @NotBlank(message = "Название отдела не может быть пустым!")
-    @Column(name = "DEPARTMENT_NAME")
+    @Column(name = "DEPARTMENT_NAME", unique = true)
     private String departmentName;
 
     @Override

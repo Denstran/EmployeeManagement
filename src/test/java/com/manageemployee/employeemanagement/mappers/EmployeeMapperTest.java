@@ -4,12 +4,14 @@ package com.manageemployee.employeemanagement.mappers;
 import com.manageemployee.employeemanagement.converter.dtoMappers.EmployeeMapper;
 import com.manageemployee.employeemanagement.dto.EmployeeDTO;
 import com.manageemployee.employeemanagement.dto.EmployeeStatusDTO;
-import com.manageemployee.employeemanagement.model.Department;
+import com.manageemployee.employeemanagement.model.CompanyBranch;
 import com.manageemployee.employeemanagement.model.Employee;
 import com.manageemployee.employeemanagement.model.EmployeeStatus;
+import com.manageemployee.employeemanagement.model.Position;
 import com.manageemployee.employeemanagement.model.embeddable.Name;
 import com.manageemployee.employeemanagement.model.enumTypes.EEmployeeStatus;
-import com.manageemployee.employeemanagement.service.DepartmentService;
+import com.manageemployee.employeemanagement.service.CompanyBranchService;
+import com.manageemployee.employeemanagement.service.PositionService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -17,11 +19,10 @@ import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 
-import java.util.Date;
-
 public class EmployeeMapperTest {
 
-    private static final DepartmentService departmentService = Mockito.mock(DepartmentService.class);
+    private static final CompanyBranchService companyBranchService = Mockito.mock(CompanyBranchService.class);
+    private static final PositionService positionService = Mockito.mock(PositionService.class);
     private static EmployeeMapper employeeMapper;
 
     @BeforeAll
@@ -31,12 +32,13 @@ public class EmployeeMapperTest {
                 .setMatchingStrategy(MatchingStrategies.STRICT)
                 .setFieldMatchingEnabled(true)
                 .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE);
-        employeeMapper = new EmployeeMapper(modelMapper, departmentService);
+
+        employeeMapper = new EmployeeMapper(modelMapper, companyBranchService, positionService);
         employeeMapper.setupMapper();
     }
 
     @Test
-    void assertThatFieldsInEntityAndDtoAreEqualsAfterConvertationFromEntityToDto() {
+    void assert_that_fields_are_equal_after_convertation_from_entity_to_dto() {
         Name name = new Name("First name", "Middle Name", "Last Name");
 
         Employee employee = new Employee();
@@ -48,7 +50,7 @@ public class EmployeeMapperTest {
     }
 
     @Test
-    void assertThatFieldsInEntityAndDtoAreEqualsAfterConvertationFromDtoToEntity() {
+    void assert_that_fields_are_equal_after_convertation_from_dto_to_entity() {
         Name name = new Name("First name", "Middle Name", "Last Name");
 
         EmployeeDTO dto = new EmployeeDTO();
@@ -60,22 +62,36 @@ public class EmployeeMapperTest {
     }
 
     @Test
-    void assertThatDepartmentIdIsTheSameAfterConvertationFromEntityToDto() {
-        Department departmentEntity = new Department();
-        departmentEntity.setId(1L);
-        departmentEntity.setDepartmentName("Name");
-        departmentEntity.setLastModified(new Date());
+    void assert_that_companyBranches_ids_are_equal_after_convertation_from_entity_to_dto() {
+        CompanyBranch companyBranch = new CompanyBranch();
+            companyBranch.setId(1L);
 
         Employee entity = new Employee();
-        entity.setDepartment(departmentEntity);
+        entity.setCompanyBranch(companyBranch);
 
         EmployeeDTO dto = employeeMapper.toDto(entity);
 
-        Assertions.assertEquals(entity.getDepartment().getId(), dto.getDepartmentId());
+        Assertions.assertEquals(entity.getCompanyBranch().getId(), dto.getCompanyBranchId());
     }
 
     @Test
-    void assertThatEmployeeStatusHasTheSameValueAfterConvertationFromEntityToDto() {
+    void assert_that_companyBranches_ids_are_equal_after_convertation_from_dto_to_entity() {
+        CompanyBranch companyBranch = new CompanyBranch();
+        companyBranch.setId(1L);
+
+        Mockito.when(companyBranchService.getReference(1L)).thenReturn(companyBranch);
+
+        EmployeeDTO dto  = new EmployeeDTO();
+        dto.setCompanyBranchId(companyBranch.getId());
+        dto.setId(1L);
+
+        Employee entity = employeeMapper.toEntity(dto);
+
+        Assertions.assertEquals(entity.getCompanyBranch().getId(), dto.getCompanyBranchId());
+    }
+
+    @Test
+    void assert_that_employee_status_is_the_same_after_convertation_from_entity_to_dto() {
         Employee entity = new Employee();
         entity.setEmployeeStatus(new EmployeeStatus(1L, EEmployeeStatus.WORKING));
 
@@ -86,25 +102,7 @@ public class EmployeeMapperTest {
     }
 
     @Test
-    void assertThatDepartmentIdIsTheSameAfterConvertationFromDtoToEntity() {
-        Department departmentEntity = new Department();
-        departmentEntity.setId(1L);
-        departmentEntity.setDepartmentName("Name");
-        departmentEntity.setLastModified(new Date());
-
-        Mockito.when(departmentService.getDepartmentById(1L)).thenReturn(departmentEntity);
-
-        EmployeeDTO dto  = new EmployeeDTO();
-            dto.setDepartmentId(departmentEntity.getId());
-            dto.setId(1L);
-
-        Employee entity = employeeMapper.toEntity(dto);
-
-        Assertions.assertEquals(entity.getDepartment().getId(), dto.getDepartmentId());
-    }
-
-    @Test
-    void assertThatEmployeeStatusHasTheSameValueAfterConvertationFromDtoToEntity() {
+    void assert_that_employee_status_is_the_same_after_convertation_from_dto_to_entity() {
         EmployeeDTO dto = new EmployeeDTO();
             dto.setEmployeeStatus(new EmployeeStatusDTO(1L, EEmployeeStatus.WORKING));
             dto.setId(1L);
@@ -116,13 +114,30 @@ public class EmployeeMapperTest {
     }
 
     @Test
-    void assertThatEmployeeDtoWithPositionIdMappingCorrectlyToEmployeeEntity() {
-        EmployeeDTO employeeDTO = new EmployeeDTO();
-            employeeDTO.setId(1L);
-            employeeDTO.setPositionId(1L);
+    void assert_that_position_id_is_the_same_after_convertation_from_entity_to_dto() {
+        Position position = new Position();
+            position.setId(1L);
 
-        Employee entity = employeeMapper.toEntity(employeeDTO);
+        Employee employee = new Employee();
+            employee.setPosition(position);
 
-        Assertions.assertEquals(employeeDTO.getId(), entity.getId());
+        EmployeeDTO dto = employeeMapper.toDto(employee);
+
+        Assertions.assertEquals(employee.getPosition().getId(), dto.getPositionId());
     }
+
+    @Test
+    void assert_that_position_id_is_the_same_after_convertation_from_dto_to_entity() {
+        Position position = new Position();
+            position.setId(1L);
+
+        Mockito.when(positionService.getReference(1L)).thenReturn(position);
+        EmployeeDTO dto = new EmployeeDTO();
+        dto.setPositionId(1L);
+
+        Employee employee = employeeMapper.toEntity(dto);
+
+        Assertions.assertEquals(employee.getPosition().getId(), dto.getPositionId());
+    }
+
 }

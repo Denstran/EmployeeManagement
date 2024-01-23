@@ -39,7 +39,7 @@ public class CompanyBranchService {
                 () -> new IllegalArgumentException("Выбран несуществующий филиал!"));
     }
 
-    public CompanyBranch getCompanyBranchReferenceById(Long id) {
+    public CompanyBranch getReference(Long id) {
         if (id == null || id < 1)
             throw new IllegalArgumentException("Выбран несуществующий филиал!");
 
@@ -55,9 +55,6 @@ public class CompanyBranchService {
         if (id == null || id < 1)
             throw new IllegalArgumentException("Выбран несуществующий филиал!");
 
-        companyBranchRepository.deleteAllEmployeesByCompanyBranchId(id);
-        companyBranchRepository.deleteAllDepartmentsByCompanyBranch_Id(id);
-        companyBranchRepository.deleteById(id);
     }
 
     public Optional<CompanyBranch> findByPhoneNumber(String phoneNumber) {

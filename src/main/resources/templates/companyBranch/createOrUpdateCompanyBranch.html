@@ -52,6 +52,16 @@
                        class="form-text text-danger">Error</small>
             </div>
             <div class="form-group">
+                <label for="buildingNumberInput">Дом</label>
+                <input type="number" th:field="*{companyBranchAddress.buildingNumber}" class="form-control" id="buildingNumberInput"
+                       aria-describedby="buildingNumberError" placeholder="Введите дом"
+                       th:value="${isUpdating} ? ${companyBranchDTO.companyBranchAddress.buildingNumber} : ''">
+
+                <small th:if="${#fields.hasErrors('companyBranchAddress.country')}" th:errors="*{companyBranchAddress.buildingNumber}"
+                       id="buildingNumberError"
+                       class="form-text text-danger">Error</small>
+            </div>
+            <div class="form-group">
                 <label for="countryInput">Страна</label>
                 <input type="text" th:field="*{companyBranchAddress.country}" class="form-control" id="countryInput"
                        aria-describedby="countryError" placeholder="Введите страну"

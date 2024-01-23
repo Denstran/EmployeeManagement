@@ -40,11 +40,11 @@ public class CompanyBranchMapperTest {
     }
 
     @Test
-    public void assertThatFieldsInEntityAndDtoAreEqualsAfterConvertationFromEntityToDto() {
+    public void assert_that_fields_are_equal_after_convertation_from_entity_to_dto() {
         CompanyBranch entity = new CompanyBranch();
             entity.setId(1L);
             entity.setCompanyBranchAddress(new Address("city", "zipCode",
-                    "street", "country"));
+                    "street", 2, "country"));
             entity.setBudget(new Money(
                     new BigDecimal(100), Currency.getInstance("RUB")
             ));
@@ -56,11 +56,11 @@ public class CompanyBranchMapperTest {
     }
 
     @Test
-    public void assertThatFieldsInEntityAndDtoAreEqualsAfterConvertationFromDtoToEntity() {
+    public void assert_that_fields_are_equal_after_convertation_from_dto_to_entity() {
         CompanyBranchDTO dto = new CompanyBranchDTO();
         dto.setId(1L);
         dto.setCompanyBranchAddress(new Address("city", "zipCode",
-                    "street", "country"));
+                    "street", 1, "country"));
         dto.setBudget(new Money(
                     new BigDecimal(100), Currency.getInstance("RUB")
             ));

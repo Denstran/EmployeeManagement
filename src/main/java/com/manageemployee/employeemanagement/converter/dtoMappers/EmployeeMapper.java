@@ -2,7 +2,8 @@ package com.manageemployee.employeemanagement.converter.dtoMappers;
 
 import com.manageemployee.employeemanagement.dto.EmployeeDTO;
 import com.manageemployee.employeemanagement.model.Employee;
-import com.manageemployee.employeemanagement.service.DepartmentService;
+import com.manageemployee.employeemanagement.service.CompanyBranchService;
+import com.manageemployee.employeemanagement.service.PositionService;
 import jakarta.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +16,15 @@ import java.util.Objects;
  */
 @Component
 public class EmployeeMapper extends AbstractMapperWithSpecificFields<Employee, EmployeeDTO> {
-    private final DepartmentService departmentService;
+    private final CompanyBranchService companyBranchService;
+    private final PositionService positionService;
 
     @Autowired
-    public EmployeeMapper(ModelMapper mapper, DepartmentService departmentService) {
+    public EmployeeMapper(ModelMapper mapper, CompanyBranchService companyBranchService,
+                          PositionService positionService) {
         super(Employee.class, EmployeeDTO.class, mapper);
-        this.departmentService = departmentService;
+        this.companyBranchService = companyBranchService;
+        this.positionService = positionService;
     }
 
     /**
@@ -30,10 +34,16 @@ public class EmployeeMapper extends AbstractMapperWithSpecificFields<Employee, E
     @Override
     public void setupMapper() {
         mapper.createTypeMap(Employee.class, EmployeeDTO.class)
-                .addMappings(m -> m.skip(EmployeeDTO::setDepartmentId)).setPostConverter(toDtoConverter());
+                .addMappings(m -> {
+                    m.skip(EmployeeDTO::setCompanyBranchId);
+                    m.skip(EmployeeDTO::setPositionId);
+                }).setPostConverter(toDtoConverter());
 
         mapper.createTypeMap(EmployeeDTO.class, Employee.class)
-                .addMappings(m -> m.skip(Employee::setDepartment)).setPostConverter(toEntityConverter());
+                .addMappings(m -> {
+                    m.skip(Employee::setCompanyBranch);
+                    m.skip(Employee::setPosition);
+                }).setPostConverter(toEntityConverter());
     }
 
     /**
@@ -43,8 +53,11 @@ public class EmployeeMapper extends AbstractMapperWithSpecificFields<Employee, E
      */
     @Override
     protected void mapSpecificFieldsForDto(Employee source, EmployeeDTO destination) {
-        destination.setDepartmentId(Objects.isNull(source) ||
-                Objects.isNull(source.getDepartment()) ? null : source.getDepartment().getId());
+        destination.setCompanyBranchId(Objects.isNull(source) ||
+                Objects.isNull(source.getCompanyBranch()) ? null : source.getCompanyBranch().getId());
+
+        destination.setPositionId(Objects.isNull(source) ||
+                Objects.isNull(source.getPosition()) ? null : source.getPosition().getId());
     }
 
     /**
@@ -54,7 +67,10 @@ public class EmployeeMapper extends AbstractMapperWithSpecificFields<Employee, E
      */
     @Override
     protected void mapSpecificFieldsForEntity(EmployeeDTO source, Employee destination) {
-        destination.setDepartment(Objects.isNull(source.getDepartmentId()) ? null :
-                departmentService.getDepartmentById(source.getDepartmentId()));
+        destination.setCompanyBranch(Objects.isNull(source.getCompanyBranchId()) ? null :
+                companyBranchService.getReference(source.getCompanyBranchId()));
+
+        destination.setPosition(Objects.isNull(source.getPositionId()) ? null :
+                positionService.getReference(source.getPositionId()));
     }
 }

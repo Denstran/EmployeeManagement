@@ -12,13 +12,10 @@
     <header th:replace="fragments/header :: header(text='ДОБАВЛЕНИЕ ОТДЕЛА')">
     </header>
     <div class="container">
-        <form th:action="${isUpdating} ? @{/companyBranches/{id}/departments/{depId}/update(id = ${companyBranchId}, depId = ${departmentDTO.id})}
-        : @{/companyBranches/{id}/departments/new(id = ${companyBranchId})}"
+        <form th:action="${isUpdating} ? @{/departments/{depId}/update(depId = ${departmentDTO.id})}
+        : @{/departments/new}"
               th:object="${departmentDTO}" method="post">
             <hr/>
-            <div class="form-group" th:if="${errorMessage}">
-                <small  th:text="${errorMessage}" class="form-text text-danger">Error</small>
-            </div>
             <h2>Название отдела</h2>
             <div class="form-group">
                 <label for="nameInput">Название отдела</label>

@@ -1,112 +1,22 @@
 package com.manageemployee.employeemanagement.util;
 
-import com.manageemployee.employeemanagement.dto.EmployeeDTO;
-import com.manageemployee.employeemanagement.model.CompanyBranch;
-import com.manageemployee.employeemanagement.model.Employee;
-import com.manageemployee.employeemanagement.model.Money;
-import com.manageemployee.employeemanagement.service.DepartmentService;
-import com.manageemployee.employeemanagement.service.EmployeeService;
-import com.manageemployee.employeemanagement.service.MoneyService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-
-import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Validator for EmployeeDTO
  */
 @Component
-public class EmployeeValidator extends BasicEntryValidation<EmployeeDTO> implements Validator {
-    private final EmployeeService employeeService;
-    private final DepartmentService departmentService;
-    private final MoneyService moneyService;
-
-    @Autowired
-    public EmployeeValidator(EmployeeService employeeService, DepartmentService departmentService, MoneyService moneyService) {
-        this.employeeService = employeeService;
-        this.departmentService = departmentService;
-        this.moneyService = moneyService;
-    }
-
-    @Override
-    protected void validateNewEntry(EmployeeDTO employeeDTO, Errors errors) {
-        if (employeeService.existsByEmail(employeeDTO.getEmail()))
-            errors.rejectValue("email", "", "Работник с таким email уже существует!");
-
-        if (employeeService.existsByPhoneNumber(employeeDTO.getPhoneNumber()))
-            errors.rejectValue("phoneNumber", "", "Работник с таким номером телефона уже существует!");
-
-        if (employeeDTO.getSalary().getAmount() != null)
-            validateMoney(employeeDTO, errors);
-
-    }
-
-    @Override
-    protected void validateUpdatingEntry(EmployeeDTO employeeDTO, Errors errors) {
-        Optional<Employee> employeeByEmail = employeeService.findByEmail(employeeDTO.getEmail());
-
-        Optional<Employee> employeeByPhoneNumber = employeeService.findByPhoneNumber(
-                employeeDTO.getPhoneNumber());
-
-        if (employeeByEmail.isPresent() && !Objects.equals(employeeByEmail.get().getId(), employeeDTO.getId()))
-            errors.rejectValue("email", "", "Работник с таким email уже существует!");
-
-        if (employeeByPhoneNumber.isPresent() && !Objects.equals(employeeByPhoneNumber.get().getId(),
-                employeeDTO.getId()))
-            errors.rejectValue("phoneNumber", "", "Работник с таким номером телефона уже существует!");
-
-        if (employeeDTO.getSalary().getAmount() != null)
-            validateMoney(employeeDTO, errors);
-    }
+public class EmployeeValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return EmployeeDTO.class.equals(clazz);
+        return false;
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        EmployeeDTO employeeDTO = (EmployeeDTO) target;
 
-        if (employeeDTO.getId() == null) {
-            validateNewEntry(employeeDTO, errors);
-        } else validateUpdatingEntry(employeeDTO, errors);
-    }
-
-    private void validateMoney(EmployeeDTO employeeDTO, Errors errors) {
-        Optional<CompanyBranch> companyBranch = departmentService
-                .findCompanyBranchByDepartmentId(employeeDTO.getDepartmentId());
-
-        if (companyBranch.isPresent()) {
-            if (employeeDTO.getId() != null) {
-                validateMoneyForUpdatedEntry(employeeDTO, companyBranch.get(), errors);
-            } else {
-                validateMoneyForNewEntry(companyBranch.get(), employeeDTO, errors);
-            }
-        }
-    }
-
-    private void validateMoneyForNewEntry(CompanyBranch companyBranch, EmployeeDTO employeeDTO, Errors errors) {
-        if (companyBranch.getBudget().compareTo(employeeDTO.getSalary()) < 0) {
-            errors.rejectValue("salary.amount", "", "Зарплата превышает бюджет!");
-        }
-
-        if (!companyBranch.getBudget().getCurrency().equals(employeeDTO.getSalary().getCurrency())) {
-            errors.rejectValue("salary.currency", "", "Валюта зарплаты не соответсвует валюте бюджета филиала!");
-        }
-    }
-
-    private void validateMoneyForUpdatedEntry(EmployeeDTO employeeDTO, CompanyBranch companyBranch, Errors errors) {
-        Employee employee = employeeService.getEmployeeById(employeeDTO.getId());
-
-        if (employeeDTO.getSalary().compareTo(employee.getSalary()) > 0) {
-            Money salaryIncrease = moneyService.subtractMoney(employeeDTO.getSalary(), employee.getSalary());
-
-            if (companyBranch.getBudget().compareTo(salaryIncrease) < 0)
-                errors.rejectValue("salary.amount", "", "Надбавка превышает бюджет!");
-        }
     }
 }
