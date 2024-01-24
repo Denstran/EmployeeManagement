@@ -2,11 +2,8 @@ package com.manageemployee.employeemanagement.controller;
 
 import com.manageemployee.employeemanagement.converter.dtoMappers.DepartmentMapper;
 import com.manageemployee.employeemanagement.dto.DepartmentDTO;
-import com.manageemployee.employeemanagement.model.CompanyBranch;
 import com.manageemployee.employeemanagement.model.Department;
-import com.manageemployee.employeemanagement.service.CompanyBranchService;
 import com.manageemployee.employeemanagement.service.DepartmentService;
-import com.manageemployee.employeemanagement.service.MoneyService;
 import com.manageemployee.employeemanagement.util.DepartmentValidator;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +24,7 @@ public class DepartmentController {
     // Patterns for return values
     private final String VIEW_FOR_UPDATE_OR_CREATE = "department/createOrUpdateDepartment";
     private final String SHOW_VIEW = "department/departments";
-    private final String REDIRECT_PATTERN = "redirect:/companyBranches/%d/departments";
+    private final String REDIRECT_LINK = "redirect:/departments";
 
 
     @Autowired
@@ -43,6 +40,7 @@ public class DepartmentController {
         List<Department> departments = departmentService.getAllDepartments();
         List<DepartmentDTO> departmentDTOS = departmentMapper.toDtoList(departments);
         model.addAttribute("departmentDTOS",departmentDTOS);
+        model.addAttribute("departmentDTO", new DepartmentDTO());
 
         return SHOW_VIEW;
     }
@@ -51,7 +49,39 @@ public class DepartmentController {
     public String createDepartmentForm(Model model) {
         DepartmentDTO departmentDTO = new DepartmentDTO();
         model.addAttribute("departmentDTO", departmentDTO);
-
         return VIEW_FOR_UPDATE_OR_CREATE;
+    }
+
+    @PostMapping("/new")
+    public String createDepartment(@ModelAttribute("departmentDTO") @Valid DepartmentDTO departmentDTO,
+                                   BindingResult bindingResult) {
+        departmentValidator.validate(departmentDTO, bindingResult);
+        if (bindingResult.hasErrors()) return VIEW_FOR_UPDATE_OR_CREATE;
+        departmentService.createDepartment(departmentMapper.toEntity(departmentDTO));
+
+        return REDIRECT_LINK;
+    }
+
+    @GetMapping("/{depId}/update")
+    public String updateDepartmentForm(@PathVariable("depId") Long depId, Model model) {
+        Department department = departmentService.getById(depId);
+        DepartmentDTO departmentDTO = departmentMapper.toDto(department);
+
+        model.addAttribute("departmentDTO", departmentDTO);
+        model.addAttribute("isUpdating", true);
+        return VIEW_FOR_UPDATE_OR_CREATE;
+    }
+
+    @PostMapping("/{depId}/update")
+    public String updateDepartment(@ModelAttribute("departmentDTO") @Valid DepartmentDTO departmentDTO,
+                                   BindingResult bindingResult, @PathVariable("depId") Long depId, Model model) {
+        departmentValidator.validate(departmentDTO, bindingResult);
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("isUpdating", true);
+            return VIEW_FOR_UPDATE_OR_CREATE;
+        }
+
+        departmentService.createDepartment(departmentMapper.toEntity(departmentDTO));
+        return REDIRECT_LINK;
     }
 }

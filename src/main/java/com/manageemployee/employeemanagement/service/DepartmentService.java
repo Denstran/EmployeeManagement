@@ -19,6 +19,16 @@ public class DepartmentService {
         this.departmentRepository = departmentRepository;
     }
 
+    @Transactional
+    public void createDepartment(Department department) {
+        departmentRepository.saveAndFlush(department);
+    }
+
+    public Department getById(Long depId) {
+        return departmentRepository.findById(depId).orElseThrow(() ->
+                new IllegalArgumentException("Выбран не существующий отдел!"));
+    }
+
     public List<Department> getAllDepartments() {
         return departmentRepository.findAll();
     }

@@ -28,17 +28,6 @@
                        class="form-text text-danger">Error</small>
             </div>
             <hr/>
-            <h2>Номер телефона</h2>
-            <div class="form-group">
-                <label for="phoneNumberInput">Номер телефона</label>
-                <input type="text" th:field="*{phoneNumber}" class="form-control" id="phoneNumberInput"
-                       aria-describedby="phoneNumberError" placeholder="Введите номер отдела"
-                       th:value="${isUpdating} ? ${departmentDTO.phoneNumber} : ''">
-
-                <small th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"
-                       id="phoneNumberError"
-                       class="form-text text-danger">Error</small>
-            </div>
             <input type="hidden" name="isUpdating" th:value="${isUpdating}" />
             <input type="hidden" th:if="${isUpdating}" th:field="*{id}" th:value="${departmentDTO.id}">
             <button type="submit" class="btn btn-primary">Подтвердить</button>

@@ -12,9 +12,11 @@
 </header>
 
 <div class="container">
-    <hr/>
-    <a class="btn btn-dark" th:href="@{/departments/new}" role="button">Добавить отдел</a>
-    <hr/>
+    <div class="container">
+        <hr />
+            <a class="btn btn-dark" th:href="@{/departments/new}" role="button">Добавить отдел</a>
+        <hr />
+    </div>
     <table class="table">
         <thead class="table-dark">
         <tr>
@@ -27,7 +29,7 @@
         <tr th:each="department : ${departmentDTOS}">
             <td th:text="${department.departmentName}"></td>
             <td>
-                <a class="btn btn-dark" role="button" th:href="@{/departments/{depId}/update}">Обновить</a>
+                <a class="btn btn-dark" role="button" th:href="@{/departments/{depId}/update(depId = ${department.id})}">Обновить</a>
             </td>
             <td>
                 <form th:action="@{/departments/{depId}/delete}" method="post">
