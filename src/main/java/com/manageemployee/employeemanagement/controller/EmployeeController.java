@@ -3,28 +3,14 @@ package com.manageemployee.employeemanagement.controller;
 import com.manageemployee.employeemanagement.converter.dtoMappers.EmployeeMapper;
 import com.manageemployee.employeemanagement.converter.dtoMappers.EmployeeStatusMapper;
 import com.manageemployee.employeemanagement.converter.dtoMappers.PositionMapper;
-import com.manageemployee.employeemanagement.dto.EmployeeDTO;
-import com.manageemployee.employeemanagement.dto.EmployeeStatusDTO;
-import com.manageemployee.employeemanagement.dto.PositionDTO;
-import com.manageemployee.employeemanagement.model.Employee;
-import com.manageemployee.employeemanagement.model.EmployeeStatus;
-import com.manageemployee.employeemanagement.model.Position;
 import com.manageemployee.employeemanagement.service.EmployeeService;
 import com.manageemployee.employeemanagement.service.EmployeeStatusService;
 import com.manageemployee.employeemanagement.service.MoneyService;
 import com.manageemployee.employeemanagement.service.PositionService;
-import com.manageemployee.employeemanagement.util.EmployeeValidator;
-import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
+import com.manageemployee.employeemanagement.util.validators.EmployeeValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.thymeleaf.util.ArrayUtils;
-
-import java.util.Iterator;
-import java.util.List;
 
 @Controller
 @RequestMapping("/companyBranches/{companyBranchId}/departments/{depId}/employees")

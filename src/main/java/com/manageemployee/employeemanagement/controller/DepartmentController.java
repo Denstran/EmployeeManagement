@@ -4,7 +4,7 @@ import com.manageemployee.employeemanagement.converter.dtoMappers.DepartmentMapp
 import com.manageemployee.employeemanagement.dto.DepartmentDTO;
 import com.manageemployee.employeemanagement.model.Department;
 import com.manageemployee.employeemanagement.service.DepartmentService;
-import com.manageemployee.employeemanagement.util.DepartmentValidator;
+import com.manageemployee.employeemanagement.util.validators.DepartmentValidator;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

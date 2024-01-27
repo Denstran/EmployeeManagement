@@ -4,7 +4,7 @@ import com.manageemployee.employeemanagement.converter.dtoMappers.CompanyBranchM
 import com.manageemployee.employeemanagement.dto.CompanyBranchDTO;
 import com.manageemployee.employeemanagement.model.CompanyBranch;
 import com.manageemployee.employeemanagement.service.CompanyBranchService;
-import com.manageemployee.employeemanagement.util.CompanyBranchValidator;
+import com.manageemployee.employeemanagement.util.validators.companyBranchValidators.CompanyBranchValidator;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

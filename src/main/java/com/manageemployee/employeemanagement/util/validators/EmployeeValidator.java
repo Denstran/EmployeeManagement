@@ -1,4 +1,4 @@
-package com.manageemployee.employeemanagement.util;
+package com.manageemployee.employeemanagement.util.validators;
 
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
