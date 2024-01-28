@@ -24,6 +24,11 @@ public class DepartmentService {
         departmentRepository.saveAndFlush(department);
     }
 
+    @Transactional
+    public void deleteDepartment(Long id) {
+        departmentRepository.deleteById(id);
+    }
+
     public Department getById(Long depId) {
         return departmentRepository.findById(depId).orElseThrow(() ->
                 new IllegalArgumentException("Выбран не существующий отдел!"));
