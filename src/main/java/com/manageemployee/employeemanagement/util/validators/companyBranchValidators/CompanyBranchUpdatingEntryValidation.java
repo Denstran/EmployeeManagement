@@ -3,16 +3,18 @@ package com.manageemployee.employeemanagement.util.validators.companyBranchValid
 import com.manageemployee.employeemanagement.dto.CompanyBranchDTO;
 import com.manageemployee.employeemanagement.model.CompanyBranch;
 import com.manageemployee.employeemanagement.service.CompanyBranchService;
-import com.manageemployee.employeemanagement.util.validators.markers.CompanyBranchDTOValidator;
+import com.manageemployee.employeemanagement.util.validators.ValidatorQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
 
 import java.util.Objects;
 import java.util.Optional;
 
-@Service
-public class CompanyBranchUpdatingEntryValidation implements CompanyBranchDTOValidator {
+@Component
+@ValidatorQualifier(validatorKey = "companyBranchSubValidator")
+public class CompanyBranchUpdatingEntryValidation implements Validator {
     private final CompanyBranchService companyBranchService;
 
     @Autowired
@@ -21,21 +23,27 @@ public class CompanyBranchUpdatingEntryValidation implements CompanyBranchDTOVal
     }
 
     @Override
-    public void validate(CompanyBranchDTO target, Errors errors) {
-        if (target.getId() == null) return;
+    public boolean supports(Class<?> clazz) {
+        return CompanyBranchDTO.class.equals(clazz);
+    }
+
+    @Override
+    public void validate(Object target, Errors errors) {
+        CompanyBranchDTO dto = (CompanyBranchDTO) target;
+        if (dto.getId() == null) return;
 
         Optional<CompanyBranch> companyBranchByAddress = companyBranchService
-                .findByAddress(target.getCompanyBranchAddress());
+                .findByAddress(dto.getCompanyBranchAddress());
 
         Optional<CompanyBranch> companyBranchByPhone = companyBranchService
-                .findByPhoneNumber(target.getPhoneNumber());
+                .findByPhoneNumber(dto.getPhoneNumber());
 
         if (companyBranchByAddress.isPresent() && !Objects.equals(companyBranchByAddress.get().getId(),
-                target.getId()))
-            errors.rejectValue("phoneNumber", "", "Филиал с таким номером телефона уже существует!");
+                dto.getId()))
+            errors.rejectValue("companyBranchAddress", "", "Филиал с таким адресом уже существует!");
 
         if (companyBranchByPhone.isPresent() && !Objects.equals(companyBranchByPhone.get().getId(),
-                target.getId()))
+                dto.getId()))
             errors.rejectValue("phoneNumber", "", "Филиал с таким номером телефона уже существует!");
     }
 

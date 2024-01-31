@@ -11,14 +11,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "COMPANY_BRANCH", uniqueConstraints = {
         @UniqueConstraint(name = "AddressUniqueConstraint", columnNames = {"COMPANY_BRANCH_CITY",
-                "COMPANY_BRANCH_ZIP_CODE", "COMPANY_BRANCH_STREET", "COMPANY_BRANCH_COUNTRY"})
+                "COMPANY_BRANCH_ZIP_CODE", "COMPANY_BRANCH_STREET", "COMPANY_BRANCH_COUNTRY",
+                "COMPANY_BRANCH_BUILDING_NUMBER"})
 })
 @Getter
 @Setter

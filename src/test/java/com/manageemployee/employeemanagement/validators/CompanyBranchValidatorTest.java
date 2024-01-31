@@ -7,10 +7,10 @@ import com.manageemployee.employeemanagement.service.CompanyBranchService;
 import com.manageemployee.employeemanagement.util.validators.companyBranchValidators.CompanyBranchNewEntryValidator;
 import com.manageemployee.employeemanagement.util.validators.companyBranchValidators.CompanyBranchUpdatingEntryValidation;
 import com.manageemployee.employeemanagement.util.validators.companyBranchValidators.CompanyBranchValidator;
-import com.manageemployee.employeemanagement.util.validators.markers.CompanyBranchDTOValidator;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.Validator;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +27,7 @@ public class CompanyBranchValidatorTest {
         CompanyBranchUpdatingEntryValidation updatingEntryValidation =
                 new CompanyBranchUpdatingEntryValidation(companyBranchService);
 
-        List<CompanyBranchDTOValidator> validators = List.of(newEntryValidator, updatingEntryValidation);
+        List<Validator> validators = List.of(newEntryValidator, updatingEntryValidation);
 
         companyBranchValidator = new CompanyBranchValidator(validators);
     }

@@ -7,17 +7,15 @@ import com.manageemployee.employeemanagement.service.EmployeeService;
 import com.manageemployee.employeemanagement.service.EmployeeStatusService;
 import com.manageemployee.employeemanagement.service.MoneyService;
 import com.manageemployee.employeemanagement.service.PositionService;
-import com.manageemployee.employeemanagement.util.validators.EmployeeValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/companyBranches/{companyBranchId}/departments/{depId}/employees")
 public class EmployeeController {
     private final EmployeeService employeeService;
     private final EmployeeMapper employeeMapper;
-    private final EmployeeValidator employeeValidator;
     private final EmployeeStatusService employeeStatusService;
     private final EmployeeStatusMapper employeeStatusMapper;
     private final MoneyService moneyService;
@@ -30,12 +28,11 @@ public class EmployeeController {
 
     @Autowired
     public EmployeeController(EmployeeService employeeService, EmployeeMapper employeeMapper,
-                              EmployeeValidator employeeValidator, EmployeeStatusService employeeStatusService,
+                              EmployeeStatusService employeeStatusService,
                               EmployeeStatusMapper employeeStatusMapper, MoneyService moneyService,
                               PositionService positionService, PositionMapper positionMapper) {
         this.employeeService = employeeService;
         this.employeeMapper = employeeMapper;
-        this.employeeValidator = employeeValidator;
         this.employeeStatusService = employeeStatusService;
         this.employeeStatusMapper = employeeStatusMapper;
         this.moneyService = moneyService;

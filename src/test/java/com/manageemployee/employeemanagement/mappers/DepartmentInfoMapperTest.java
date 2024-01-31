@@ -39,6 +39,7 @@ public class DepartmentInfoMapperTest {
         CompanyBranch companyBranch = new CompanyBranch();
         companyBranch.setId(1L);
         Department department = new Department();
+        department.setDepartmentName("HR");
         department.setId(1L);
         pk = new CompanyBranchDepartmentPK(companyBranch, department);
     }
@@ -57,6 +58,35 @@ public class DepartmentInfoMapperTest {
         Assertions.assertEquals(departmentInfo.getPk().getCompanyBranch().getId(), dto.getCompanyBranchId());
         Assertions.assertEquals(departmentInfo.getAmountOfEmployee(), dto.getAmountOfEmployee());
         Assertions.assertEquals(departmentInfo.getDepartmentBudget(), dto.getDepartmentBudget());
+    }
+
+    @Test
+    void assert_that_department_name_is_correct_after_convertation_from_entity_to_dto() {
+        DepartmentInfo departmentInfo = new DepartmentInfo();
+        departmentInfo.setPk(pk);
+
+        DepartmentInfoDTO dto = departmentInfoMapper.toDto(departmentInfo);
+
+        Assertions.assertEquals("HR", dto.getDepartmentName());
+    }
+
+    @Test
+    void assert_that_convertion_is_successful_when_dto_has_department_name() {
+        DepartmentInfoDTO dto = new DepartmentInfoDTO();
+            dto.setDepartmentId(pk.getDepartment().getId());
+            dto.setCompanyBranchId(pk.getCompanyBranch().getId());
+            dto.setDepartmentName("HR");
+
+        CompanyBranch companyBranch = new CompanyBranch();
+        companyBranch.setId(1L);
+        Department department = new Department();
+        department.setId(1L);
+
+        Mockito.when(departmentService.getReference(1L)).thenReturn(department);
+        Mockito.when(companyBranchService.getReference(1L)).thenReturn(companyBranch);
+
+        DepartmentInfo departmentInfo = departmentInfoMapper.toEntity(dto);
+        Assertions.assertEquals(departmentInfo.getPk(), pk);
     }
 
     @Test

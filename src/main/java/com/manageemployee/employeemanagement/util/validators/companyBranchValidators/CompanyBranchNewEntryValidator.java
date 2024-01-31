@@ -2,13 +2,15 @@ package com.manageemployee.employeemanagement.util.validators.companyBranchValid
 
 import com.manageemployee.employeemanagement.dto.CompanyBranchDTO;
 import com.manageemployee.employeemanagement.service.CompanyBranchService;
-import com.manageemployee.employeemanagement.util.validators.markers.CompanyBranchDTOValidator;
+import com.manageemployee.employeemanagement.util.validators.ValidatorQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
 
-@Service
-public class CompanyBranchNewEntryValidator implements CompanyBranchDTOValidator {
+@Component
+@ValidatorQualifier(validatorKey = "companyBranchSubValidator")
+public class CompanyBranchNewEntryValidator implements Validator {
     private final CompanyBranchService companyBranchService;
 
     @Autowired
@@ -17,12 +19,18 @@ public class CompanyBranchNewEntryValidator implements CompanyBranchDTOValidator
     }
 
     @Override
-    public void validate(CompanyBranchDTO target, Errors errors) {
-        if (target.getId() != null) return;
-        if (companyBranchService.existsByAddress(target.getCompanyBranchAddress()))
+    public boolean supports(Class<?> clazz) {
+        return CompanyBranchDTO.class.equals(clazz);
+    }
+
+    @Override
+    public void validate(Object target, Errors errors) {
+        CompanyBranchDTO dto = (CompanyBranchDTO) target;
+        if (dto.getId() != null) return;
+        if (companyBranchService.existsByAddress(dto.getCompanyBranchAddress()))
             errors.rejectValue("companyBranchAddress", "", "Филиал с таким адресом уже существует!");
 
-        if (companyBranchService.existsByPhoneNumber(target.getPhoneNumber()))
+        if (companyBranchService.existsByPhoneNumber(dto.getPhoneNumber()))
             errors.rejectValue("phoneNumber", "", "Филиал с таким номером телефона уже существует!");
     }
 }

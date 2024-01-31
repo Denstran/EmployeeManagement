@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DepartmentInfoDTO {
 
+    private String departmentName;
+
     @NotNull(message = "Филиал не должен отсутствовать!")
     private Long companyBranchId;
 

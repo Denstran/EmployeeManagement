@@ -9,9 +9,11 @@ import com.manageemployee.employeemanagement.service.CompanyBranchService;
 import com.manageemployee.employeemanagement.service.DepartmentService;
 import jakarta.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
+@Component
 public class DepartmentInfoMapper extends AbstractMapperWithSpecificFields<DepartmentInfo, DepartmentInfoDTO> {
 
     private final CompanyBranchService companyBranchService;
@@ -31,6 +33,7 @@ public class DepartmentInfoMapper extends AbstractMapperWithSpecificFields<Depar
                 .addMappings(m -> {
                     m.skip(DepartmentInfoDTO::setDepartmentId);
                     m.skip(DepartmentInfoDTO::setCompanyBranchId);
+                    m.skip(DepartmentInfoDTO::setDepartmentName);
                 }).setPostConverter(toDtoConverter());
 
         mapper.createTypeMap(DepartmentInfoDTO.class, DepartmentInfo.class)
@@ -42,9 +45,11 @@ public class DepartmentInfoMapper extends AbstractMapperWithSpecificFields<Depar
         if (Objects.isNull(source) || Objects.isNull(source.getPk())) {
             destination.setDepartmentId(null);
             destination.setCompanyBranchId(null);
+            destination.setDepartmentName(null);
         }else {
             destination.setDepartmentId(source.getPk().getDepartment().getId());
             destination.setCompanyBranchId(source.getPk().getCompanyBranch().getId());
+            destination.setDepartmentName(source.getPk().getDepartment().getDepartmentName());
         }
     }
 

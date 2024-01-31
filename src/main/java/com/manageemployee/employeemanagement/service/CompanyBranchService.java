@@ -1,6 +1,7 @@
 package com.manageemployee.employeemanagement.service;
 
 import com.manageemployee.employeemanagement.model.CompanyBranch;
+import com.manageemployee.employeemanagement.model.DepartmentInfo;
 import com.manageemployee.employeemanagement.model.embeddable.Address;
 import com.manageemployee.employeemanagement.repository.CompanyBranchRepository;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,10 @@ public class CompanyBranchService {
 
         return companyBranchRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("Выбран несуществующий филиал!"));
+    }
+
+    public List<DepartmentInfo> getDepartments(Long companyBranchId) {
+        return companyBranchRepository.getDepartments(companyBranchId);
     }
 
     public CompanyBranch getReference(Long id) {
