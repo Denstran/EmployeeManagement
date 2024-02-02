@@ -1,18 +1,25 @@
 package com.manageemployee.employeemanagement.service;
 
-import com.manageemployee.employeemanagement.dto.EmployeeDTO;
-import com.manageemployee.employeemanagement.model.CompanyBranch;
-import com.manageemployee.employeemanagement.model.Department;
-import com.manageemployee.employeemanagement.model.Employee;
 import com.manageemployee.employeemanagement.model.Money;
-import com.manageemployee.employeemanagement.model.enumTypes.EEmployeeStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.List;
 
-@Service
+@Component
 public class MoneyService {
+    public Money sum(Money first, Money second) {
+        if (!first.getCurrency().equals(second.getCurrency())) 
+            throw new IllegalArgumentException("Нельзя складывать суммы разных валют!");
 
+        BigDecimal sum = first.getAmount().add(second.getAmount());
+        return new Money(sum, first.getCurrency());
+    }
+    
+    public Money subtract(Money toSubtractFrom, Money moneyForSubtraction) {
+        if (!toSubtractFrom.getCurrency().equals(moneyForSubtraction.getCurrency()))
+            throw new IllegalArgumentException("Нельзя складывать суммы разных валют!");
+
+        BigDecimal difference = toSubtractFrom.getAmount().subtract(moneyForSubtraction.getAmount());
+        return new Money(difference, toSubtractFrom.getCurrency());
+    }
 }
