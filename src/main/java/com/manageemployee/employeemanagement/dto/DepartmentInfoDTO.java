@@ -1,7 +1,6 @@
 package com.manageemployee.employeemanagement.dto;
 
 import com.manageemployee.employeemanagement.model.Money;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +18,6 @@ public class DepartmentInfoDTO {
     private Long departmentId;
 
     @NotNull
-    @Valid
     private Money departmentBudget;
     private int amountOfEmployee;
 }

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Добавление отдела</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body>
+<header th:replace="fragments/header :: header(text='ДОБАВЛЕНИЕ ОТДЕЛА')">
+</header>
+<div class="container">
+    <form th:action="${isUpdating} ? @{/companyBranches/{id}/departments/update(id = ${companyBranchId})}
+        : @{/companyBranches/{id}/departments/add(id = ${companyBranchId})}"
+          th:object="${dto}" method="post">
+        <hr/>
+        <h3>Выберите отдел</h3>
+        <div class="form-group">
+            <label for="departmentSelect" aria-describedby="departmentError">Отдел</label>
+            <select th:disabled="${isUpdating} ? true : false" class="form-control" id="departmentSelect" name="departmentSelect" th:field="*{departmentId}">
+
+                <!--When creating object-->
+                <option th:if="${!isUpdating}" th:each="department : ${availableDepartments}" th:value="${department.id}"
+                        th:text="${department.departmentName}"></option>
+
+                <!--When updating object-->
+                <option th:if="${isUpdating}" th:value="${dto.departmentId}" th:text="${dto.departmentName}">
+                </option>
+            </select>
+
+            <small th:if="${#fields.hasErrors('departmentId')}" th:errors="*{departmentId}"
+                   id="departmentError"
+                   class="form-text text-danger">Error</small>
+        </div>
+        <hr/>
+        <h3>Выделите бюджет</h3>
+        <small th:if="${#fields.hasErrors('departmentBudget')}" th:errors="*{departmentBudget}"
+               id="budgetErrorTotal"
+               class="form-text text-danger">Error</small>
+        <div class="form-group">
+            <label for="amountInput">Количество средств</label>
+            <input type="number" th:field="*{departmentBudget.amount}" class="form-control" id="amountInput"
+                   aria-describedby="budgetError" placeholder="Введите количество средств"
+                   th:value="${isUpdating} ? ${dto.departmentBudget.amount} : ''">
+
+            <small th:if="${#fields.hasErrors('departmentBudget.amount')}" th:errors="*{departmentBudget.amount}"
+                   id="budgetError"
+                   class="form-text text-danger">Error</small>
+        </div>
+        <div class="form-group">
+            <label for="currencyInput">Валюта</label>
+            <input type="text" th:field="*{departmentBudget.currency}" class="form-control" id="currencyInput"
+                   aria-describedby="currencyError" placeholder="Введите валюту"
+                   th:value="${isUpdating} ? ${dto.departmentBudget.currency} : ''">
+
+            <small th:if="${#fields.hasErrors('departmentBudget.currency')}" th:errors="*{departmentBudget.currency}"
+                   id="currencyError"
+                   class="form-text text-danger">Error</small>
+        </div>
+        <hr/>
+        <input type="hidden" name="isUpdating" th:value="${isUpdating}" />
+        <input type="hidden" th:if="${isUpdating}" th:field="*{departmentId}" th:value="${dto.departmentId}">
+        <input type="hidden" th:if="${isUpdating}" th:field="*{companyBranchId}" th:value="${dto.companyBranchId}">
+        <button type="submit" class="btn btn-primary">Подтвердить</button>
+    </form>
+</div>
+</body>
+</html>

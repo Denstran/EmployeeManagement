@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Отделы филиала</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body>
+<header th:replace="fragments/header :: header(text='ОТДЕЛЫ ФИЛИАЛА')">
+</header>
+
+<div class="container">
+    <hr/>
+    <a class="btn btn-dark" th:href="@{/companyBranches/{id}/departments/add(id = ${companyBranchId})}" role="button">Добавить отдел</a>
+    <hr/>
+    <table class="table">
+        <thead class="table-dark">
+        <tr>
+            <th>Название отдела</th>
+            <th>Бюджет отдела</th>
+            <th>Обновить</th>
+            <th>Удалить</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="departmentInfo : ${departmentInfoDTOS}">
+            <td th:text="${departmentInfo.departmentName}"></td>
+            <td th:text="${departmentInfo.departmentBudget}"></td>
+            <td>
+                <a class="btn btn-dark" role="button" th:href="@{/companyBranches/{id}/departments/update(id = ${companyBranchId}, depId = ${departmentInfo.departmentId})}">Обновить</a>
+            </td>
+            <td>
+                <form th:action="@{/companyBranches/{id}/departments/remove/{depId}(id = ${companyBranchId}, depId = ${departmentInfo.departmentId})}" method="post">
+                    <button type="submit" class="btn btn-danger">Убрать из филиала</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+</body>
+</html>

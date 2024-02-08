@@ -39,6 +39,10 @@ public class DepartmentService {
         return departmentRepository.getAvailableDepartments(companyBranchId);
     }
 
+    public List<Department> getAvailableDepartmentsWhenUpdating(Long companyBranchId, Long departmentId) {
+        return departmentRepository.getAvailableDepartmentsWhenUpdating(companyBranchId, departmentId);
+    }
+
     public List<Department> getAllDepartments() {
         return departmentRepository.findAll();
     }
@@ -47,7 +51,7 @@ public class DepartmentService {
         return departmentRepository.existsByDepartmentName(depName);
     }
 
-    public Optional<Department> findByName(String depName) {
+    public Optional<Department> getByName(String depName) {
         return departmentRepository.findDepartmentByDepartmentName(depName);
     }
 

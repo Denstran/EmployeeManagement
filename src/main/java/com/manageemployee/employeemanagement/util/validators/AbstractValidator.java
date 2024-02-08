@@ -1,10 +1,12 @@
 package com.manageemployee.employeemanagement.util.validators;
 
+import lombok.Getter;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import java.util.List;
 
+@Getter
 public abstract class AbstractValidator<T> implements Validator {
     private final Class<T> classForValidation;
     private final List<Validator> subValidators;

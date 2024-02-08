@@ -33,10 +33,10 @@ public class CompanyBranchUpdatingEntryValidation implements Validator {
         if (dto.getId() == null) return;
 
         Optional<CompanyBranch> companyBranchByAddress = companyBranchService
-                .findByAddress(dto.getCompanyBranchAddress());
+                .getByAddress(dto.getCompanyBranchAddress());
 
         Optional<CompanyBranch> companyBranchByPhone = companyBranchService
-                .findByPhoneNumber(dto.getPhoneNumber());
+                .getByPhoneNumber(dto.getPhoneNumber());
 
         if (companyBranchByAddress.isPresent() && !Objects.equals(companyBranchByAddress.get().getId(),
                 dto.getId()))

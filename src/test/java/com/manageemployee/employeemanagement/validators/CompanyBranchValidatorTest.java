@@ -7,7 +7,10 @@ import com.manageemployee.employeemanagement.service.CompanyBranchService;
 import com.manageemployee.employeemanagement.util.validators.companyBranchValidators.CompanyBranchNewEntryValidator;
 import com.manageemployee.employeemanagement.util.validators.companyBranchValidators.CompanyBranchUpdatingEntryValidation;
 import com.manageemployee.employeemanagement.util.validators.companyBranchValidators.CompanyBranchValidator;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Validator;
@@ -38,12 +41,6 @@ public class CompanyBranchValidatorTest {
         bindingResult = new BeanPropertyBindingResult(dto, "dto");
     }
 
-    @AfterEach
-    public void afterEach() {
-        dto.setPhoneNumber(null);
-        dto.setPhoneNumber(null);
-    }
-
     @Test
     public void assert_that_cant_create_company_branch_with_the_existing_phone_number() {
         dto.setPhoneNumber("1111");
@@ -72,7 +69,7 @@ public class CompanyBranchValidatorTest {
         dto.setPhoneNumber("1111");
         dto.setId(2L);
 
-        Mockito.when(companyBranchService.findByPhoneNumber(dto.getPhoneNumber())).thenReturn(companyBranch);
+        Mockito.when(companyBranchService.getByPhoneNumber(dto.getPhoneNumber())).thenReturn(companyBranch);
 
         companyBranchValidator.validate(dto, bindingResult);
 
@@ -91,7 +88,7 @@ public class CompanyBranchValidatorTest {
                 "street", 2, "country"));
         dto.setId(2L);
 
-        Mockito.when(companyBranchService.findByAddress(dto.getCompanyBranchAddress())).thenReturn(companyBranch);
+        Mockito.when(companyBranchService.getByAddress(dto.getCompanyBranchAddress())).thenReturn(companyBranch);
 
         companyBranchValidator.validate(dto, bindingResult);
         Assertions.assertTrue(bindingResult.hasErrors());
@@ -127,7 +124,7 @@ public class CompanyBranchValidatorTest {
                 "street", 2, "country"));
         dto.setId(1L);
 
-        Mockito.when(companyBranchService.findByAddress(dto.getCompanyBranchAddress())).thenReturn(companyBranch);
+        Mockito.when(companyBranchService.getByAddress(dto.getCompanyBranchAddress())).thenReturn(companyBranch);
 
         companyBranchValidator.validate(dto, bindingResult);
         Assertions.assertFalse(bindingResult.hasErrors());
@@ -142,7 +139,7 @@ public class CompanyBranchValidatorTest {
         dto.setPhoneNumber("1111");
         dto.setId(1L);
 
-        Mockito.when(companyBranchService.findByPhoneNumber(dto.getPhoneNumber())).thenReturn(companyBranch);
+        Mockito.when(companyBranchService.getByPhoneNumber(dto.getPhoneNumber())).thenReturn(companyBranch);
 
         companyBranchValidator.validate(dto, bindingResult);
 

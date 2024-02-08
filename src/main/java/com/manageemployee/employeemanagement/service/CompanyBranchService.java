@@ -62,11 +62,11 @@ public class CompanyBranchService {
 
     }
 
-    public Optional<CompanyBranch> findByPhoneNumber(String phoneNumber) {
+    public Optional<CompanyBranch> getByPhoneNumber(String phoneNumber) {
         return companyBranchRepository.findCompanyBranchByPhoneNumber(phoneNumber);
     }
 
-    public Optional<CompanyBranch> findByAddress(Address address) {
+    public Optional<CompanyBranch> getByAddress(Address address) {
         return companyBranchRepository.findCompanyBranchByCompanyBranchAddress(address);
     }
 

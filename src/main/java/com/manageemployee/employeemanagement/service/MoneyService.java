@@ -22,4 +22,8 @@ public class MoneyService {
         BigDecimal difference = toSubtractFrom.getAmount().subtract(moneyForSubtraction.getAmount());
         return new Money(difference, toSubtractFrom.getCurrency());
     }
+
+    public int compareAmounts(Money first, Money second) {
+        return first.getAmount().compareTo(second.getAmount());
+    }
 }

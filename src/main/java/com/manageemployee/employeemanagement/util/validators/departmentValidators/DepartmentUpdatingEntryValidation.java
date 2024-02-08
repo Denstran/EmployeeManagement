@@ -30,7 +30,7 @@ public class DepartmentUpdatingEntryValidation implements Validator {
         DepartmentDTO dto = (DepartmentDTO) target;
         if (dto.getId() == null) return;
 
-        Optional<Department> department = departmentService.findByName(dto.getDepartmentName());
+        Optional<Department> department = departmentService.getByName(dto.getDepartmentName());
 
         if (department.isPresent() && !department.get().getId().equals(dto.getId()))
             errors.rejectValue("departmentName", "", "Отдел с таким название уже существует!");
