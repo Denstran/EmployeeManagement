@@ -39,6 +39,7 @@ public class CompanyBranchController {
     private final String SHOW_COMPANY_BRANCH_DEPARTMENTS = "companyBranch/companyBranchDepartments";
     private final String VIEW_FOR_UPDATE_OR_CREATE = "companyBranch/createOrUpdateCompanyBranch";
     private final String REDIRECT_URL = "redirect:/companyBranches";
+    private final String REDIRECT_URL_DEPARTMENTS = "redirect:/companyBranches/%d/departments";
 
     @Autowired
     public CompanyBranchController(CompanyBranchService companyBranchService,
@@ -165,9 +166,9 @@ public class CompanyBranchController {
         }
 
         DepartmentInfo departmentInfo = departmentInfoMapper.toEntity(dto);
-        departmentInfoService.createOrUpdate(departmentInfo);
+        departmentInfoService.create(departmentInfo);
 
-        return REDIRECT_URL;
+        return String.format(REDIRECT_URL_DEPARTMENTS, companyBranchId);
     }
 
     @GetMapping("/{companyBranchId}/departments/update")
@@ -203,10 +204,16 @@ public class CompanyBranchController {
             return ADD_DEPARTMENT_FORM;
         }
 
-        departmentInfoService.createOrUpdate(departmentInfoMapper.toEntity(dto));
+        departmentInfoService.update(departmentInfoMapper.toEntity(dto));
 
-        return REDIRECT_URL;
+        return String.format(REDIRECT_URL_DEPARTMENTS, companyBranchId);
     }
 
+    @PostMapping("/{companyBranchId}/departments/{departmentId}/remove")
+    public String removeDepartmentInfo(@PathVariable Long companyBranchId, @PathVariable Long departmentId) {
+        DepartmentInfo departmentInfo = departmentInfoService.getById(companyBranchId, departmentId);
+        departmentInfoService.removeDepartment(departmentInfo);
+        return String.format(REDIRECT_URL_DEPARTMENTS, companyBranchId);
+    }
 
 }

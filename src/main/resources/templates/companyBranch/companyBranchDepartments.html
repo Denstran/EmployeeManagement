@@ -20,6 +20,7 @@
         <tr>
             <th>Название отдела</th>
             <th>Бюджет отдела</th>
+            <th>Сотрудники</th>
             <th>Обновить</th>
             <th>Удалить</th>
         </tr>
@@ -29,10 +30,13 @@
             <td th:text="${departmentInfo.departmentName}"></td>
             <td th:text="${departmentInfo.departmentBudget}"></td>
             <td>
+                <a class="btn btn-dark" role="button" th:href="@{/companyBranches/{id}/departments/{depId}/employees(id = ${companyBranchId}, depId = ${departmentInfo.departmentId})}">Сотрудники</a>
+            </td>
+            <td>
                 <a class="btn btn-dark" role="button" th:href="@{/companyBranches/{id}/departments/update(id = ${companyBranchId}, depId = ${departmentInfo.departmentId})}">Обновить</a>
             </td>
             <td>
-                <form th:action="@{/companyBranches/{id}/departments/remove/{depId}(id = ${companyBranchId}, depId = ${departmentInfo.departmentId})}" method="post">
+                <form th:action="@{/companyBranches/{id}/departments/{depId}/remove(id = ${companyBranchId}, depId = ${departmentInfo.departmentId})}" method="post">
                     <button type="submit" class="btn btn-danger">Убрать из филиала</button>
                 </form>
             </td>

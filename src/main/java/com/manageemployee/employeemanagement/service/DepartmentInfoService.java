@@ -24,8 +24,26 @@ public class DepartmentInfoService {
     }
 
     @Transactional
-    public void createOrUpdate(DepartmentInfo departmentInfo) {
-        repository.save(departmentInfo);
+    public void create(DepartmentInfo departmentInfo) {
+        departmentInfo.registerDepartmentInfo();
+        repository.saveAndFlush(departmentInfo);
+    }
+
+    @Transactional
+    public void update(DepartmentInfo departmentInfo) {
+        DepartmentInfo departmentInfoFromDB = repository.findById(departmentInfo.getPk())
+                .orElseThrow(() -> new IllegalArgumentException("Выбранный отдел не существует!"));
+
+        departmentInfo.updateDepartmentInfo(departmentInfoFromDB.getDepartmentBudget());
+
+        repository.saveAndFlush(departmentInfo);
+    }
+
+    @Transactional
+    public void removeDepartment(DepartmentInfo departmentInfo) {
+        departmentInfo.removeDepartmentInfo();
+
+        repository.delete(departmentInfo);
     }
 
     public DepartmentInfo getById(CompanyBranchDepartmentPK id) {
