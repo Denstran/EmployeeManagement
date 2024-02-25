@@ -2,9 +2,9 @@ package com.manageemployee.employeemanagement.model;
 
 import com.manageemployee.employeemanagement.converter.MoneyConverter;
 import com.manageemployee.employeemanagement.model.embeddable.CompanyBranchDepartmentPK;
-import com.manageemployee.employeemanagement.model.events.DepartmentInfoRegistered;
-import com.manageemployee.employeemanagement.model.events.DepartmentInfoRemoved;
-import com.manageemployee.employeemanagement.model.events.DepartmentInfoUpdated;
+import com.manageemployee.employeemanagement.model.events.departmentEvents.DepartmentInfoRegistered;
+import com.manageemployee.employeemanagement.model.events.departmentEvents.DepartmentInfoRemoved;
+import com.manageemployee.employeemanagement.model.events.departmentEvents.DepartmentInfoUpdated;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,7 +41,8 @@ public class DepartmentInfo extends AbstractAggregateRoot<DepartmentInfo> {
     }
 
     public void removeDepartmentInfo() {
-        registerEvent(new DepartmentInfoRemoved(this.pk.getCompanyBranch(), this.departmentBudget));
+        registerEvent(new DepartmentInfoRemoved(this.pk.getCompanyBranch(), this.pk.getDepartment(),
+                this.departmentBudget));
     }
 
     @Override

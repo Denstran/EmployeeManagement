@@ -1,5 +1,6 @@
 package com.manageemployee.employeemanagement.model;
 
+import com.manageemployee.employeemanagement.validationgroups.DefaultGroup;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -17,11 +18,11 @@ import java.util.Objects;
 @AllArgsConstructor
 public class Money implements Comparable<Money> {
 
-    @Min(value = 1, message = "Количество средств должно быть больше нуля!")
-    @NotNull(message = "Количество средств не может быть пустым")
+    @Min(groups = DefaultGroup.class, value = 1, message = "Количество средств должно быть больше нуля!")
+    @NotNull(groups = DefaultGroup.class, message = "Количество средств не может быть пустым")
     private BigDecimal amount;
 
-    @NotNull(message = "Валюта не должны быть пустой!")
+    @NotNull(groups = DefaultGroup.class, message = "Валюта не должны быть пустой!")
     private Currency currency;
 
     @Override

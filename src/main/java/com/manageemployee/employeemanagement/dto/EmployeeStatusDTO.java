@@ -1,6 +1,7 @@
 package com.manageemployee.employeemanagement.dto;
 
 import com.manageemployee.employeemanagement.model.enumTypes.EEmployeeStatus;
+import com.manageemployee.employeemanagement.validationgroups.DefaultGroup;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class EmployeeStatusDTO {
     private Long id;
 
-    @NotNull(message = "Статус не должен быть пустым!")
+    @NotNull(groups = DefaultGroup.class, message = "Статус не должен быть пустым!")
     private EEmployeeStatus employeeStatus;
 
     @Override

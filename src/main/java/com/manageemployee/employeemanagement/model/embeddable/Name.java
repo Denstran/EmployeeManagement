@@ -1,5 +1,6 @@
 package com.manageemployee.employeemanagement.model.embeddable;
 
+import com.manageemployee.employeemanagement.validationgroups.DefaultGroup;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.PrePersist;
@@ -20,19 +21,18 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Name {
-    @NotNull
-    @NotBlank
-    @Size(min = 2, max = 30, message = "Имя должно содержать от 2 до 30 символов!")
+    @NotNull(groups = DefaultGroup.class)
+    @NotBlank(groups = DefaultGroup.class)
+    @Size(groups = DefaultGroup.class, min = 2, max = 30, message = "Имя должно содержать от 2 до 30 символов!")
     @Column(name = "FIRST_NAME")
     private String firstName;
 
     @Column(name = "MIDDLE_NAME")
-    @NotNull
     private String middleName;
 
     @NotNull
-    @NotBlank(message = "Фамилия не должна быть пустой!")
-    @Size(min = 2, max = 30, message = "Фамилия может иметь от 2 до 30 символов!")
+    @NotBlank(groups = DefaultGroup.class, message = "Фамилия не должна быть пустой!")
+    @Size(groups = DefaultGroup.class, min = 2, max = 30, message = "Фамилия может иметь от 2 до 30 символов!")
     @Column(name = "LAST_NAME")
     private String lastName;
 

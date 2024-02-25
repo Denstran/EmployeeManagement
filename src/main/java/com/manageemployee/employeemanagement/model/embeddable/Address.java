@@ -1,5 +1,6 @@
 package com.manageemployee.employeemanagement.model.embeddable;
 
+import com.manageemployee.employeemanagement.validationgroups.DefaultGroup;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.Min;
@@ -16,26 +17,25 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Address {
-    @NotNull
-    @NotBlank(message = "Город не должен быть пустым!")
+    @NotNull(groups = DefaultGroup.class)
+    @NotBlank(groups = DefaultGroup.class, message = "Город не должен быть пустым!")
     @Column(name = "CITY")
     private String city;
 
     @Column(name = "ZIP_CODE")
     private String zipCode;
 
-    @NotNull
-    @NotBlank(message = "Улица не может быть пустой!")
+    @NotNull(groups = DefaultGroup.class)
+    @NotBlank(groups = DefaultGroup.class, message = "Улица не может быть пустой!")
     @Column(name = "STREET")
     private String street;
 
-    @NotNull
-    @Min(value = 1, message = "Номер дома не может быть меньше единицы!")
+    @Min(groups = DefaultGroup.class, value = 1, message = "Номер дома не может быть меньше единицы!")
     @Column(name = "BUILDING_NUMBER")
     private int buildingNumber;
 
-    @NotNull
-    @NotBlank(message = "Страна не может быть пустой!")
+    @NotNull(groups = DefaultGroup.class)
+    @NotBlank(groups = DefaultGroup.class, message = "Страна не может быть пустой!")
     @Column(name = "COUNTRY")
     private String country;
 

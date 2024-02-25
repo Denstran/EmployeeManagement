@@ -31,8 +31,7 @@ public class DepartmentInfoService {
 
     @Transactional
     public void update(DepartmentInfo departmentInfo) {
-        DepartmentInfo departmentInfoFromDB = repository.findById(departmentInfo.getPk())
-                .orElseThrow(() -> new IllegalArgumentException("Выбранный отдел не существует!"));
+        DepartmentInfo departmentInfoFromDB = getById(departmentInfo.getPk());
 
         departmentInfo.updateDepartmentInfo(departmentInfoFromDB.getDepartmentBudget());
 
@@ -55,8 +54,7 @@ public class DepartmentInfoService {
         CompanyBranch companyBranch = companyBranchService.getReference(companyBranchId);
         Department department = departmentService.getReference(depId);
 
-        return repository.findById(new CompanyBranchDepartmentPK(companyBranch, department)).orElseThrow(() ->
-                new IllegalArgumentException("Не верный данные для получения информации по отделу!"));
+        return getById(new CompanyBranchDepartmentPK(companyBranch, department));
     }
 
     public boolean existsById(CompanyBranchDepartmentPK id) {

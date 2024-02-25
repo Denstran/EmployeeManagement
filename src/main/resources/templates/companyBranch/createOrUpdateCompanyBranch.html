@@ -57,7 +57,7 @@
                        aria-describedby="buildingNumberError" placeholder="Введите дом"
                        th:value="${isUpdating} ? ${companyBranchDTO.companyBranchAddress.buildingNumber} : ''">
 
-                <small th:if="${#fields.hasErrors('companyBranchAddress.country')}" th:errors="*{companyBranchAddress.buildingNumber}"
+                <small th:if="${#fields.hasErrors('companyBranchAddress.buildingNumber')}" th:errors="*{companyBranchAddress.buildingNumber}"
                        id="buildingNumberError"
                        class="form-text text-danger">Error</small>
             </div>

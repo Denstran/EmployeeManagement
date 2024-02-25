@@ -3,6 +3,11 @@ package com.manageemployee.employeemanagement.model;
 import com.manageemployee.employeemanagement.converter.MoneyConverter;
 import com.manageemployee.employeemanagement.model.embeddable.Address;
 import com.manageemployee.employeemanagement.model.embeddable.Name;
+import com.manageemployee.employeemanagement.model.enumTypes.EEmployeeStatus;
+import com.manageemployee.employeemanagement.model.events.employeeEvents.EmployeeDeleted;
+import com.manageemployee.employeemanagement.model.events.employeeEvents.EmployeeFired;
+import com.manageemployee.employeemanagement.model.events.employeeEvents.EmployeeHired;
+import com.manageemployee.employeemanagement.model.events.employeeEvents.EmployeeUpdated;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -12,6 +17,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.util.Date;
 import java.util.Objects;
@@ -20,7 +26,7 @@ import java.util.Objects;
 @Table(name = "EMPLOYEE")
 @Getter
 @Setter
-public class Employee {
+public class Employee extends AbstractAggregateRoot<Employee> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -91,5 +97,24 @@ public class Employee {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public void hireEmployee() {
+        this.employeeStatus = new EmployeeStatus(1L, EEmployeeStatus.WORKING);
+        registerEvent(new EmployeeHired(this.salary, this.position.getDepartment(), this.companyBranch));
+    }
+
+    public void updateEmployee(Employee oldEmployee) {
+        registerEvent(new EmployeeUpdated(
+                this.salary, this.position.getDepartment(), this.companyBranch, oldEmployee.getSalary()));
+    }
+
+    public void deleteEmployee() {
+        registerEvent(new EmployeeDeleted(this.salary, this.position.getDepartment(),
+                this.companyBranch, employeeStatus));
+    }
+
+    public void fireEmployee() {
+        registerEvent(new EmployeeFired(this.salary, this.position.getDepartment(), this.companyBranch));
     }
 }

@@ -13,12 +13,13 @@ import com.manageemployee.employeemanagement.service.DepartmentInfoService;
 import com.manageemployee.employeemanagement.service.DepartmentService;
 import com.manageemployee.employeemanagement.util.validators.companyBranchValidators.CompanyBranchValidator;
 import com.manageemployee.employeemanagement.util.validators.departmentInfoValidators.DepartmentInfoValidator;
+import com.manageemployee.employeemanagement.validationgroups.DefaultGroup;
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -79,7 +80,8 @@ public class CompanyBranchController {
     }
 
     @PostMapping("/new")
-    public String createBranch(@ModelAttribute("companyBranchDTO") @Valid CompanyBranchDTO companyBranchDTO,
+    public String createBranch(@ModelAttribute("companyBranchDTO")
+                                   @Validated(DefaultGroup.class) CompanyBranchDTO companyBranchDTO,
                                    BindingResult bindingResult) {
         companyBranchValidator.validate(companyBranchDTO, bindingResult);
         if (bindingResult.hasErrors()) return VIEW_FOR_UPDATE_OR_CREATE;
@@ -109,7 +111,8 @@ public class CompanyBranchController {
     }
 
     @PostMapping("/update/{id}")
-    public String updateCompanyBranch(@ModelAttribute("companyBranchDTO") @Valid CompanyBranchDTO companyBranchDTO,
+    public String updateCompanyBranch(@ModelAttribute("companyBranchDTO")
+                                      @Validated(DefaultGroup.class) CompanyBranchDTO companyBranchDTO,
                                       BindingResult bindingResult,
                                       @RequestParam("isUpdating") boolean isUpdating, Model model) {
         companyBranchValidator.validate(companyBranchDTO, bindingResult);
@@ -151,7 +154,8 @@ public class CompanyBranchController {
     }
 
     @PostMapping("/{companyBranchId}/departments/add")
-    public String addDepartmentInfo(@ModelAttribute("dto") @Valid DepartmentInfoDTO dto, BindingResult bindingResult,
+    public String addDepartmentInfo(@ModelAttribute("dto") @Validated(DefaultGroup.class) DepartmentInfoDTO dto,
+                                    BindingResult bindingResult,
                                 Model model, @PathVariable("companyBranchId") Long companyBranchId,
                                 HttpSession session) {
         dto.setCompanyBranchId(companyBranchId);
@@ -190,7 +194,7 @@ public class CompanyBranchController {
     }
 
     @PostMapping("/{companyBranchId}/departments/update")
-    public String updateDepartmentInfo(@ModelAttribute("dto") @Valid DepartmentInfoDTO dto,
+    public String updateDepartmentInfo(@ModelAttribute("dto") @Validated(DefaultGroup.class) DepartmentInfoDTO dto,
                                        BindingResult bindingResult, @PathVariable Long companyBranchId,
                                        Model model, HttpSession session) {
         departmentInfoValidator.validate(dto, bindingResult);

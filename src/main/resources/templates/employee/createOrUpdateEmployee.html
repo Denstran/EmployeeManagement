@@ -77,30 +77,25 @@
         <hr/>
 
         <h2>Зарплата</h2>
+        <small th:if="${#fields.hasErrors('salary')}" th:errors="*{salary}"
+               id="salaryError"
+               class="form-text text-danger">Error</small>
         <div class="form-group">
             <label for="amountInput">Количество средств</label>
             <input type="number" th:field="*{salary.amount}" class="form-control" id="amountInput"
                    aria-describedby="budgetError" placeholder="Введите количество средств"
                    th:value="${isUpdating} ? ${employeeDTO.salary.amount} : ''">
-
-            <small th:if="${#fields.hasErrors('salary.amount')}" th:errors="*{salary.amount}"
-                   id="budgetError"
-                   class="form-text text-danger">Error</small>
         </div>
         <div class="form-group">
             <label for="currencyInput">Валюта</label>
             <input type="text" th:field="*{salary.currency}" class="form-control" id="currencyInput"
                    aria-describedby="currencyError" placeholder="Введите валюту"
                    th:value="${isUpdating} ? ${employeeDTO.salary.currency} : ''" th:readonly="${isUpdating}">
-
-            <small th:if="${#fields.hasErrors('salary.currency')}" th:errors="*{salary.currency}"
-                   id="currencyError"
-                   class="form-text text-danger">Error</small>
         </div>
 
         <hr/>
 
-        <h2>Адресс</h2>
+        <h2>Адрес</h2>
         <small th:if="${#fields.hasErrors('homeAddress')}" th:errors="*{homeAddress}"
                id="homeAddressErrorDB"
                class="form-text text-danger">Error</small>
@@ -124,6 +119,16 @@
 
             <small th:if="${#fields.hasErrors('homeAddress.street')}" th:errors="*{homeAddress.street}"
                    id="streetError"
+                   class="form-text text-danger">Error</small>
+        </div>
+        <div class="form-group">
+            <label for="buildingNumberInput">Дом</label>
+            <input type="number" th:field="*{homeAddress.buildingNumber}" class="form-control" id="buildingNumberInput"
+                   aria-describedby="buildingNumberError" placeholder="Введите дом"
+                   th:value="${isUpdating} ? ${employeeDTO.homeAddress.buildingNumber} : ''">
+
+            <small th:if="${#fields.hasErrors('homeAddress.buildingNumber')}" th:errors="*{homeAddress.buildingNumber}"
+                   id="buildingNumberError"
                    class="form-text text-danger">Error</small>
         </div>
 
@@ -169,31 +174,21 @@
         <hr/>
 
         <h2>Доступные должности</h2>
-        <div class="list-group">
-            <label class="list-group-item" th:each="position : ${availablePositions}" aria-describedby="positionError">
-                <input class="form-check-input me-1" name="selectedPositions"
-                       type="checkbox" th:text="${position.positionName}" th:value="${position.id}">
-            </label>
-            <small th:if="${positionsError}" class="form-text text-danger" id="positionError"
-                   th:text="${positionsError}">Error</small>
-        </div>
+        <div class="form-group">
+            <label for="positionSelect" aria-describedby="positionError">Статус</label>
+            <select class="form-control" id="positionSelect" name="positionSelect" th:field="*{positionId}">
+                <option th:each="position : ${positionDTOS}" th:value="${position.id}"
+                        th:text="${position.positionName}"></option>
+            </select>
 
-        <div th:if="${isUpdating}">
-            <hr/>
-            <h2>Текущие должности (кликните, чтобы удалить)</h2>
-            <div class="list-group">
-                <label class="list-group-item" th:each="position : ${takenPositions}" aria-describedby="takenPositionError">
-                    <input class="form-check-input me-1" name="positionsForRemoval"
-                           type="checkbox" th:text="${position.positionName}" th:value="${position.id}">
-                </label>
-                <small th:if="${takenPositionsError}" class="form-text text-danger" id="takenPositionError"
-                       th:text="${takenPositionsError}">Error</small>
-            </div>
+            <small th:if="${#fields.hasErrors('positionId')}" th:errors="*{positionId}"
+                   id="positionError"
+                   class="form-text text-danger">Error</small>
         </div>
 
         <hr/>
 
-        <input type="hidden" th:field="*{departmentId}" th:value="${employeeDTO.departmentId}">
+        <input type="hidden" th:if="${isUpdating}" th:field="*{companyBranchId}" th:value="${employeeDTO.companyBranchId}">
         <input type="hidden" name="isUpdating" th:value="${isUpdating}" />
         <input type="hidden" th:if="${isUpdating}" th:field="*{id}" th:value="${employeeDTO.id}">
         <button type="submit" class="btn btn-primary">Подтвердить</button>

@@ -33,6 +33,10 @@ public class DepartmentService {
                 new IllegalArgumentException("Выбран не существующий отдел!"));
     }
 
+    public Optional<Department> getDepartmentByPositionId(Long positionId) {
+        return departmentRepository.findDepartmentByPositionId(positionId);
+    }
+
     public List<Department> getAvailableDepartments(Long companyBranchId) {
         if (companyBranchId == null || companyBranchId <= 0)
             throw new IllegalArgumentException("Выбранный филиал не существует!");

@@ -25,3 +25,62 @@ INSERT INTO department (department_name) VALUES
                                              ('Research and Development'),
                                              ('Sales');
 
+INSERT INTO employee_statuses (employee_status) VALUES ('WORKING'), ('VACATION'), ('HEALING'), ('FIRED');
+
+-- Marketing
+INSERT INTO position (dep_id, position_name) VALUES
+                                                 (1, 'Marketing Manager'),
+                                                 (1, 'Marketing Coordinator'),
+                                                 (1, 'Social Media Specialist'),
+                                                 (1, 'Brand Manager'),
+                                                 (1, 'Market Research Analyst');
+
+-- Finance
+INSERT INTO position (dep_id, position_name) VALUES
+                                                 (2, 'Financial Analyst'),
+                                                 (2, 'Accountant'),
+                                                 (2, 'Finance Manager'),
+                                                 (2, 'Auditor'),
+                                                 (2, 'Tax Specialist');
+
+-- Human Resources
+INSERT INTO position (dep_id, position_name) VALUES
+                                                 (3, 'HR Manager'),
+                                                 (3, 'Recruiter'),
+                                                 (3, 'Training Specialist'),
+                                                 (3, 'Compensation Analyst'),
+                                                 (3, 'Employee Relations Specialist');
+
+-- Research and Development
+INSERT INTO position (dep_id, position_name) VALUES
+                                                 (4, 'Research Scientist'),
+                                                 (4, 'Software Engineer'),
+                                                 (4, 'Product Manager'),
+                                                 (4, 'Quality Assurance Analyst'),
+                                                 (4, 'Data Analyst');
+
+-- Sales
+INSERT INTO position (dep_id, position_name) VALUES
+                                                 (5, 'Sales Manager'),
+                                                 (5, 'Account Executive'),
+                                                 (5, 'Sales Representative'),
+                                                 (5, 'Business Development Manager'),
+                                                 (5, 'Customer Success Manager');
+
+INSERT INTO department_info(company_branch_id, department_id, department_budget) VALUES
+                                                                                     (1, 1, '10000 RUB'),
+                                                                                     (1, 2, '10000 RUB'),
+                                                                                     (1, 3, '10000 RUB'),
+                                                                                     (1, 4, '10000 RUB'),
+                                                                                     (1, 5, '10000 RUB');
+
+INSERT INTO employee (employment_date, home_building_number, company_branch_id, employee_status_id, position_id, salary, email, first_name, home_city, home_country, home_street, home_zip_code, last_name, middle_name, phone_number)
+VALUES
+    ('2023-05-15', 123, 1, 1, 1, '50000 RUB', 'john.doe@examle.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4567'),
+    ('2023-05-15', 123, 1, 1, 2, '50000 RUB', 'john.doe@exmple.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4561'),
+    ('2023-05-15', 123, 1, 1, 3, '50000 RUB', 'john.doe@exampe.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4562'),
+    ('2023-05-15', 123, 1, 1, 4, '50000 RUB', 'john.doe@xample.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4563'),
+    ('2023-05-15', 123, 1, 1, 5, '50000 RUB', 'john.doe@ample.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4564'),
+    ('2023-05-15', 123, 1, 1, 6, '50000 RUB', 'john.doe@exale.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4565')
+
+

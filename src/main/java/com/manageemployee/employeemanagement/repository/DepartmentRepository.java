@@ -13,6 +13,9 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     boolean existsByDepartmentName(String depName);
     Optional<Department> findDepartmentByDepartmentName(String depName);
 
+    @Query("SELECT d FROM Department d WHERE d.id = (SELECT p.department.id FROM Position p WHERE p.id = :positionId)")
+    Optional<Department> findDepartmentByPositionId(@Param("positionId") Long positionId);
+
     @Query("SELECT dep FROM Department dep WHERE dep.id NOT IN " +
             "(SELECT di.pk.department.id FROM DepartmentInfo di WHERE di.pk.companyBranch.id = :cmpId)")
     List<Department> getAvailableDepartments(@Param("cmpId") Long companyBranchId);
