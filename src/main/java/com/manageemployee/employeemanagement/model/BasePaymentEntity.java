@@ -2,21 +2,17 @@ package com.manageemployee.employeemanagement.model;
 
 import com.manageemployee.employeemanagement.converter.MoneyConverter;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
 import java.util.Objects;
 
-@Entity
-@Table(name = "PAYMENT_LOG")
+@MappedSuperclass
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class PaymentLog {
+public class BasePaymentEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,14 +27,6 @@ public class PaymentLog {
     @Column(name = "DATE_OF_PAYMENT", updatable = false, insertable = false)
     private Date dateOfPayment;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PAYMENT_TYPE_ID", nullable = false, foreignKey = @ForeignKey(name = "FK_PAYMENT_PAYMENT_TYPE"))
-    private PaymentType paymentType;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "EMPLOYEE_ID", nullable = false, foreignKey =  @ForeignKey(name = "FK_PAYMENT_EMPLOYEE"))
-    private Employee employee;
-
     @PrePersist
     @PreUpdate
     public void setDefaultDateOfPayment() {
@@ -48,7 +36,7 @@ public class PaymentLog {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof PaymentLog that)) return false;
+        if (!(o instanceof BasePaymentEntity that)) return false;
         return Objects.equals(id, that.id);
     }
 
