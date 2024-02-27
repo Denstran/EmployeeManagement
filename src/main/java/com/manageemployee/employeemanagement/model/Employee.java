@@ -101,12 +101,12 @@ public class Employee extends AbstractAggregateRoot<Employee> {
 
     public void hireEmployee() {
         this.employeeStatus = new EmployeeStatus(1L, EEmployeeStatus.WORKING);
-        registerEvent(new EmployeeHired(this.salary, this.position.getDepartment(), this.companyBranch));
+        registerEvent(new EmployeeHired(this.salary, this.position.getDepartment(), this.companyBranch, this));
     }
 
     public void updateEmployee(Employee oldEmployee) {
         registerEvent(new EmployeeUpdated(
-                this.salary, this.position.getDepartment(), this.companyBranch, oldEmployee.getSalary()));
+                this.salary, this.position.getDepartment(), this.companyBranch, oldEmployee.getSalary(), this));
     }
 
     public void deleteEmployee() {

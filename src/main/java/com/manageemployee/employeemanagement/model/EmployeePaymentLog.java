@@ -1,6 +1,8 @@
 package com.manageemployee.employeemanagement.model;
 
 
+import com.manageemployee.employeemanagement.model.enumTypes.EPaymentType;
+import com.manageemployee.employeemanagement.model.enumTypes.TransferAction;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,4 +22,14 @@ public class EmployeePaymentLog extends BasePaymentEntity {
     @JoinColumn(name = "EMPLOYEE_ID", nullable = false, foreignKey =
     @ForeignKey(name = "FK_EMPLOYEE_PAYMENT_LOG_EMPLOYEE"))
     private Employee employee;
+
+    public static EmployeePaymentLog createPaymentLog(Employee employee, Money amount, boolean isPositive) {
+        EmployeePaymentLog paymentLog = new EmployeePaymentLog();
+        paymentLog.setEmployee(employee);
+        paymentLog.setPaymentType(new PaymentType(1L, EPaymentType.SALARY));
+        paymentLog.setPaymentAmount(amount);
+        paymentLog.setTransferAction(isPositive ? TransferAction.INCREASE : TransferAction.DECREASE);
+
+        return paymentLog;
+    }
 }
