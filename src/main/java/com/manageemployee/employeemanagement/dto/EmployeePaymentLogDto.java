@@ -1,6 +1,7 @@
 package com.manageemployee.employeemanagement.dto;
 
 import com.manageemployee.employeemanagement.model.Money;
+import com.manageemployee.employeemanagement.model.enumTypes.TransferAction;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -27,4 +28,6 @@ public class EmployeePaymentLogDto {
 
     @NotNull(message = "Сотрудник не может отсутствовать!")
     private Long employeeId;
+    @NotNull
+    private TransferAction transferAction;
 }

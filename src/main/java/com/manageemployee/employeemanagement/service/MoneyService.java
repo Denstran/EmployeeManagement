@@ -23,6 +23,11 @@ public class MoneyService {
         return new Money(difference, toSubtractFrom.getCurrency());
     }
 
+    public boolean isPositive(Money money) {
+        BigDecimal amount = money.getAmount();
+        return amount.compareTo(BigDecimal.ZERO) >= 0;
+    }
+
     public int compareAmounts(Money first, Money second) {
         return first.getAmount().compareTo(second.getAmount());
     }

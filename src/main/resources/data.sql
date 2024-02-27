@@ -81,6 +81,12 @@ VALUES
     ('2023-05-15', 123, 1, 1, 3, '50000 RUB', 'john.doe@exampe.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4562'),
     ('2023-05-15', 123, 1, 1, 4, '50000 RUB', 'john.doe@xample.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4563'),
     ('2023-05-15', 123, 1, 1, 5, '50000 RUB', 'john.doe@ample.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4564'),
-    ('2023-05-15', 123, 1, 1, 6, '50000 RUB', 'john.doe@exale.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4565')
+    ('2023-05-15', 123, 1, 1, 6, '50000 RUB', 'john.doe@exale.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4565');
+
+INSERT INTO PAYMENT_TYPE (PAYMENT_TYPE) VALUES
+                                            ('SALARY'),
+                                            ('BONUS'),
+                                            ('BUDGET_CHANGES'),
+                                            ('OTHERS')
 
 

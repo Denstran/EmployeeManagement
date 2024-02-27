@@ -1,5 +1,7 @@
 package com.manageemployee.employeemanagement.model;
 
+import com.manageemployee.employeemanagement.model.enumTypes.EPaymentType;
+import com.manageemployee.employeemanagement.model.enumTypes.TransferAction;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,4 +25,16 @@ public class DepartmentInfoPaymentLog extends BasePaymentEntity {
     @JoinColumn(name = "DEPARTMENT_ID", nullable = false,
             foreignKey = @ForeignKey(name = "FK_DEPARTMENT_DEPARTMENT_INFO_PAYMENT_LOG"))
     private Department department;
+
+    public static DepartmentInfoPaymentLog createPaymentLog(CompanyBranch companyBranch, Department department,
+                                                            Money amount, boolean isPositive) {
+        DepartmentInfoPaymentLog departmentInfoPaymentLog = new DepartmentInfoPaymentLog();
+        departmentInfoPaymentLog.setCompanyBranch(companyBranch);
+        departmentInfoPaymentLog.setDepartment(department);
+        departmentInfoPaymentLog.setPaymentType(new PaymentType(3L, EPaymentType.BUDGET_CHANGES));
+        departmentInfoPaymentLog
+                .setPaymentAmount(amount);
+        departmentInfoPaymentLog.setTransferAction(isPositive ? TransferAction.INCREASE : TransferAction.DECREASE);
+        return departmentInfoPaymentLog;
+    }
 }

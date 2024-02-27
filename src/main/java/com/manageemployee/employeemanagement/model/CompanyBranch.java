@@ -23,7 +23,7 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompanyBranch {
+public class CompanyBranch{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -70,4 +70,5 @@ public class CompanyBranch {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }

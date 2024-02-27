@@ -1,7 +1,9 @@
 package com.manageemployee.employeemanagement.model;
 
 import com.manageemployee.employeemanagement.converter.MoneyConverter;
+import com.manageemployee.employeemanagement.model.enumTypes.TransferAction;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,8 +26,13 @@ public class BasePaymentEntity {
     private Money paymentAmount;
 
     @Temporal(value = TemporalType.DATE)
-    @Column(name = "DATE_OF_PAYMENT", updatable = false, insertable = false)
+    @Column(name = "DATE_OF_PAYMENT", updatable = false)
     private Date dateOfPayment;
+
+    @NotNull
+    @Column(name = "TRANSFER_ACTION")
+    @Enumerated(value = EnumType.STRING)
+    private TransferAction transferAction;
 
     @PrePersist
     @PreUpdate

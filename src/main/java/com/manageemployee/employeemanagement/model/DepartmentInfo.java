@@ -2,6 +2,8 @@ package com.manageemployee.employeemanagement.model;
 
 import com.manageemployee.employeemanagement.converter.MoneyConverter;
 import com.manageemployee.employeemanagement.model.embeddable.CompanyBranchDepartmentPK;
+import com.manageemployee.employeemanagement.model.enumTypes.EPaymentType;
+import com.manageemployee.employeemanagement.model.enumTypes.TransferAction;
 import com.manageemployee.employeemanagement.model.events.departmentEvents.DepartmentInfoRegistered;
 import com.manageemployee.employeemanagement.model.events.departmentEvents.DepartmentInfoRemoved;
 import com.manageemployee.employeemanagement.model.events.departmentEvents.DepartmentInfoUpdated;
@@ -31,12 +33,20 @@ public class DepartmentInfo extends AbstractAggregateRoot<DepartmentInfo> {
     private int amountOfEmployee;
 
     public void registerDepartmentInfo() {
-        registerEvent(new DepartmentInfoRegistered(this.departmentBudget, this.pk.getCompanyBranch()));
+        DepartmentInfoPaymentLog departmentInfoPaymentLog = new DepartmentInfoPaymentLog();
+        departmentInfoPaymentLog.setDepartment(this.pk.getDepartment());
+        departmentInfoPaymentLog.setCompanyBranch(this.pk.getCompanyBranch());
+        departmentInfoPaymentLog.setPaymentType(new PaymentType(3L, EPaymentType.BUDGET_CHANGES));
+        departmentInfoPaymentLog.setPaymentAmount(this.departmentBudget);
+        departmentInfoPaymentLog.setTransferAction(TransferAction.INCREASE);
+
+        registerEvent(new DepartmentInfoRegistered(departmentInfoPaymentLog));
     }
 
     public void updateDepartmentInfo(Money oldBudget) {
         DepartmentInfoUpdated departmentInfoUpdated =
-                new DepartmentInfoUpdated(this.getPk().getCompanyBranch(), oldBudget, this.departmentBudget);
+                new DepartmentInfoUpdated(this.getPk().getCompanyBranch(), this.pk.getDepartment(),
+                        oldBudget, this.departmentBudget);
         registerEvent(departmentInfoUpdated);
     }
 
