@@ -28,6 +28,11 @@ public class MoneyService {
         return amount.compareTo(BigDecimal.ZERO) >= 0;
     }
 
+    public Money abs(Money money) {
+        double absoluteAmount = Math.abs(money.getAmount().doubleValue());
+        return new Money(BigDecimal.valueOf(absoluteAmount), money.getCurrency());
+    }
+
     public int compareAmounts(Money first, Money second) {
         return first.getAmount().compareTo(second.getAmount());
     }

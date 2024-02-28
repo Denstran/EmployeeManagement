@@ -54,11 +54,13 @@ public class EmployeeEventListener {
 
         Money amountToSubtract = moneyService.subtract(newSalary, oldSalary);
         EmployeePaymentLog employeePaymentLog =
-                EmployeePaymentLog.createPaymentLog(employeeUpdated.getEmployee(), amountToSubtract,
+                EmployeePaymentLog.createPaymentLog(employeeUpdated.getEmployee(), moneyService.abs(amountToSubtract),
                         moneyService.isPositive(amountToSubtract));
+
         DepartmentInfoPaymentLog departmentInfoPaymentLog =
                 DepartmentInfoPaymentLog.createPaymentLog(employeeUpdated.getCompanyBranch(),
-                        employeeUpdated.getDepartment(), amountToSubtract, !moneyService.isPositive(amountToSubtract));
+                        employeeUpdated.getDepartment(), moneyService.abs(amountToSubtract),
+                        !moneyService.isPositive(amountToSubtract));
 
         departmentInfo.setDepartmentBudget(moneyService.subtract(departmentInfo.getDepartmentBudget(), amountToSubtract));
         departmentInfoService.update(departmentInfo);

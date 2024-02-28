@@ -77,9 +77,10 @@ public class DepartmentInfoEventListener {
         Money amountToReduce = moneyService.subtract(newDepBudget, oldDepBudget);
 
         DepartmentInfoPaymentLog paymentLog = DepartmentInfoPaymentLog.createPaymentLog(companyBranch, department,
-                amountToReduce, moneyService.isPositive(amountToReduce));
+                moneyService.abs(amountToReduce), moneyService.isPositive(amountToReduce));
         CompanyBranchPaymentLog companyBranchPaymentLog =
-                CompanyBranchPaymentLog.createPaymentLog(companyBranch, amountToReduce, !moneyService.isPositive(amountToReduce));
+                CompanyBranchPaymentLog.createPaymentLog(companyBranch, moneyService.abs(amountToReduce),
+                        !moneyService.isPositive(amountToReduce));
 
         paymentLogService.saveCompanyBranchPaymentLog(companyBranchPaymentLog);
         paymentLogService.saveDepartmentInfoPaymentLog(paymentLog);
