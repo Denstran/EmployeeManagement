@@ -1,14 +1,12 @@
 package com.manageemployee.employeemanagement.controller;
 
 import com.manageemployee.employeemanagement.converter.dtoMappers.EmployeeMapper;
-import com.manageemployee.employeemanagement.converter.dtoMappers.EmployeeStatusMapper;
 import com.manageemployee.employeemanagement.converter.dtoMappers.PositionMapper;
 import com.manageemployee.employeemanagement.dto.EmployeeDTO;
-import com.manageemployee.employeemanagement.dto.EmployeeStatusDTO;
 import com.manageemployee.employeemanagement.dto.PositionDTO;
+import com.manageemployee.employeemanagement.model.enumTypes.EmployeeStatus;
 import com.manageemployee.employeemanagement.service.DepartmentService;
 import com.manageemployee.employeemanagement.service.EmployeeService;
-import com.manageemployee.employeemanagement.service.EmployeeStatusService;
 import com.manageemployee.employeemanagement.service.PositionService;
 import com.manageemployee.employeemanagement.util.validators.employeeValidators.EmployeeValidator;
 import com.manageemployee.employeemanagement.validationgroups.DefaultGroup;
@@ -31,9 +29,7 @@ public class EmployeeController {
     private final PositionService positionService;
     private final PositionMapper positionMapper;
     private final EmployeeMapper employeeMapper;
-    private final EmployeeStatusMapper employeeStatusMapper;
     private final EmployeeValidator employeeValidator;
-    private final EmployeeStatusService employeeStatusService;
     private final String SHOW_EMPLOYEE = "employee/employee";
     private final String CREATE_OR_UPDATE_FORM = "employee/createOrUpdateEmployee";
     private final String REDIRECT_LINK = "redirect:/companyBranches/%d/departments/%d/employees";
@@ -41,15 +37,13 @@ public class EmployeeController {
     @Autowired
     public EmployeeController(EmployeeService employeeService, DepartmentService departmentService,
                               PositionService positionService, PositionMapper positionMapper,
-                              EmployeeMapper employeeMapper, EmployeeStatusMapper employeeStatusMapper, EmployeeValidator validator, EmployeeStatusService employeeStatusService) {
+                              EmployeeMapper employeeMapper, EmployeeValidator validator) {
         this.employeeService = employeeService;
         this.departmentService = departmentService;
         this.positionService = positionService;
         this.positionMapper = positionMapper;
         this.employeeMapper = employeeMapper;
-        this.employeeStatusMapper = employeeStatusMapper;
         this.employeeValidator = validator;
-        this.employeeStatusService = employeeStatusService;
     }
 
     @GetMapping
@@ -108,10 +102,9 @@ public class EmployeeController {
         employeeValidator.validate(employeeDTO, bindingResult);
         if (bindingResult.hasErrors()) {
             List<PositionDTO> positionDTOS = (List<PositionDTO>) session.getAttribute("positionDTOS");
-            List<EmployeeStatusDTO> employeeStatusDTOS =
-                    (List<EmployeeStatusDTO>) session.getAttribute("employeeStatusDTOS");
+            List<EmployeeStatus> employeeStatuses = List.of(EmployeeStatus.values());
             model.addAttribute("positionDTOS", positionDTOS);
-            model.addAttribute("employeeStatusDTOS", employeeStatusDTOS);
+            model.addAttribute("employeeStatuses", employeeStatuses);
             model.addAttribute("isUpdating", true);
             return CREATE_OR_UPDATE_FORM;
         }
@@ -138,11 +131,8 @@ public class EmployeeController {
 
     private void setupModelForUpdating(Model model, Long departmentId, Long employeeId, HttpSession session) {
         EmployeeDTO employeeDTO = employeeMapper.toDto(employeeService.getById(employeeId));
-        List<EmployeeStatusDTO> employeeStatusDTOS =
-                employeeStatusMapper.toDtoList(employeeStatusService.getEmployeeStatuses());
-        model.addAttribute("employeeStatusDTOS", employeeStatusDTOS);
-        session.setAttribute("employeeStatusDTOS", employeeStatusDTOS);
-
+        List<EmployeeStatus> employeeStatuses = List.of(EmployeeStatus.values());
+        model.addAttribute("employeeStatuses", employeeStatuses);
         setupModel(model, departmentId, true, employeeDTO, session);
     }
 

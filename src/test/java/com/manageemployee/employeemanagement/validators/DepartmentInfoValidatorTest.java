@@ -10,7 +10,6 @@ import com.manageemployee.employeemanagement.service.CompanyBranchService;
 import com.manageemployee.employeemanagement.service.DepartmentInfoService;
 import com.manageemployee.employeemanagement.service.DepartmentService;
 import com.manageemployee.employeemanagement.service.MoneyService;
-import com.manageemployee.employeemanagement.util.validators.additionalValidators.MoneyFieldsValidator;
 import com.manageemployee.employeemanagement.util.validators.departmentInfoValidators.DepartmentInfoNewEntryValidator;
 import com.manageemployee.employeemanagement.util.validators.departmentInfoValidators.DepartmentInfoUpdatingEntryValidator;
 import com.manageemployee.employeemanagement.util.validators.departmentInfoValidators.DepartmentInfoValidator;
@@ -34,7 +33,6 @@ public class DepartmentInfoValidatorTest {
     private static CompanyBranch companyBranch;
     private static Department department;
     private static CompanyBranchDepartmentPK pk;
-    private static final MoneyFieldsValidator moneyFieldsValidator = new MoneyFieldsValidator();
 
     private static Money companyBranchBudget;
 
@@ -42,11 +40,11 @@ public class DepartmentInfoValidatorTest {
     static void beforeAll() {
         MoneyService moneyService = new MoneyService();
         DepartmentInfoNewEntryValidator newEntryValidator = new DepartmentInfoNewEntryValidator(
-                companyBranchService, departmentService, departmentInfoService, moneyFieldsValidator, moneyService
+                companyBranchService, departmentService, departmentInfoService, moneyService
         );
 
         DepartmentInfoUpdatingEntryValidator updatingEntryValidator = new DepartmentInfoUpdatingEntryValidator(
-               departmentInfoService, companyBranchService, departmentService, moneyFieldsValidator, moneyService
+               departmentInfoService, companyBranchService, departmentService, moneyService
         );
 
         departmentInfoValidator = new DepartmentInfoValidator(List.of(newEntryValidator, updatingEntryValidator));

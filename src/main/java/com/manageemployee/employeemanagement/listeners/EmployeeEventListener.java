@@ -5,7 +5,7 @@ import com.manageemployee.employeemanagement.model.DepartmentInfoPaymentLog;
 import com.manageemployee.employeemanagement.model.EmployeePaymentLog;
 import com.manageemployee.employeemanagement.model.Money;
 import com.manageemployee.employeemanagement.model.embeddable.CompanyBranchDepartmentPK;
-import com.manageemployee.employeemanagement.model.enumTypes.EEmployeeStatus;
+import com.manageemployee.employeemanagement.model.enumTypes.EmployeeStatus;
 import com.manageemployee.employeemanagement.model.events.employeeEvents.*;
 import com.manageemployee.employeemanagement.service.DepartmentInfoService;
 import com.manageemployee.employeemanagement.service.MoneyService;
@@ -70,7 +70,7 @@ public class EmployeeEventListener {
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void deleteEmployeeEventHandler(EmployeeDeleted employeeDeleted) {
-        if (employeeDeleted.getEmployeeStatus().getEmployeeStatus().equals(EEmployeeStatus.FIRED))
+        if (employeeDeleted.getEmployeeStatus().equals(EmployeeStatus.FIRED))
             return;
         DepartmentInfo departmentInfo = getDepartmentInfo(employeeDeleted);
 

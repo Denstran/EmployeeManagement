@@ -11,7 +11,6 @@ import com.manageemployee.employeemanagement.service.DepartmentInfoService;
 import com.manageemployee.employeemanagement.service.DepartmentService;
 import com.manageemployee.employeemanagement.service.MoneyService;
 import com.manageemployee.employeemanagement.util.validators.ValidatorQualifier;
-import com.manageemployee.employeemanagement.util.validators.additionalValidators.MoneyFieldsValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -23,17 +22,15 @@ public class DepartmentInfoUpdatingEntryValidator implements Validator {
     private final DepartmentInfoService departmentInfoService;
     private final CompanyBranchService companyBranchService;
     private final DepartmentService departmentService;
-    private final MoneyFieldsValidator moneyFieldsValidator;
     private final MoneyService moneyService;
 
     @Autowired
     public DepartmentInfoUpdatingEntryValidator(DepartmentInfoService departmentInfoService,
                                                 CompanyBranchService companyBranchService,
-                                                DepartmentService departmentService, MoneyFieldsValidator moneyFieldsValidator, MoneyService moneyService) {
+                                                DepartmentService departmentService, MoneyService moneyService) {
         this.departmentInfoService = departmentInfoService;
         this.companyBranchService = companyBranchService;
         this.departmentService = departmentService;
-        this.moneyFieldsValidator = moneyFieldsValidator;
         this.moneyService = moneyService;
     }
 

@@ -1,10 +1,6 @@
 package com.manageemployee.employeemanagement.converter;
 
-import com.manageemployee.employeemanagement.converter.dtoMappers.EmployeeStatusMapper;
-import com.manageemployee.employeemanagement.dto.EmployeeStatusDTO;
-import com.manageemployee.employeemanagement.model.enumTypes.EEmployeeStatus;
-import com.manageemployee.employeemanagement.service.EmployeeStatusService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.manageemployee.employeemanagement.model.enumTypes.EmployeeStatus;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -12,21 +8,11 @@ import org.springframework.stereotype.Component;
  * Class for converting String to EmployeeStatusDTO
  */
 @Component
-public class StringToEmployeeStatusDTOConverter implements Converter<String, EmployeeStatusDTO> {
-    private final EmployeeStatusService employeeStatusService;
-    private final EmployeeStatusMapper employeeStatusMapper;
-
-    @Autowired
-    public StringToEmployeeStatusDTOConverter(EmployeeStatusService employeeStatusService,
-                                              EmployeeStatusMapper employeeStatusMapper) {
-        this.employeeStatusService = employeeStatusService;
-        this.employeeStatusMapper = employeeStatusMapper;
-    }
+public class StringToEmployeeStatusDTOConverter implements Converter<String, EmployeeStatus> {
 
     @Override
-    public EmployeeStatusDTO convert(String source) {
-        EEmployeeStatus employeeStatus = EEmployeeStatus.valueOf(source);
+    public EmployeeStatus convert(String source) {
 
-        return employeeStatusMapper.toDto(employeeStatusService.getStatusByName(employeeStatus));
+        return EmployeeStatus.valueOf(source);
     }
 }

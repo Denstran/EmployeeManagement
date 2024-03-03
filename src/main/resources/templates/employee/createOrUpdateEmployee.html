@@ -161,8 +161,8 @@
             <div class="form-group">
                 <label for="statusSelect" aria-describedby="statusError">Статус</label>
                 <select class="form-control" id="statusSelect" name="statusSelect" th:field="*{employeeStatus}">
-                    <option th:each="status : ${employeeStatusDTOS}" th:value="${status.employeeStatus}"
-                            th:text="${status.employeeStatus}"></option>
+                    <option th:each="status : ${employeeStatuses}" th:value="${status}"
+                            th:text="${status}"></option>
                 </select>
 
                 <small th:if="${#fields.hasErrors('employeeStatus')}" th:errors="*{employeeStatus}"

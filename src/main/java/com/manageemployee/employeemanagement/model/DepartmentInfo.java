@@ -2,7 +2,7 @@ package com.manageemployee.employeemanagement.model;
 
 import com.manageemployee.employeemanagement.converter.MoneyConverter;
 import com.manageemployee.employeemanagement.model.embeddable.CompanyBranchDepartmentPK;
-import com.manageemployee.employeemanagement.model.enumTypes.EPaymentType;
+import com.manageemployee.employeemanagement.model.enumTypes.PaymentType;
 import com.manageemployee.employeemanagement.model.enumTypes.TransferAction;
 import com.manageemployee.employeemanagement.model.events.departmentEvents.DepartmentInfoRegistered;
 import com.manageemployee.employeemanagement.model.events.departmentEvents.DepartmentInfoRemoved;
@@ -36,7 +36,7 @@ public class DepartmentInfo extends AbstractAggregateRoot<DepartmentInfo> {
         DepartmentInfoPaymentLog departmentInfoPaymentLog = new DepartmentInfoPaymentLog();
         departmentInfoPaymentLog.setDepartment(this.pk.getDepartment());
         departmentInfoPaymentLog.setCompanyBranch(this.pk.getCompanyBranch());
-        departmentInfoPaymentLog.setPaymentType(new PaymentType(3L, EPaymentType.BUDGET_CHANGES));
+        departmentInfoPaymentLog.setPaymentType(PaymentType.BUDGET_CHANGES);
         departmentInfoPaymentLog.setPaymentAmount(this.departmentBudget);
         departmentInfoPaymentLog.setTransferAction(TransferAction.INCREASE);
 

@@ -1,6 +1,6 @@
 package com.manageemployee.employeemanagement.model.enumTypes;
 
-public enum EEmployeeStatus {
+public enum EmployeeStatus {
     WORKING,
     VACATION,
     HEALING,

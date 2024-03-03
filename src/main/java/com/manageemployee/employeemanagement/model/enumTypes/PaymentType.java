@@ -1,6 +1,6 @@
 package com.manageemployee.employeemanagement.model.enumTypes;
 
-public enum EPaymentType {
+public enum PaymentType {
     SALARY,
     BONUS,
     BUDGET_CHANGES,

@@ -3,13 +3,11 @@ package com.manageemployee.employeemanagement.mappers;
 
 import com.manageemployee.employeemanagement.converter.dtoMappers.EmployeeMapper;
 import com.manageemployee.employeemanagement.dto.EmployeeDTO;
-import com.manageemployee.employeemanagement.dto.EmployeeStatusDTO;
 import com.manageemployee.employeemanagement.model.CompanyBranch;
 import com.manageemployee.employeemanagement.model.Employee;
-import com.manageemployee.employeemanagement.model.EmployeeStatus;
 import com.manageemployee.employeemanagement.model.Position;
 import com.manageemployee.employeemanagement.model.embeddable.Name;
-import com.manageemployee.employeemanagement.model.enumTypes.EEmployeeStatus;
+import com.manageemployee.employeemanagement.model.enumTypes.EmployeeStatus;
 import com.manageemployee.employeemanagement.service.CompanyBranchService;
 import com.manageemployee.employeemanagement.service.PositionService;
 import org.junit.jupiter.api.Assertions;
@@ -93,24 +91,23 @@ public class EmployeeMapperTest {
     @Test
     void assert_that_employee_status_is_the_same_after_convertation_from_entity_to_dto() {
         Employee entity = new Employee();
-        entity.setEmployeeStatus(new EmployeeStatus(1L, EEmployeeStatus.WORKING));
+        entity.setEmployeeStatus(EmployeeStatus.WORKING);
 
         EmployeeDTO dto = employeeMapper.toDto(entity);
 
-        Assertions.assertEquals(entity.getEmployeeStatus().getEmployeeStatus(),
-                dto.getEmployeeStatus().getEmployeeStatus());
+        Assertions.assertEquals(entity.getEmployeeStatus(),
+                dto.getEmployeeStatus());
     }
 
     @Test
     void assert_that_employee_status_is_the_same_after_convertation_from_dto_to_entity() {
         EmployeeDTO dto = new EmployeeDTO();
-            dto.setEmployeeStatus(new EmployeeStatusDTO(1L, EEmployeeStatus.WORKING));
+            dto.setEmployeeStatus(EmployeeStatus.WORKING);
             dto.setId(1L);
 
         Employee entity = employeeMapper.toEntity(dto);
 
-        Assertions.assertEquals(dto.getEmployeeStatus().getEmployeeStatus(),
-                entity.getEmployeeStatus().getEmployeeStatus());
+        Assertions.assertEquals(dto.getEmployeeStatus(), entity.getEmployeeStatus());
     }
 
     @Test

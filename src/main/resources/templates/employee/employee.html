@@ -37,7 +37,7 @@
             <td th:text="${employee.email}"></td>
             <td th:text="${employee.homeAddress}"></td>
             <td th:text="${employee.salary}"></td>
-            <td th:text="${employee.employeeStatus.employeeStatus}"></td>
+            <td th:text="${employee.employeeStatus}"></td>
             <td><a class="btn btn-dark" th:href="@{/companyBranches/{id}/departments/{depId}/employees/{employeeId}/payments(id = ${employee.companyBranchId}, employeeId = ${employee.id}, depId = ${depId})}" role="button">Платежи</a></td>
             <td>
                 <a class="btn btn-dark" role="button" th:href="@{/companyBranches/{companyBranchId}/departments/{depId}/employees/{empId}/update(

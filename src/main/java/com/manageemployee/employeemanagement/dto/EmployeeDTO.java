@@ -3,6 +3,7 @@ package com.manageemployee.employeemanagement.dto;
 import com.manageemployee.employeemanagement.model.Money;
 import com.manageemployee.employeemanagement.model.embeddable.Address;
 import com.manageemployee.employeemanagement.model.embeddable.Name;
+import com.manageemployee.employeemanagement.model.enumTypes.EmployeeStatus;
 import com.manageemployee.employeemanagement.validationgroups.DefaultGroup;
 import com.manageemployee.employeemanagement.validationgroups.UpdatingGroup;
 import jakarta.validation.Valid;
@@ -43,8 +44,7 @@ public class EmployeeDTO {
     private Money salary;
 
     @NotNull(groups = {UpdatingGroup.class}, message = "Статус сотрудника не может быть пустым!")
-    @Valid
-    private EmployeeStatusDTO employeeStatus;
+    private EmployeeStatus employeeStatus;
 
     @NotNull(groups = {DefaultGroup.class}, message = "Сотрудник должен числиться в филиале!")
     private Long companyBranchId;

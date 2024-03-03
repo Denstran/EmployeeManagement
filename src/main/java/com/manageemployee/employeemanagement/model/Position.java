@@ -1,19 +1,14 @@
 package com.manageemployee.employeemanagement.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Formula;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "POSITION")
@@ -37,6 +32,10 @@ public class Position {
     @NotNull(message = "Отдел, для которого предназначена должность не должен быть пустым!")
     @JoinColumn(name = "DEP_ID", nullable = false, foreignKey =  @ForeignKey(name = "FK_POSITION_DEPARTMENT"))
     private Department department;
+
+    @Column(name = "IS_LEADING")
+    @NotNull(message = "Значение управленческой должности не может быть пустым")
+    private boolean isLeading;
 
     @Override
     public boolean equals(Object o) {

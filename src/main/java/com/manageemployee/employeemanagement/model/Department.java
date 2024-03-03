@@ -1,16 +1,12 @@
 package com.manageemployee.employeemanagement.model;
 
-import com.manageemployee.employeemanagement.model.enumTypes.EEmployeeStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.Date;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "DEPARTMENT")

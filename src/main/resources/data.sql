@@ -25,47 +25,46 @@ INSERT INTO department (department_name) VALUES
                                              ('Research and Development'),
                                              ('Sales');
 
-INSERT INTO employee_statuses (employee_status) VALUES ('WORKING'), ('VACATION'), ('HEALING'), ('FIRED');
 
 -- Marketing
-INSERT INTO position (dep_id, position_name) VALUES
-                                                 (1, 'Marketing Manager'),
-                                                 (1, 'Marketing Coordinator'),
-                                                 (1, 'Social Media Specialist'),
-                                                 (1, 'Brand Manager'),
-                                                 (1, 'Market Research Analyst');
+INSERT INTO position (dep_id, position_name, is_leading) VALUES
+                                                 (1, 'Marketing Manager', true),
+                                                 (1, 'Marketing Coordinator', false),
+                                                 (1, 'Social Media Specialist', false),
+                                                 (1, 'Brand Manager', false),
+                                                 (1, 'Market Research Analyst', false);
 
 -- Finance
-INSERT INTO position (dep_id, position_name) VALUES
-                                                 (2, 'Financial Analyst'),
-                                                 (2, 'Accountant'),
-                                                 (2, 'Finance Manager'),
-                                                 (2, 'Auditor'),
-                                                 (2, 'Tax Specialist');
+INSERT INTO position (dep_id, position_name, is_leading) VALUES
+                                                 (2, 'Financial Analyst', false),
+                                                 (2, 'Accountant', false),
+                                                 (2, 'Finance Manager', true),
+                                                 (2, 'Auditor', false),
+                                                 (2, 'Tax Specialist', false);
 
 -- Human Resources
-INSERT INTO position (dep_id, position_name) VALUES
-                                                 (3, 'HR Manager'),
-                                                 (3, 'Recruiter'),
-                                                 (3, 'Training Specialist'),
-                                                 (3, 'Compensation Analyst'),
-                                                 (3, 'Employee Relations Specialist');
+INSERT INTO position (dep_id, position_name, is_leading) VALUES
+                                                 (3, 'HR Manager', true),
+                                                 (3, 'Recruiter', false),
+                                                 (3, 'Training Specialist', false),
+                                                 (3, 'Compensation Analyst', false),
+                                                 (3, 'Employee Relations Specialist', false);
 
 -- Research and Development
-INSERT INTO position (dep_id, position_name) VALUES
-                                                 (4, 'Research Scientist'),
-                                                 (4, 'Software Engineer'),
-                                                 (4, 'Product Manager'),
-                                                 (4, 'Quality Assurance Analyst'),
-                                                 (4, 'Data Analyst');
+INSERT INTO position (dep_id, position_name, is_leading) VALUES
+                                                 (4, 'Research Scientist', false),
+                                                 (4, 'Software Engineer', false),
+                                                 (4, 'Product Manager', true),
+                                                 (4, 'Quality Assurance Analyst', false),
+                                                 (4, 'Data Analyst', false);
 
 -- Sales
-INSERT INTO position (dep_id, position_name) VALUES
-                                                 (5, 'Sales Manager'),
-                                                 (5, 'Account Executive'),
-                                                 (5, 'Sales Representative'),
-                                                 (5, 'Business Development Manager'),
-                                                 (5, 'Customer Success Manager');
+INSERT INTO position (dep_id, position_name, is_leading) VALUES
+                                                 (5, 'Sales Manager', true),
+                                                 (5, 'Account Executive', false),
+                                                 (5, 'Sales Representative', false),
+                                                 (5, 'Business Development Manager', false),
+                                                 (5, 'Customer Success Manager', false);
 
 INSERT INTO department_info(company_branch_id, department_id, department_budget) VALUES
                                                                                      (1, 1, '10000 RUB'),
@@ -74,19 +73,13 @@ INSERT INTO department_info(company_branch_id, department_id, department_budget)
                                                                                      (1, 4, '10000 RUB'),
                                                                                      (1, 5, '10000 RUB');
 
-INSERT INTO employee (employment_date, home_building_number, company_branch_id, employee_status_id, position_id, salary, email, first_name, home_city, home_country, home_street, home_zip_code, last_name, middle_name, phone_number)
+INSERT INTO employee (employment_date, home_building_number, company_branch_id, employee_status, position_id, salary, email, first_name, home_city, home_country, home_street, home_zip_code, last_name, middle_name, phone_number)
 VALUES
-    ('2023-05-15', 123, 1, 1, 1, '50000 RUB', 'john.doe@examle.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4567'),
-    ('2023-05-15', 123, 1, 1, 2, '50000 RUB', 'john.doe@exmple.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4561'),
-    ('2023-05-15', 123, 1, 1, 3, '50000 RUB', 'john.doe@exampe.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4562'),
-    ('2023-05-15', 123, 1, 1, 4, '50000 RUB', 'john.doe@xample.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4563'),
-    ('2023-05-15', 123, 1, 1, 5, '50000 RUB', 'john.doe@ample.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4564'),
-    ('2023-05-15', 123, 1, 1, 6, '50000 RUB', 'john.doe@exale.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4565');
-
-INSERT INTO PAYMENT_TYPE (PAYMENT_TYPE) VALUES
-                                            ('SALARY'),
-                                            ('BONUS'),
-                                            ('BUDGET_CHANGES'),
-                                            ('OTHERS')
+    ('2023-05-15', 123, 1, 'WORKING', 1, '50000 RUB', 'john.doe@examle.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4567'),
+    ('2023-05-15', 123, 1, 'WORKING', 2, '50000 RUB', 'john.doe@exmple.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4561'),
+    ('2023-05-15', 123, 1, 'WORKING', 3, '50000 RUB', 'john.doe@exampe.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4562'),
+    ('2023-05-15', 123, 1, 'WORKING', 4, '50000 RUB', 'john.doe@xample.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4563'),
+    ('2023-05-15', 123, 1, 'WORKING', 5, '50000 RUB', 'john.doe@ample.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4564'),
+    ('2023-05-15', 123, 1, 'WORKING', 6, '50000 RUB', 'john.doe@exale.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4565');
 
 

@@ -33,7 +33,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Optional<Employee> findEmployeeByEmail(String email);
 
     @Query("SELECT e FROM Employee e WHERE e.companyBranch = :companyBranch " +
-            "AND e.position.department = :department AND e.employeeStatus.employeeStatus != 'FIRED'")
+            "AND e.position.department = :department AND e.employeeStatus != 'FIRED'")
     List<Employee> findWorkingEmployeesByCompanyBranchAndDepartment(@Param("companyBranch") CompanyBranch companyBranch,
                                                                     @Param("department") Department department);
 

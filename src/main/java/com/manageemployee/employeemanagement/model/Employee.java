@@ -3,7 +3,7 @@ package com.manageemployee.employeemanagement.model;
 import com.manageemployee.employeemanagement.converter.MoneyConverter;
 import com.manageemployee.employeemanagement.model.embeddable.Address;
 import com.manageemployee.employeemanagement.model.embeddable.Name;
-import com.manageemployee.employeemanagement.model.enumTypes.EEmployeeStatus;
+import com.manageemployee.employeemanagement.model.enumTypes.EmployeeStatus;
 import com.manageemployee.employeemanagement.model.events.employeeEvents.EmployeeDeleted;
 import com.manageemployee.employeemanagement.model.events.employeeEvents.EmployeeFired;
 import com.manageemployee.employeemanagement.model.events.employeeEvents.EmployeeHired;
@@ -15,7 +15,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
@@ -66,10 +65,8 @@ public class Employee extends AbstractAggregateRoot<Employee> {
     @CreationTimestamp
     private Date employmentDate;
 
-    @BatchSize(size = 4)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "EMPLOYEE_STATUS_ID", nullable = false,
-            foreignKey =  @ForeignKey(name = "FK_EMPLOYEE_EMPLOYEE_STATUS"))
+    @Column(name = "EMPLOYEE_STATUS")
+    @Enumerated(value = EnumType.STRING)
     private EmployeeStatus employeeStatus;
 
     @NotNull
@@ -100,7 +97,7 @@ public class Employee extends AbstractAggregateRoot<Employee> {
     }
 
     public void hireEmployee() {
-        this.employeeStatus = new EmployeeStatus(1L, EEmployeeStatus.WORKING);
+        this.employeeStatus = EmployeeStatus.WORKING;
         registerEvent(new EmployeeHired(this.salary, this.position.getDepartment(), this.companyBranch, this));
     }
 

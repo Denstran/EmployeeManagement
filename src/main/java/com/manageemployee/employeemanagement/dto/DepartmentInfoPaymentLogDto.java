@@ -1,6 +1,7 @@
 package com.manageemployee.employeemanagement.dto;
 
 import com.manageemployee.employeemanagement.model.Money;
+import com.manageemployee.employeemanagement.model.enumTypes.PaymentType;
 import com.manageemployee.employeemanagement.model.enumTypes.TransferAction;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
@@ -26,7 +27,7 @@ public class DepartmentInfoPaymentLogDto {
     @FutureOrPresent(message = "Перевод средств не может быть в прошлом!")
     private Date dateOfPayment;
     @NotNull(message = "Тип платежа не может быть пустым!")
-    private PaymentTypeDTO paymentType;
+    private PaymentType paymentType;
 
     @NotNull(message = "Филиал не может отсутствовать!")
     private Long companyBranchId;

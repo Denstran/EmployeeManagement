@@ -2,7 +2,7 @@ package com.manageemployee.employeemanagement.service;
 
 import com.manageemployee.employeemanagement.model.*;
 import com.manageemployee.employeemanagement.model.embeddable.Name;
-import com.manageemployee.employeemanagement.model.enumTypes.EEmployeeStatus;
+import com.manageemployee.employeemanagement.model.enumTypes.EmployeeStatus;
 import com.manageemployee.employeemanagement.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class EmployeeService {
     public void updateEmployee(Employee employee) {
         Employee employeeFromDB = getById(employee.getId());
 
-        if (employee.getEmployeeStatus().getEmployeeStatus().equals(EEmployeeStatus.FIRED)) {
+        if (employee.getEmployeeStatus().equals(EmployeeStatus.FIRED)) {
             employee.setSalary(employeeFromDB.getSalary());
             employee.fireEmployee();
         }

@@ -1,6 +1,7 @@
 package com.manageemployee.employeemanagement.model;
 
 import com.manageemployee.employeemanagement.converter.MoneyConverter;
+import com.manageemployee.employeemanagement.model.enumTypes.PaymentType;
 import com.manageemployee.employeemanagement.model.enumTypes.TransferAction;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -18,6 +19,10 @@ public class BasePaymentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull(message = "Тип платежа не может быть пустым!")
+    @Enumerated(value = EnumType.STRING)
+    private PaymentType paymentType;
 
     @Convert(
             converter = MoneyConverter.class
