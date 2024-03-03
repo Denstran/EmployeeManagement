@@ -4,6 +4,7 @@ import com.manageemployee.employeemanagement.model.CompanyBranch;
 import com.manageemployee.employeemanagement.model.Department;
 import com.manageemployee.employeemanagement.model.DepartmentInfo;
 import com.manageemployee.employeemanagement.model.Employee;
+import com.manageemployee.employeemanagement.model.embeddable.Name;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,6 +18,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
             "AND e.position.department.id = :departmentId")
     List<Employee> getEmployeeByCompanyBranchAndDepartment(@Param("companyBranchId") Long companyBranchId,
                                                            @Param("departmentId") Long departmentId);
+
+    @Query("SELECT e.name FROM Employee e WHERE e.id = :employeeId")
+    Optional<Name> getEmployeeNameById(@Param("employeeId") Long employeeId);
 
     boolean existsByPhoneNumber(String phoneNumber);
     boolean existsByEmail(String email);
@@ -34,4 +38,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
                                                                     @Param("department") Department department);
 
     void deleteAllByCompanyBranchAndPosition_Department(CompanyBranch companyBranch, Department department);
+    void deleteAllByCompanyBranch(CompanyBranch companyBranch);
 }

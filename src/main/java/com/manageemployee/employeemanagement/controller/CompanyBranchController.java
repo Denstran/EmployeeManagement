@@ -216,7 +216,7 @@ public class CompanyBranchController {
     @PostMapping("/{companyBranchId}/departments/{departmentId}/remove")
     public String removeDepartmentInfo(@PathVariable Long companyBranchId, @PathVariable Long departmentId) {
         DepartmentInfo departmentInfo = departmentInfoService.getById(companyBranchId, departmentId);
-        departmentInfoService.removeDepartment(departmentInfo);
+        departmentInfoService.deleteDepartmentInfo(departmentInfo);
         return String.format(REDIRECT_URL_DEPARTMENTS, companyBranchId);
     }
 

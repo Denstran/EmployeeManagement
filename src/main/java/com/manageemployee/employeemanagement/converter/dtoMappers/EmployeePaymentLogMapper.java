@@ -3,6 +3,7 @@ package com.manageemployee.employeemanagement.converter.dtoMappers;
 import com.manageemployee.employeemanagement.dto.EmployeePaymentLogDto;
 import com.manageemployee.employeemanagement.model.EmployeePaymentLog;
 import com.manageemployee.employeemanagement.service.EmployeeService;
+import jakarta.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -19,17 +20,25 @@ public class EmployeePaymentLogMapper
         this.employeeService = employeeService;
     }
 
+    @PostConstruct
     @Override
     public void setupMapper() {
         mapper.createTypeMap(EmployeePaymentLog.class, EmployeePaymentLogDto.class)
-                .addMappings(m -> m.skip(EmployeePaymentLogDto::setEmployeeId));
+                .addMappings(m -> {
+                    m.skip(EmployeePaymentLogDto::setEmployeeId);
+                    m.skip(EmployeePaymentLogDto::setEmployeeName);
+                    m.skip(EmployeePaymentLogDto::setEmployeePhoneNumber);
+                }).setPostConverter(toDtoConverter());
+
         mapper.createTypeMap(EmployeePaymentLogDto.class, EmployeePaymentLog.class)
-                .addMappings(m -> m.skip(EmployeePaymentLog::setEmployee));
+                .addMappings(m -> m.skip(EmployeePaymentLog::setEmployee)).setPostConverter(toEntityConverter());
     }
 
     @Override
     protected void mapSpecificFieldsForDto(EmployeePaymentLog source, EmployeePaymentLogDto destination) {
         destination.setEmployeeId(Objects.isNull(source) ? null : source.getEmployee().getId());
+        destination.setEmployeeName(source.getEmployee().getName().toString());
+        destination.setEmployeePhoneNumber(source.getEmployee().getPhoneNumber());
     }
 
     @Override

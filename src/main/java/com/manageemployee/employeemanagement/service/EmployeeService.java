@@ -1,10 +1,12 @@
 package com.manageemployee.employeemanagement.service;
 
 import com.manageemployee.employeemanagement.model.*;
+import com.manageemployee.employeemanagement.model.embeddable.Name;
 import com.manageemployee.employeemanagement.model.enumTypes.EEmployeeStatus;
 import com.manageemployee.employeemanagement.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -48,9 +50,20 @@ public class EmployeeService {
         repository.delete(employee);
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deleteAllByCompanyBranch(CompanyBranch companyBranch) {
+        repository.deleteAllByCompanyBranch(companyBranch);
+    }
+
     @Transactional
     public void deleteAllByCompanyBranchAndDepartment(CompanyBranch companyBranch, Department department) {
         repository.deleteAllByCompanyBranchAndPosition_Department(companyBranch, department);
+    }
+
+    public String getEmployeeNameById(Long employeeId) {
+        Optional<Name> employeeName = repository.getEmployeeNameById(employeeId);
+        return employeeName.map(Name::toString).orElseThrow(()
+                -> new IllegalArgumentException("Выбранного сотрудника не существует"));
     }
 
     public List<Employee> getEmployeesByCompanyBranchAndDepartment(Long companyBranchId, Long depId) {

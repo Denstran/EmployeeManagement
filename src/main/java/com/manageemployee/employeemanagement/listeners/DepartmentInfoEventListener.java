@@ -61,7 +61,11 @@ public class DepartmentInfoEventListener {
         CompanyBranchPaymentLog paymentLog
                 = CompanyBranchPaymentLog.createPaymentLog(companyBranch, totalBudgetIncome, true);
 
+        paymentLogService.deleteEmployeesPaymentLogsByCompanyBranchAndDepartment(companyBranch,
+                departmentInfoRemoved.getDepartment());
         employeeService.deleteAllByCompanyBranchAndDepartment(companyBranch, departmentInfoRemoved.getDepartment());
+        paymentLogService.deleteDepartmentInfoPaymentLogs(companyBranch, departmentInfoRemoved.getDepartment());
+
         companyBranchService.updateCompanyBranch(companyBranch);
         paymentLogService.saveCompanyBranchPaymentLog(paymentLog);
     }

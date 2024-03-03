@@ -111,7 +111,7 @@ public class Employee extends AbstractAggregateRoot<Employee> {
 
     public void deleteEmployee() {
         registerEvent(new EmployeeDeleted(this.salary, this.position.getDepartment(),
-                this.companyBranch, employeeStatus));
+                this.companyBranch, employeeStatus, this));
     }
 
     public void fireEmployee() {

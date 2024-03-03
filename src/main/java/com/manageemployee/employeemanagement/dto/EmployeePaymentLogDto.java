@@ -26,6 +26,9 @@ public class EmployeePaymentLogDto {
     @NotNull(message = "Тип платежа не может быть пустым!")
     private PaymentTypeDTO paymentType;
 
+    private String employeeName;
+    private String employeePhoneNumber;
+
     @NotNull(message = "Сотрудник не может отсутствовать!")
     private Long employeeId;
     @NotNull

@@ -2,6 +2,9 @@ package com.manageemployee.employeemanagement.model;
 
 import com.manageemployee.employeemanagement.converter.MoneyConverter;
 import com.manageemployee.employeemanagement.model.embeddable.Address;
+import com.manageemployee.employeemanagement.model.events.companyBranchEvents.CompanyBranchCreated;
+import com.manageemployee.employeemanagement.model.events.companyBranchEvents.CompanyBranchDeleted;
+import com.manageemployee.employeemanagement.model.events.companyBranchEvents.CompanyBranchUpdated;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.util.Objects;
 
@@ -23,7 +27,7 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompanyBranch{
+public class CompanyBranch extends AbstractAggregateRoot<CompanyBranch> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -71,4 +75,16 @@ public class CompanyBranch{
         return Objects.hash(id);
     }
 
+    public void deleteCompanyBranch() {
+        registerEvent(new CompanyBranchDeleted(this));
+    }
+
+    public void updateCompanyBranch(CompanyBranch companyBranchFromDB) {
+
+        registerEvent(new CompanyBranchUpdated(this, companyBranchFromDB.getBudget()));
+    }
+
+    public void createCompanyBranch() {
+        registerEvent(new CompanyBranchCreated(this));
+    }
 }

@@ -7,6 +7,7 @@ import com.manageemployee.employeemanagement.model.embeddable.CompanyBranchDepar
 import com.manageemployee.employeemanagement.repository.DepartmentInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -39,10 +40,15 @@ public class DepartmentInfoService {
     }
 
     @Transactional
-    public void removeDepartment(DepartmentInfo departmentInfo) {
+    public void deleteDepartmentInfo(DepartmentInfo departmentInfo) {
         departmentInfo.removeDepartmentInfo();
 
         repository.delete(departmentInfo);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deleteAllByCompanyBranch(CompanyBranch companyBranch) {
+        repository.deleteAllByPk_CompanyBranch(companyBranch);
     }
 
     public DepartmentInfo getById(CompanyBranchDepartmentPK id) {

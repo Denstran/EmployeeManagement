@@ -23,6 +23,7 @@ public class CompanyBranchService {
         if (companyBranch == null)
             throw new IllegalArgumentException("Некорректный объект для создания филиала!");
 
+        companyBranch.createCompanyBranch();
         return  companyBranchRepository.saveAndFlush(companyBranch);
     }
 
@@ -30,6 +31,8 @@ public class CompanyBranchService {
     public CompanyBranch updateCompanyBranch(CompanyBranch companyBranch) {
         if (companyBranch == null)
             throw new IllegalArgumentException("Выбран некорректный филиал для обновления!");
+        CompanyBranch companyBranchFromDB = getCompanyBranchById(companyBranch.getId());
+        companyBranch.updateCompanyBranch(companyBranchFromDB);
 
         return companyBranchRepository.saveAndFlush(companyBranch);
     }
@@ -59,7 +62,9 @@ public class CompanyBranchService {
     public void deleteCompanyBranchById(Long id) {
         if (id == null || id < 1)
             throw new IllegalArgumentException("Выбран несуществующий филиал!");
-
+        CompanyBranch companyBranch = getCompanyBranchById(id);
+        companyBranch.deleteCompanyBranch();
+        companyBranchRepository.delete(companyBranch);
     }
 
     public Optional<CompanyBranch> getByPhoneNumber(String phoneNumber) {

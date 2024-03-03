@@ -33,7 +33,7 @@
                 <td th:text="${companyBranch.companyBranchAddress}"></td>
                 <td th:text="${companyBranch.phoneNumber}"></td>
                 <td><a class="btn btn-dark" role="button" th:href="@{/companyBranches/{id}/departments(id = ${companyBranch.id})}">Отделы</a></td>
-                <td><a class="btn btn-dark" href="#" role="button">Платежи</a></td>
+                <td><a class="btn btn-dark" th:href="@{/companyBranches/{id}/payments(id = ${companyBranch.id})}" role="button">Платежи</a></td>
                 <td>
                     <a class="btn btn-dark" role="button" th:href="@{/companyBranches/update/{id}(id = ${companyBranch.id})}">Обновить</a>
                 </td>

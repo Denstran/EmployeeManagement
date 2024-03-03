@@ -80,6 +80,8 @@ public class EmployeeEventListener {
         DepartmentInfoPaymentLog paymentLog =
                 DepartmentInfoPaymentLog.createPaymentLog(employeeDeleted.getCompanyBranch(),
                         employeeDeleted.getDepartment(), employeeDeleted.getSalary(), true);
+
+        paymentLogService.deleteEmployeePaymentLogs(employeeDeleted.getEmployee().getId());
         departmentInfoService.update(departmentInfo);
         paymentLogService.saveDepartmentInfoPaymentLog(paymentLog);
     }
