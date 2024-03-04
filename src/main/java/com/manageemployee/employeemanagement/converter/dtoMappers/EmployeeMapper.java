@@ -37,6 +37,7 @@ public class EmployeeMapper extends AbstractMapperWithSpecificFields<Employee, E
                 .addMappings(m -> {
                     m.skip(EmployeeDTO::setCompanyBranchId);
                     m.skip(EmployeeDTO::setPositionId);
+                    m.skip(EmployeeDTO::setPositionName);
                 }).setPostConverter(toDtoConverter());
 
         mapper.createTypeMap(EmployeeDTO.class, Employee.class)
@@ -58,6 +59,8 @@ public class EmployeeMapper extends AbstractMapperWithSpecificFields<Employee, E
 
         destination.setPositionId(Objects.isNull(source) ||
                 Objects.isNull(source.getPosition()) ? null : source.getPosition().getId());
+
+        destination.setPositionName(source.getPosition().getPositionName());
     }
 
     /**

@@ -110,6 +110,14 @@ public class EmployeeService {
         return totalResult;
     }
 
+    public boolean existsByPositionAndCompanyBranch(Position position, Long companyBranchId) {
+        return repository.existsByPositionAndCompanyBranch_Id(position, companyBranchId);
+    }
+
+    public Optional<Employee> getByPositionAndCompanyBranchId(Position position, Long companyBranchId) {
+        return repository.findByPositionAndCompanyBranch_Id(position, companyBranchId);
+    }
+
     public boolean existsByEmail(String email) {
         return repository.existsByEmail(email);
     }

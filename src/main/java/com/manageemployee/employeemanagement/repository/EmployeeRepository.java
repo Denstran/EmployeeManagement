@@ -36,6 +36,10 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     List<Employee> findWorkingEmployeesByCompanyBranchAndDepartment(@Param("companyBranch") CompanyBranch companyBranch,
                                                                     @Param("department") Department department);
 
+    boolean existsByPositionAndCompanyBranch_Id(Position position, Long companyBranchId);
+
+    Optional<Employee> findByPositionAndCompanyBranch_Id(Position position, Long companyBranchId);
+
     void deleteAllByCompanyBranchAndPosition_Department(CompanyBranch companyBranch, Department department);
     void deleteAllByCompanyBranch(CompanyBranch companyBranch);
 

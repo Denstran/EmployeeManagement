@@ -6,6 +6,7 @@ import com.manageemployee.employeemanagement.model.Employee;
 import com.manageemployee.employeemanagement.model.Money;
 import com.manageemployee.employeemanagement.service.EmployeeService;
 import com.manageemployee.employeemanagement.service.MoneyService;
+import com.manageemployee.employeemanagement.service.PositionService;
 import com.manageemployee.employeemanagement.util.validators.employeeValidators.EmployeeNewEntryValidator;
 import com.manageemployee.employeemanagement.util.validators.employeeValidators.EmployeeUpdatingEntryValidator;
 import com.manageemployee.employeemanagement.util.validators.employeeValidators.EmployeeValidator;
@@ -22,6 +23,7 @@ import java.util.Optional;
 
 public class EmployeeValidatorTest {
     private static final EmployeeService employeeService = Mockito.mock(EmployeeService.class);
+    private static final PositionService positionService = Mockito.mock(PositionService.class);
     private static EmployeeValidator employeeValidator;
     private Employee employee;
     private EmployeeDTO dto;
@@ -31,9 +33,10 @@ public class EmployeeValidatorTest {
     @BeforeAll
     static void beforeAll() {
         MoneyService moneyService = new MoneyService();
-        EmployeeNewEntryValidator newEntryValidator = new EmployeeNewEntryValidator(employeeService, moneyService);
+        EmployeeNewEntryValidator newEntryValidator = new EmployeeNewEntryValidator(employeeService,
+                positionService, moneyService);
         EmployeeUpdatingEntryValidator updatingEntryValidator =
-                new EmployeeUpdatingEntryValidator(employeeService, moneyService);
+                new EmployeeUpdatingEntryValidator(employeeService, moneyService, positionService);
         employeeValidator = new EmployeeValidator(List.of(newEntryValidator, updatingEntryValidator));
     }
 

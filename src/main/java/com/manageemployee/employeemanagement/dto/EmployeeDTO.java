@@ -51,4 +51,6 @@ public class EmployeeDTO {
 
     @NotNull(groups = {DefaultGroup.class}, message = "Сотрудник обязан иметь должность!")
     private Long positionId;
+
+    private String positionName;
 }
