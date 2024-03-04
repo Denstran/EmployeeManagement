@@ -85,7 +85,7 @@
             </div>
             <div class="form-group">
                 <label for="currencyInput">Валюта</label>
-                <input type="text" th:field="*{budget.currency}" class="form-control" id="currencyInput"
+                <input th:readonly="${isUpdating}" type="text" th:field="*{budget.currency}" class="form-control" id="currencyInput"
                        aria-describedby="currencyError" placeholder="Введите валюту"
                        th:value="${isUpdating} ? ${companyBranchDTO.budget.currency} : ''">
 
