@@ -18,9 +18,10 @@ public class PositionDTO {
     @Size(min = 3, message = "Название должности должно быть больше 3 символов!")
     private String positionName;
 
-    private int amountOfEmployees;
-
 
     @NotNull(message = "Должность должна быть привязана к отделу!")
     private Long departmentId;
+
+    private boolean leading;
+    private String departmentName;
 }

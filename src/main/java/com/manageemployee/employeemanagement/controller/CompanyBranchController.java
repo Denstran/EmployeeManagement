@@ -178,17 +178,16 @@ public class CompanyBranchController {
     @GetMapping("/{companyBranchId}/departments/update")
     public String updateDepartmentInfoForm(@PathVariable Long companyBranchId, @RequestParam("depId") Long depId,
                                            Model model, HttpSession session) {
-       DepartmentInfoDTO dto = departmentInfoMapper.toDto(departmentInfoService.getById(companyBranchId, depId));
-       List<DepartmentDTO> availableDepartments = departmentMapper.toDtoList(
-               departmentService.getAvailableDepartmentsWhenUpdating(companyBranchId, depId)
-       );
+       DepartmentInfo departmentInfo = departmentInfoService.getById(companyBranchId, depId);
+       DepartmentInfoDTO dto = departmentInfoMapper.toDto(departmentInfo);
+       DepartmentDTO department = departmentMapper.toDto(departmentInfo.getPk().getDepartment());
 
        model.addAttribute("dto", dto);
-       model.addAttribute("availableDepartments", availableDepartments);
+       model.addAttribute("departmentSelected", department);
        model.addAttribute("companyBranchId", companyBranchId);
        model.addAttribute("isUpdating", true);
 
-       session.setAttribute("availableDepartments", availableDepartments);
+       session.setAttribute("departmentSelected", department);
 
        return ADD_DEPARTMENT_FORM;
     }
@@ -199,9 +198,9 @@ public class CompanyBranchController {
                                        Model model, HttpSession session) {
         departmentInfoValidator.validate(dto, bindingResult);
         if (bindingResult.hasErrors()) {
-            List<DepartmentDTO> availableDepartments =
-                    (List<DepartmentDTO>) session.getAttribute("availableDepartments");
-            model.addAttribute("availableDepartments", availableDepartments);
+            DepartmentDTO department =
+                    (DepartmentDTO) session.getAttribute("departmentSelected");
+            model.addAttribute("departmentSelected", department);
             model.addAttribute("companyBranchId", companyBranchId);
             model.addAttribute("isUpdating", true);
 

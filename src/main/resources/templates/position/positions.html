@@ -11,32 +11,64 @@
 <header th:replace="fragments/header :: header(text='ДОЛЖНОСТИ')"></header>
 
 <div class="container">
+    <!-- Форма для выбора критериев поиска -->
+    <form th:action="@{/positions}" method="get">
+        <div class="row">
+            <div class="col-md-3">
+                <label for="department">Отдел:</label>
+                <select id="department" name="department">
+                    <option th:each="department : ${departments}" th:value="${department.departmentName}"
+                            th:text="${department.departmentName}"></option>
+                    <option value="ALL">Все</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="isLeading" id="isLeadingTrue" value="true">
+                    <label class="form-check-label" for="isLeadingTrue">Ведущие</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="isLeading" id="isLeadingFalse" value="false">
+                    <label class="form-check-label" for="isLeadingFalse">Не ведущие</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="isLeading" id="all" value="all" checked>
+                    <label class="form-check-label" for="all">Все</label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary">Поиск</button>
+                <a class="btn btn-primary" role="button" th:href="@{/positions}">Все записи</a>
+            </div>
+        </div>
+    </form>
+
+
+
+
     <hr/>
-    <a class="btn btn-dark" th:href="@{/companyBranches/{companyBranchId}/departments/{depId}/positions/new(
-            companyBranchId=${companyBranchId}, depId=${depId})}" role="button">Добавить должность</a>
+    <a class="btn btn-dark" th:href="@{/positions/createPosition}" role="button">Добавить должность</a>
     <hr/>
     <table class="table">
         <thead class="table-dark">
         <tr>
             <th scope="col">Название должности</th>
-            <th scope="col">Количество сотрудников</th>
-            <th scope="col">Необходимое количество сотрудников</th>
+            <th scope="col">Отдел должности</th>
+            <th scope="col">Ведущая</th>
             <th scope="col">Обновление</th>
             <th scope="col">Удаление</th>
         </tr>
         </thead>
         <tbody>
-            <tr th:each="positionDTO : ${positionsDTO}">
-                <td th:text="${positionDTO.positionName}"></td>
-                <td th:text="${positionDTO.amountOfEmployees}"></td>
-                <td th:text="${positionDTO.requiredEmployeeAmount}"></td>
+            <tr th:each="position : ${positions}">
+                <td th:text="${position.positionName}"></td>
+                <td th:text="${position.departmentName}"></td>
+                <td th:text="${position.leading ? 'ДА' : 'НЕТ'}"></td>
                 <td>
-                    <a class="btn btn-dark" role="button" th:href="@{/companyBranches/{companyBranchId}/departments/{depId}/positions/{positionId}/update(
-                    companyBranchId=${companyBranchId}, depId=${depId}, positionId = ${positionDTO.getId()})}">Обновить</a>
+                    <a class="btn btn-dark" role="button" th:href="@{/positions/{positionId}/update(positionId = ${position.id})}">Обновить</a>
                 </td>
                 <td>
-                    <form th:action="@{/companyBranches/{companyBranchId}/departments/{depId}/positions/{positionId}/delete(
-                companyBranchId=${companyBranchId}, depId=${depId}, positionId = ${positionDTO.getId()})}" method="post">
+                    <form th:action="@{/positions/{positionId}/delete(positionId = ${position.id})}" method="post">
                         <button type="submit" class="btn btn-danger">Удалить</button>
                     </form>
                 </td>

@@ -1,9 +1,6 @@
 package com.manageemployee.employeemanagement.repository;
 
-import com.manageemployee.employeemanagement.model.CompanyBranch;
-import com.manageemployee.employeemanagement.model.Department;
-import com.manageemployee.employeemanagement.model.DepartmentInfo;
-import com.manageemployee.employeemanagement.model.Employee;
+import com.manageemployee.employeemanagement.model.*;
 import com.manageemployee.employeemanagement.model.embeddable.Name;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,6 +19,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query("SELECT e.name FROM Employee e WHERE e.id = :employeeId")
     Optional<Name> getEmployeeNameById(@Param("employeeId") Long employeeId);
 
+    List<Employee> findByPosition(Position position);
+
     boolean existsByPhoneNumber(String phoneNumber);
     boolean existsByEmail(String email);
 
@@ -39,4 +38,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     void deleteAllByCompanyBranchAndPosition_Department(CompanyBranch companyBranch, Department department);
     void deleteAllByCompanyBranch(CompanyBranch companyBranch);
+
+    void deleteAllByPosition(Position position);
 }

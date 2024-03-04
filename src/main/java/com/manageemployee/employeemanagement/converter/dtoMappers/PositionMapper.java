@@ -30,7 +30,10 @@ public class PositionMapper extends AbstractMapperWithSpecificFields<Position, P
     @Override
     public void setupMapper() {
         mapper.createTypeMap(Position.class, PositionDTO.class)
-                .addMappings(m -> m.skip(PositionDTO::setDepartmentId)).setPostConverter(toDtoConverter());
+                .addMappings(m -> {
+                    m.skip(PositionDTO::setDepartmentId);
+                    m.skip(PositionDTO::setDepartmentName);
+                }).setPostConverter(toDtoConverter());
 
         mapper.createTypeMap(PositionDTO.class, Position.class)
                 .addMappings(m -> m.skip(Position::setDepartment)).setPostConverter(toEntityConverter());
@@ -45,6 +48,8 @@ public class PositionMapper extends AbstractMapperWithSpecificFields<Position, P
     protected void mapSpecificFieldsForDto(Position source, PositionDTO destination) {
         destination.setDepartmentId(Objects.isNull(source) ||
                 Objects.isNull(source.getDepartment()) ? null : source.getDepartment().getId());
+
+        destination.setDepartmentName(source.getDepartment().getDepartmentName());
     }
 
     /**

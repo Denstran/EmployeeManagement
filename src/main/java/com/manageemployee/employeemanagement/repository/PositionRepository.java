@@ -2,14 +2,18 @@ package com.manageemployee.employeemanagement.repository;
 
 import com.manageemployee.employeemanagement.model.Position;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface PositionRepository extends JpaRepository<Position, Long> {
+public interface PositionRepository extends JpaRepository<Position, Long>, JpaSpecificationExecutor<Position> {
     List<Position> getPositionsByDepartmentId(Long departmentId);
 
-    boolean existsByPositionNameIgnoreCaseAndDepartment_Id(String positionName, Long depId);
+    boolean existsByLeadingAndDepartment_Id(boolean isLeading, Long departmentId);
+    boolean existsByPositionNameIgnoreCase(String positionName);
 
-    Optional<Position> getByPositionNameIgnoreCaseAndDepartment_Id(String positionName, Long depId);
+    Optional<Position> findByLeadingAndDepartment_Id(boolean isLeading, Long departmentId);
+
+    Optional<Position> findByPositionNameIgnoreCase(String positionName);
 }

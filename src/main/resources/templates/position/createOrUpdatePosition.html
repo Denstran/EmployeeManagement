@@ -11,9 +11,7 @@
 <body>
     <header th:replace="fragments/header :: header(text='ДОБАВЛЕНИЕ ДОЛЖНОСТИ')"></header>
     <div class="container">
-        <form th:action="${isUpdating} ? @{/companyBranches/{id}/departments/{depId}/positions/{positionId}/update
-        (id = ${companyBranchId}, depId = ${depId}, positionId = ${positionId})}
-        : @{/companyBranches/{id}/departments/{depId}/positions/new(id = ${companyBranchId}, depId = ${depId})}"
+        <form th:action="${isUpdating} ? @{/positions/{positionId}/update(positionId = ${positionId})} : @{/positions/createPosition}"
               th:object="${position}" method="post">
             <hr/>
             <h2>Название должности</h2>
@@ -28,20 +26,33 @@
                        class="form-text text-danger">Error</small>
             </div>
             <hr/>
-            <h2>Необходимое количество сотрудников</h2>
+            <h2>Отдел</h2>
             <div class="form-group">
-                <label for="requiredEmployeeAmountInput">Количество</label>
-                <input type="number" th:field="*{requiredEmployeeAmount}" class="form-control" id="requiredEmployeeAmountInput"
-                       aria-describedby="requiredEmployeeAmountInputError" placeholder="Введите количество сотрудников"
-                       th:value="${isUpdating} ? ${position.requiredEmployeeAmount} : ''">
+                <label for="chooseDepartment" aria-describedby="chooseDepartmentError">Статус</label>
+                <select th:disabled="${isUpdating} ? true : false" class="form-control" id="chooseDepartment" name="chooseDepartment" th:field="*{departmentId}">
+                    <option th:if="${!isUpdating}" th:each="departmentOption : ${departments}" th:value="${departmentOption.id}"
+                            th:text="${departmentOption.departmentName}"></option>
 
-                <small th:if="${#fields.hasErrors('requiredEmployeeAmount')}" th:errors="*{requiredEmployeeAmount}"
-                       id="requiredEmployeeAmountInputError"
+                    <option th:if="${isUpdating}" th:value="${departmentSelected.id}" th:text="${departmentSelected.departmentName}"></option>
+                </select>
+
+                <small th:if="${#fields.hasErrors('departmentId')}" th:errors="*{departmentId}"
+                       id="chooseDepartmentError"
                        class="form-text text-danger">Error</small>
             </div>
-            <input type="hidden" name="isUpdating" th:value="${isUpdating}" />
-            <input type="hidden" th:if="${isUpdating}" th:field="*{id}" th:value="${position.id}">
-            <input type="hidden" th:field="*{departmentId}" th:value="${position.departmentId}">
+            <hr/>
+            <h2>Ведущая?</h2>
+            <div class="form-group">
+                <input class="form-check-input" type="checkbox" th:value="${position.leading}" th:field="*{leading}" id="isLeading">
+                <label class="form-check-label" for="isLeading" aria-describedby="isLeadingErrors">
+                    Ведущая:
+                </label>
+                <small th:if="${#fields.hasErrors('leading')}" th:errors="*{leading}"
+                       id="isLeadingErrors"
+                       class="form-text text-danger">Error</small>
+            </div>
+            <input th:if="${isUpdating}" type="hidden" th:field="*{id}" th:value="${position.id}">
+            <input th:if="${isUpdating}" type="hidden" th:field="*{departmentId}" th:value="${position.departmentId}">
             <button type="submit" class="btn btn-primary">Подтвердить</button>
         </form>
     </div>

@@ -25,4 +25,10 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
             "OR dep.id NOT IN (SELECT di.pk.department.id FROM DepartmentInfo di WHERE di.pk.companyBranch.id = :cmpId)")
     List<Department> getAvailableDepartmentsWhenUpdating(@Param("cmpId") Long companyBranchId,
                                                         @Param("depId") Long departmentRepository);
+
+    @Query("SELECT d FROM Department d WHERE d = " +
+            "(SELECT p.department FROM Position p WHERE p.positionName = :positionName)")
+    Department findByPositionName(@Param("positionName") String positionName);
+
+    public Department findByDepartmentNameIgnoreCase(String departmentName);
 }

@@ -26,7 +26,7 @@
                         th:text="${department.departmentName}"></option>
 
                 <!--When updating object-->
-                <option th:if="${isUpdating}" th:value="${dto.departmentId}" th:text="${dto.departmentName}">
+                <option th:if="${isUpdating}" th:value="${departmentSelected.id}" th:text="${departmentSelected.departmentName}">
                 </option>
             </select>
 

@@ -59,6 +59,10 @@ public class DepartmentService {
         return departmentRepository.findDepartmentByDepartmentName(depName);
     }
 
+    public Department getByPositionName(String positionName) {
+        return departmentRepository.findByPositionName(positionName);
+    }
+
     public Department getReference(Long id) {
         if (id == null || id <= 0)
             throw new IllegalArgumentException("Выбранный отдел не существует!");

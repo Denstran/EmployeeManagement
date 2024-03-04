@@ -44,7 +44,7 @@ public class EmployeeService {
         repository.saveAndFlush(employee);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteEmployee(Employee employee) {
         employee.deleteEmployee();
         repository.delete(employee);
@@ -58,6 +58,17 @@ public class EmployeeService {
     @Transactional
     public void deleteAllByCompanyBranchAndDepartment(CompanyBranch companyBranch, Department department) {
         repository.deleteAllByCompanyBranchAndPosition_Department(companyBranch, department);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deleteAllByPosition(Position position) {
+        List<Employee> employees = getByPosition(position);
+        employees.forEach(this::deleteEmployee);
+        repository.deleteAllByPosition(position);
+    }
+
+    public List<Employee> getByPosition(Position position) {
+        return repository.findByPosition(position);
     }
 
     public String getEmployeeNameById(Long employeeId) {

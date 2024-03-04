@@ -51,6 +51,11 @@ public class PaymentLogService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deleteEmployeesPaymentLogsByPosition(Position position) {
+        employeePaymentLogRepository.deleteAllByEmployee_Position(position);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteEmployeesPaymentLogsByCompanyBranchAndDepartment(CompanyBranch companyBranch,
                                                                        Department department) {
         employeePaymentLogRepository.deleteAllByEmployee_CompanyBranchAndEmployee_Position_Department(companyBranch, department);
