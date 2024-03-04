@@ -25,7 +25,9 @@ public class DepartmentService {
 
     @Transactional
     public void deleteDepartment(Long id) {
-        departmentRepository.deleteById(id);
+        Department department = getById(id);
+        department.deleteDepartment();
+        departmentRepository.delete(department);
     }
 
     public Department getById(Long depId) {

@@ -7,6 +7,7 @@ import com.manageemployee.employeemanagement.service.specs.PositionSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -78,5 +79,11 @@ public class PositionService {
         Position position = getById(id);
         position.deletePosition();
         positionRepository.delete(position);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deleteByDepartment(Department department) {
+        List<Position> positions = getPositionsByDepartmentId(department.getId());
+        positions.forEach(position -> deleteById(position.getId()));
     }
 }

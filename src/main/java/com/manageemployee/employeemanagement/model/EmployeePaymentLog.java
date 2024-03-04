@@ -21,7 +21,7 @@ public class EmployeePaymentLog extends BasePaymentEntity {
     public static EmployeePaymentLog createPaymentLog(Employee employee, Money amount, boolean isPositive) {
         EmployeePaymentLog paymentLog = new EmployeePaymentLog();
         paymentLog.setEmployee(employee);
-        paymentLog.setPaymentType(PaymentType.BUDGET_CHANGES);
+        paymentLog.setPaymentType(PaymentType.SALARY_CHANGES);
         paymentLog.setPaymentAmount(amount);
         paymentLog.setTransferAction(isPositive ? TransferAction.INCREASE : TransferAction.DECREASE);
 

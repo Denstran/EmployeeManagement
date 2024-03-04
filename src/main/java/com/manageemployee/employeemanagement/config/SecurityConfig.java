@@ -33,7 +33,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
         http
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers(mvc.pattern("/auth/login"), mvc.pattern("/auth/logout"),  mvc.pattern("/h2-console"), mvc.pattern("/process_login"),
+                        .requestMatchers(mvc.pattern("/auth/login"), mvc.pattern("/auth/logout"), mvc.pattern("/process_login"),
                                 mvc.pattern("/errors")).permitAll()
                         .anyRequest().hasRole("ADMIN"))
                 .formLogin(login -> login

@@ -155,4 +155,14 @@ public class PaymentLogService {
 
         return employeePaymentLogRepository.findAll(spec);
     }
+
+    @Transactional
+    public void deleteEmployeesPaymentLogsByDepartment(Department department) {
+        employeePaymentLogRepository.deleteAllByEmployee_Position_Department(department);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deleteDepartmentPaymentLogs(Department department) {
+        departmentInfoPaymentLogRepository.deleteAllByDepartment(department);
+    }
 }

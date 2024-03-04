@@ -14,4 +14,6 @@ public interface EmployeePaymentLogRepository extends JpaRepository<EmployeePaym
     void deleteEmployeePaymentLogsByEmployee_Id(Long employeeId);
     void deleteAllByEmployee_CompanyBranchAndEmployee_Position_Department(CompanyBranch companyBranch,
                                                                              Department department);
+
+    void deleteAllByEmployee_Position_Department(Department department);
 }

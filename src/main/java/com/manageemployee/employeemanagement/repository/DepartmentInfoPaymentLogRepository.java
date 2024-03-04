@@ -15,4 +15,6 @@ public interface DepartmentInfoPaymentLogRepository extends JpaRepository<Depart
 
     void deleteAllByCompanyBranch(CompanyBranch companyBranch);
     void deleteAllByCompanyBranchAndDepartment(CompanyBranch companyBranch, Department department);
+
+    void deleteAllByDepartment(Department department);
 }

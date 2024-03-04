@@ -32,7 +32,7 @@
                 <a class="btn btn-dark" role="button" th:href="@{/departments/{depId}/update(depId = ${department.id})}">Обновить</a>
             </td>
             <td>
-                <form th:action="@{/departments/{depId}/delete}" method="post">
+                <form th:action="@{/departments/{depId}/delete(depId = ${department.id})}" method="post">
                     <button type="submit" class="btn btn-danger">Удалить</button>
                 </form>
             </td>

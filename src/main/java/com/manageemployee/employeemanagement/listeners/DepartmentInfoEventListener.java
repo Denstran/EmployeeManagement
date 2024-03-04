@@ -1,9 +1,9 @@
 package com.manageemployee.employeemanagement.listeners;
 
 import com.manageemployee.employeemanagement.model.*;
-import com.manageemployee.employeemanagement.model.events.departmentEvents.DepartmentInfoRegistered;
-import com.manageemployee.employeemanagement.model.events.departmentEvents.DepartmentInfoRemoved;
-import com.manageemployee.employeemanagement.model.events.departmentEvents.DepartmentInfoUpdated;
+import com.manageemployee.employeemanagement.model.events.departmentInfoEvents.DepartmentInfoRegistered;
+import com.manageemployee.employeemanagement.model.events.departmentInfoEvents.DepartmentInfoRemoved;
+import com.manageemployee.employeemanagement.model.events.departmentInfoEvents.DepartmentInfoUpdated;
 import com.manageemployee.employeemanagement.service.CompanyBranchService;
 import com.manageemployee.employeemanagement.service.EmployeeService;
 import com.manageemployee.employeemanagement.service.MoneyService;

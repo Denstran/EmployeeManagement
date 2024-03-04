@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class DepartmentInfoService {
     private final DepartmentInfoRepository repository;
@@ -39,7 +41,7 @@ public class DepartmentInfoService {
         repository.saveAndFlush(departmentInfo);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteDepartmentInfo(DepartmentInfo departmentInfo) {
         departmentInfo.removeDepartmentInfo();
 
@@ -67,4 +69,14 @@ public class DepartmentInfoService {
         return repository.existsById(id);
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deleteAllByDepartment(Department department) {
+        List<DepartmentInfo> departmentInfos = getByDepartment(department);
+        departmentInfos.forEach(this::deleteDepartmentInfo);
+        repository.deleteAllByPk_Department(department);
+    }
+
+    private List<DepartmentInfo> getByDepartment(Department department) {
+        return repository.findAllByPk_Department(department);
+    }
 }

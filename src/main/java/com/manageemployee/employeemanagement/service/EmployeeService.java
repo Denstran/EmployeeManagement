@@ -125,4 +125,15 @@ public class EmployeeService {
     public boolean existsByPhoneNumber(String phoneNumber) {
         return repository.existsByPhoneNumber(phoneNumber);
     }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deleteEmployeesByDepartment(Department department) {
+        List<Employee> employees = getByDepartment(department);
+        employees.forEach(this::deleteEmployee);
+        repository.deleteEmployeesByPosition_Department(department);
+    }
+
+    private List<Employee> getByDepartment(Department department) {
+        return repository.getByPosition_Department(department);
+    }
 }

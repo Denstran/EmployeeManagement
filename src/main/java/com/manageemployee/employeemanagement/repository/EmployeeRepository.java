@@ -44,4 +44,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     void deleteAllByCompanyBranch(CompanyBranch companyBranch);
 
     void deleteAllByPosition(Position position);
+
+    void deleteEmployeesByPosition_Department(Department department);
+
+    List<Employee> getByPosition_Department(Department department);
 }

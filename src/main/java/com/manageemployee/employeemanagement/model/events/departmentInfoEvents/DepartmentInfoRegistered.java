@@ -1,4 +1,4 @@
-package com.manageemployee.employeemanagement.model.events.departmentEvents;
+package com.manageemployee.employeemanagement.model.events.departmentInfoEvents;
 
 import com.manageemployee.employeemanagement.model.DepartmentInfoPaymentLog;
 import lombok.Data;

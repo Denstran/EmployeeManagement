@@ -1,10 +1,12 @@
 package com.manageemployee.employeemanagement.model;
 
+import com.manageemployee.employeemanagement.model.events.departmentEvents.DepartmentDeleted;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.util.Objects;
 
@@ -12,7 +14,7 @@ import java.util.Objects;
 @Table(name = "DEPARTMENT")
 @Getter
 @Setter
-public class Department {
+public class Department extends AbstractAggregateRoot<Department> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,5 +34,9 @@ public class Department {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public void deleteDepartment() {
+        registerEvent(new DepartmentDeleted(this));
     }
 }

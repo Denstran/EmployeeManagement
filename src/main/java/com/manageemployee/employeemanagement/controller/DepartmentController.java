@@ -85,7 +85,7 @@ public class DepartmentController {
         return REDIRECT_LINK;
     }
 
-    @DeleteMapping("/{depId}/delete")
+    @PostMapping("/{depId}/delete")
     public String deleteDepartment(@PathVariable("depId") Long depId) {
         departmentService.deleteDepartment(depId);
         return REDIRECT_LINK;
