@@ -9,7 +9,10 @@
           integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 </head>
 <body>
-    <header th:replace="fragments/header :: header(text='ДОБАВЛЕНИЕ ФИЛИАЛА')">
+    <header th:if="${!isUpdating}" th:replace="fragments/header :: header(text='ДОБАВЛЕНИЕ ФИЛИАЛА')">
+    </header>
+
+    <header th:if="${isUpdating}" th:replace="fragments/header :: header(text='ОБНОВЛЕНИЕ ФИЛИАЛА')">
     </header>
 
     <div class="container">

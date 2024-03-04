@@ -9,8 +9,12 @@
           integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 </head>
 <body>
-<header th:replace="fragments/header :: header(text='ДОБАВЛЕНИЕ СОТРУДНИКА')">
+<header th:if="${!isUpdating}" th:replace="fragments/header :: header(text='ДОБАВЛЕНИЕ СОТРУДНИКА')">
 </header>
+
+<header th:if="${isUpdating}" th:replace="fragments/header :: header(text='ОБНОВЛЕНИЕ СОТРУДНИКА')">
+</header>
+
 <div class="container">
     <form th:action="${isUpdating} ? @{/companyBranches/{cmpId}/departments/{depId}/employees/{empId}/update(cmpId = ${companyBranchId}, depId = ${depId}, empId = ${employeeDTO.id})}
         : @{/companyBranches/{cmpId}/departments/{depId}/employees/new(cmpId = ${companyBranchId}, depId = ${depId})}"

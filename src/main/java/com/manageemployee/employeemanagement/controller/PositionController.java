@@ -56,15 +56,6 @@ public class PositionController {
         return SHOW_POSITIONS;
     }
 
-    @GetMapping("/departmentPositions/{departmentId}")
-    public String getDepartmentPositions(Model model, @PathVariable Long departmentId) {
-        List<PositionDTO> positions =
-                positionMapper.toDtoList(positionService.getPositionsByDepartmentId(departmentId));
-        model.addAttribute("positions", positions);
-
-        return SHOW_POSITIONS;
-    }
-
     @GetMapping("/createPosition")
     public String createPositionForm(Model model, HttpSession session) {
         PositionDTO position = new PositionDTO();
