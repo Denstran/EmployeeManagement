@@ -79,4 +79,8 @@ public class DepartmentInfoService {
     private List<DepartmentInfo> getByDepartment(Department department) {
         return repository.findAllByPk_Department(department);
     }
+
+    public boolean existsById(CompanyBranch companyBranch, Department department) {
+        return existsById(new CompanyBranchDepartmentPK(companyBranch, department));
+    }
 }

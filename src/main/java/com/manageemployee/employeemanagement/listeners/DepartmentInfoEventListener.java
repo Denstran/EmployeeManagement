@@ -1,6 +1,7 @@
 package com.manageemployee.employeemanagement.listeners;
 
 import com.manageemployee.employeemanagement.model.*;
+import com.manageemployee.employeemanagement.model.events.departmentInfoEvents.DepartmentInfoBaseEvent;
 import com.manageemployee.employeemanagement.model.events.departmentInfoEvents.DepartmentInfoRegistered;
 import com.manageemployee.employeemanagement.model.events.departmentInfoEvents.DepartmentInfoRemoved;
 import com.manageemployee.employeemanagement.model.events.departmentInfoEvents.DepartmentInfoUpdated;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+import java.util.Optional;
+
 @Component
 public class DepartmentInfoEventListener {
     private final CompanyBranchService companyBranchService;
@@ -21,7 +24,8 @@ public class DepartmentInfoEventListener {
     private final EmployeeService employeeService;
 
     @Autowired
-    public DepartmentInfoEventListener(CompanyBranchService companyBranchService, PaymentLogService paymentLogService, MoneyService moneyService, EmployeeService employeeService) {
+    public DepartmentInfoEventListener(CompanyBranchService companyBranchService, PaymentLogService paymentLogService,
+                                       MoneyService moneyService, EmployeeService employeeService) {
         this.companyBranchService = companyBranchService;
         this.paymentLogService = paymentLogService;
         this.moneyService = moneyService;
@@ -30,66 +34,81 @@ public class DepartmentInfoEventListener {
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void registerDepartmentInfoEventHandler(DepartmentInfoRegistered departmentInfoRegistered) {
-        DepartmentInfoPaymentLog paymentLog = departmentInfoRegistered.getDepartmentInfoPaymentLog();
-        CompanyBranch companyBranch = paymentLog.getCompanyBranch();
-        Money departmentBudget = paymentLog.getPaymentAmount();
-        companyBranch.setBudget(moneyService.subtract(companyBranch.getBudget(), departmentBudget));
-
-        CompanyBranchPaymentLog companyBranchPaymentLog =
-                CompanyBranchPaymentLog.createPaymentLog(companyBranch, departmentBudget, false);
-
-        companyBranchService.updateCompanyBranch(companyBranch);
-        paymentLogService.saveDepartmentInfoPaymentLog(paymentLog);
-        paymentLogService.saveCompanyBranchPaymentLog(companyBranchPaymentLog);
+        processCompanyBranchDecreasedBudget(departmentInfoRegistered);
     }
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void departmentUpdatedEventHandler(DepartmentInfoUpdated departmentInfoUpdated) {
-        processBudgetChanges(departmentInfoUpdated);
+        processCompanyBranchBudgetChanges(departmentInfoUpdated);
     }
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void departmentRemovedEventHandler(DepartmentInfoRemoved departmentInfoRemoved) {
-        CompanyBranch companyBranch = departmentInfoRemoved.getCompanyBranch();
-        Money employeeSalaries =
-                employeeService.countEmployeeSalariesByCompanyBranchAndDepartment(companyBranch,
-                                departmentInfoRemoved.getDepartment());
-
-        Money totalBudgetIncome = moneyService.sum(employeeSalaries, departmentInfoRemoved.getDepartmentBudget());
-        companyBranch.setBudget(moneyService.sum(companyBranch.getBudget(), totalBudgetIncome));
-
-        CompanyBranchPaymentLog paymentLog
-                = CompanyBranchPaymentLog.createPaymentLog(companyBranch, totalBudgetIncome, true);
-
-        paymentLogService.deleteEmployeesPaymentLogsByCompanyBranchAndDepartment(companyBranch,
-                departmentInfoRemoved.getDepartment());
-        employeeService.deleteAllByCompanyBranchAndDepartment(companyBranch, departmentInfoRemoved.getDepartment());
-        paymentLogService.deleteDepartmentInfoPaymentLogs(companyBranch, departmentInfoRemoved.getDepartment());
-
-        companyBranchService.updateCompanyBranch(companyBranch);
-        paymentLogService.saveCompanyBranchPaymentLog(paymentLog);
+        processDepartmentRemoval(departmentInfoRemoved);
     }
 
-    private void processBudgetChanges(DepartmentInfoUpdated departmentInfoUpdated) {
-        Money oldDepBudget = departmentInfoUpdated.getOldDepartmentBudget();
-        Money newDepBudget = departmentInfoUpdated.getNewDepartmentBudget();
-        if (oldDepBudget.equals(newDepBudget)) return;
+    private void processDepartmentRemoval(DepartmentInfoBaseEvent departmentEvent) {
+        CompanyBranch companyBranch = departmentEvent.getCompanyBranch();
+        Money totalBudgetIncome = countTotalBudgetIncome(departmentEvent);
 
-        CompanyBranch companyBranch = departmentInfoUpdated.getCompanyBranch();
-        Department department = departmentInfoUpdated.getDepartment();
+        companyBranch.setBudget(moneyService.sum(companyBranch.getBudget(), totalBudgetIncome));
+        updateCompanyBranchAndLogs(companyBranch, Optional.empty(), totalBudgetIncome);
+        clearData(companyBranch, departmentEvent.getDepartment());
+    }
 
-        Money amountToReduce = moneyService.subtract(newDepBudget, oldDepBudget);
+    private Money countTotalBudgetIncome(DepartmentInfoBaseEvent baseEvent) {
+        Money employeeSalaries =
+                employeeService.countEmployeeSalariesByCompanyBranchAndDepartment(baseEvent.getCompanyBranch(),
+                        baseEvent.getDepartment());
+        return moneyService.sum(employeeSalaries, baseEvent.getOldBudget());
+    }
 
-        DepartmentInfoPaymentLog paymentLog = DepartmentInfoPaymentLog.createPaymentLog(companyBranch, department,
-                moneyService.abs(amountToReduce), moneyService.isPositive(amountToReduce));
-        CompanyBranchPaymentLog companyBranchPaymentLog =
-                CompanyBranchPaymentLog.createPaymentLog(companyBranch, moneyService.abs(amountToReduce),
-                        !moneyService.isPositive(amountToReduce));
+    private void processCompanyBranchDecreasedBudget(DepartmentInfoBaseEvent departmentEvent) {
+        CompanyBranch companyBranch = departmentEvent.getCompanyBranch();
+        companyBranch.setBudget(moneyService.subtract(companyBranch.getBudget(), departmentEvent.getNewBudget()));
+        updateCompanyBranchAndLogs(companyBranch, Optional.of(departmentEvent.getDepartment()), departmentEvent.getNewBudget());
+    }
 
-        paymentLogService.saveCompanyBranchPaymentLog(companyBranchPaymentLog);
-        paymentLogService.saveDepartmentInfoPaymentLog(paymentLog);
+    private void processCompanyBranchBudgetChanges(DepartmentInfoBaseEvent departmentEvent) {
+        if (departmentEvent.getNewBudget().equals(departmentEvent.getOldBudget())) return;
 
-        companyBranch.setBudget(moneyService.subtract(companyBranch.getBudget(), amountToReduce));
+        CompanyBranch companyBranch = departmentEvent.getCompanyBranch();
+        Money departmentBudgetChanges =
+                moneyService.subtract(departmentEvent.getNewBudget(), departmentEvent.getOldBudget());
+
+        companyBranch.setBudget(moneyService.subtract(companyBranch.getBudget(), departmentBudgetChanges));
+        updateCompanyBranchAndLogs(companyBranch, Optional.of(departmentEvent.getDepartment()), departmentBudgetChanges);
+    }
+
+    private void handlePaymentLogs(CompanyBranch companyBranch, Optional<Department> department, Money budgetChange) {
+        boolean isPositiveChanges = moneyService.isPositive(budgetChange);
+        DepartmentInfoPaymentLog departmentInfoPaymentLog = null;
+
+        if (department.isPresent()) {
+            departmentInfoPaymentLog = DepartmentInfoPaymentLog
+                    .createPaymentLog(companyBranch, department.get(), moneyService.abs(budgetChange), isPositiveChanges);
+        }
+
+        CompanyBranchPaymentLog companyBranchPaymentLog = CompanyBranchPaymentLog
+                    .createPaymentLog(companyBranch, moneyService.abs(budgetChange), !isPositiveChanges);
+
+        savePaymentLogs(companyBranchPaymentLog, Optional.ofNullable(departmentInfoPaymentLog));
+    }
+
+    private void updateCompanyBranchAndLogs(CompanyBranch companyBranch, Optional<Department> department, Money budgetChange) {
+        handlePaymentLogs(companyBranch, department, budgetChange);
         companyBranchService.updateCompanyBranch(companyBranch);
+    }
+
+    private void clearData(CompanyBranch companyBranch, Department department) {
+        paymentLogService.deleteEmployeesPaymentLogsByCompanyBranchAndDepartment(companyBranch, department);
+        employeeService.deleteAllByCompanyBranchAndDepartment(companyBranch, department);
+        paymentLogService.deleteDepartmentInfoPaymentLogs(companyBranch, department);
+    }
+
+    private void savePaymentLogs(CompanyBranchPaymentLog companyBranchPaymentLog,
+                                 Optional<DepartmentInfoPaymentLog> departmentInfoPaymentLog) {
+        paymentLogService.saveCompanyBranchPaymentLog(companyBranchPaymentLog);
+        departmentInfoPaymentLog.ifPresent(paymentLogService::saveDepartmentInfoPaymentLog);
     }
 }

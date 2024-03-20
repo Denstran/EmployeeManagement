@@ -2,8 +2,6 @@ package com.manageemployee.employeemanagement.model;
 
 import com.manageemployee.employeemanagement.converter.MoneyConverter;
 import com.manageemployee.employeemanagement.model.embeddable.CompanyBranchDepartmentPK;
-import com.manageemployee.employeemanagement.model.enumTypes.PaymentType;
-import com.manageemployee.employeemanagement.model.enumTypes.TransferAction;
 import com.manageemployee.employeemanagement.model.events.departmentInfoEvents.DepartmentInfoRegistered;
 import com.manageemployee.employeemanagement.model.events.departmentInfoEvents.DepartmentInfoRemoved;
 import com.manageemployee.employeemanagement.model.events.departmentInfoEvents.DepartmentInfoUpdated;
@@ -33,26 +31,18 @@ public class DepartmentInfo extends AbstractAggregateRoot<DepartmentInfo> {
     private int amountOfEmployee;
 
     public void registerDepartmentInfo() {
-        DepartmentInfoPaymentLog departmentInfoPaymentLog = new DepartmentInfoPaymentLog();
-        departmentInfoPaymentLog.setDepartment(this.pk.getDepartment());
-        departmentInfoPaymentLog.setCompanyBranch(this.pk.getCompanyBranch());
-        departmentInfoPaymentLog.setPaymentType(PaymentType.BUDGET_CHANGES);
-        departmentInfoPaymentLog.setPaymentAmount(this.departmentBudget);
-        departmentInfoPaymentLog.setTransferAction(TransferAction.INCREASE);
-
-        registerEvent(new DepartmentInfoRegistered(departmentInfoPaymentLog));
+        registerEvent(new DepartmentInfoRegistered(this.pk.getCompanyBranch(), this.pk.getDepartment(),
+                this.departmentBudget, this.departmentBudget));
     }
 
     public void updateDepartmentInfo(Money oldBudget) {
-        DepartmentInfoUpdated departmentInfoUpdated =
-                new DepartmentInfoUpdated(this.getPk().getCompanyBranch(), this.pk.getDepartment(),
-                        oldBudget, this.departmentBudget);
-        registerEvent(departmentInfoUpdated);
+        registerEvent(new DepartmentInfoUpdated(this.pk.getCompanyBranch(), this.pk.getDepartment(),
+                oldBudget, this.departmentBudget));
     }
 
     public void removeDepartmentInfo() {
         registerEvent(new DepartmentInfoRemoved(this.pk.getCompanyBranch(), this.pk.getDepartment(),
-                this.departmentBudget));
+                this.departmentBudget, this.departmentBudget));
     }
 
     @Override
