@@ -9,11 +9,16 @@
           integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 </head>
 <body>
-<header th:if="${!isUpdating}" th:replace="fragments/header :: header(text='ДОБАВЛЕНИЕ СОТРУДНИКА')">
-</header>
 
-<header th:if="${isUpdating}" th:replace="fragments/header :: header(text='ОБНОВЛЕНИЕ СОТРУДНИКА')">
-</header>
+    <div th:unless="${isUpdating}">
+        <header th:replace="~{fragments/header :: header(text='ДОБАВЛЕНИЕ СОТРУДНИКА')}">
+        </header>
+    </div>
+
+    <div th:if="${isUpdating}">
+        <header th:replace="~{fragments/header :: header(text='ОБНОВЛЕНИЕ СОТРУДНИКА')}">
+        </header>
+    </div>
 
 <div class="container">
     <form th:action="${isUpdating} ? @{/companyBranches/{cmpId}/departments/{depId}/employees/{empId}/update(cmpId = ${companyBranchId}, depId = ${depId}, empId = ${employeeDTO.id})}

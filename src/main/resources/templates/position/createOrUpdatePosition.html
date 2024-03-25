@@ -9,8 +9,14 @@
           integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 </head>
 <body>
-    <header th:if="${!isUpdating}" th:replace="fragments/header :: header(text='ДОБАВЛЕНИЕ ДОЛЖНОСТИ')"></header>
-    <header th:if="${isUpdating}" th:replace="fragments/header :: header(text='ОБНОВЛЕНИЕ ДОЛЖНОСТИ')"></header>
+    <div th:if="${!isUpdating}">
+        <header th:replace="~{fragments/header :: header(text='ДОБАВЛЕНИЕ ДОЛЖНОСТИ')}"></header>
+    </div>
+
+    <div th:if="${isUpdating}">
+        <header th:replace="~{fragments/header :: header(text='ОБНОВЛЕНИЕ ДОЛЖНОСТИ')}"></header>
+    </div>
+
     <div class="container">
         <form th:action="${isUpdating} ? @{/positions/{positionId}/update(positionId = ${positionId})} : @{/positions/createPosition}"
               th:object="${position}" method="post">
@@ -29,7 +35,7 @@
             <hr/>
             <h2>Отдел</h2>
             <div class="form-group">
-                <label for="chooseDepartment" aria-describedby="chooseDepartmentError">Статус</label>
+                <label for="chooseDepartment" aria-describedby="chooseDepartmentError">Отдел</label>
                 <select th:disabled="${isUpdating} ? true : false" class="form-control" id="chooseDepartment" name="chooseDepartment" th:field="*{departmentId}">
                     <option th:if="${!isUpdating}" th:each="departmentOption : ${departments}" th:value="${departmentOption.id}"
                             th:text="${departmentOption.departmentName}"></option>

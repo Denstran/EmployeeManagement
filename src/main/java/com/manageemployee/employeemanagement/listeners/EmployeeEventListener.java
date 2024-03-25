@@ -1,12 +1,11 @@
 package com.manageemployee.employeemanagement.listeners;
 
-import com.manageemployee.employeemanagement.model.DepartmentInfo;
-import com.manageemployee.employeemanagement.model.DepartmentInfoPaymentLog;
-import com.manageemployee.employeemanagement.model.EmployeePaymentLog;
-import com.manageemployee.employeemanagement.model.Money;
+import com.manageemployee.employeemanagement.model.*;
 import com.manageemployee.employeemanagement.model.embeddable.CompanyBranchDepartmentPK;
-import com.manageemployee.employeemanagement.model.enumTypes.EmployeeStatus;
-import com.manageemployee.employeemanagement.model.events.employeeEvents.*;
+import com.manageemployee.employeemanagement.model.events.employeeEvents.EmployeeBaseEvent;
+import com.manageemployee.employeemanagement.model.events.employeeEvents.EmployeeFired;
+import com.manageemployee.employeemanagement.model.events.employeeEvents.EmployeeHired;
+import com.manageemployee.employeemanagement.model.events.employeeEvents.EmployeeUpdated;
 import com.manageemployee.employeemanagement.service.DepartmentInfoService;
 import com.manageemployee.employeemanagement.service.MoneyService;
 import com.manageemployee.employeemanagement.service.PaymentLogService;
@@ -18,90 +17,100 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Component
 public class EmployeeEventListener {
     private final DepartmentInfoService departmentInfoService;
-    private final MoneyService moneyService;
     private final PaymentLogService paymentLogService;
 
     @Autowired
-    public EmployeeEventListener(DepartmentInfoService departmentInfoService, MoneyService moneyService,
-                                 PaymentLogService paymentLogService) {
+    public EmployeeEventListener(DepartmentInfoService departmentInfoService, PaymentLogService paymentLogService) {
         this.departmentInfoService = departmentInfoService;
-        this.moneyService = moneyService;
         this.paymentLogService = paymentLogService;
     }
 
-    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void createEmployeeEventHandler(EmployeeHired employeeHired) {
-        DepartmentInfo departmentInfo = getDepartmentInfo(employeeHired);
-        Money newDepartmentBudget =
-                moneyService.subtract(departmentInfo.getDepartmentBudget(), employeeHired.getSalary());
-        EmployeePaymentLog employeePaymentLog = EmployeePaymentLog
-                .createPaymentLog(employeeHired.getEmployee(), employeeHired.getSalary(), true);
-        DepartmentInfoPaymentLog departmentInfoPaymentLog =
-                DepartmentInfoPaymentLog.createPaymentLog(employeeHired.getCompanyBranch(),
-                        employeeHired.getDepartment(), employeeHired.getSalary(), false);
-        departmentInfo.setDepartmentBudget(newDepartmentBudget);
-        departmentInfoService.update(departmentInfo);
-        paymentLogService.saveDepartmentInfoPaymentLog(departmentInfoPaymentLog);
-        paymentLogService.saveEmployeePaymentLog(employeePaymentLog);
+        processSalaryChanges(employeeHired, Action.CREATE);
     }
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void updateEmployeeEventHandler(EmployeeUpdated employeeUpdated) {
-        Money oldSalary = employeeUpdated.getOldSalary();
-        Money newSalary = employeeUpdated.getSalary();
-        if (oldSalary.equals(newSalary)) return;
-        DepartmentInfo departmentInfo = getDepartmentInfo(employeeUpdated);
-
-        Money amountToSubtract = moneyService.subtract(newSalary, oldSalary);
-        EmployeePaymentLog employeePaymentLog =
-                EmployeePaymentLog.createPaymentLog(employeeUpdated.getEmployee(), moneyService.abs(amountToSubtract),
-                        moneyService.isPositive(amountToSubtract));
-
-        DepartmentInfoPaymentLog departmentInfoPaymentLog =
-                DepartmentInfoPaymentLog.createPaymentLog(employeeUpdated.getCompanyBranch(),
-                        employeeUpdated.getDepartment(), moneyService.abs(amountToSubtract),
-                        !moneyService.isPositive(amountToSubtract));
-
-        departmentInfo.setDepartmentBudget(moneyService.subtract(departmentInfo.getDepartmentBudget(), amountToSubtract));
-        departmentInfoService.update(departmentInfo);
-        paymentLogService.saveDepartmentInfoPaymentLog(departmentInfoPaymentLog);
-        paymentLogService.saveEmployeePaymentLog(employeePaymentLog);
-    }
-
-    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-    public void deleteEmployeeEventHandler(EmployeeDeleted employeeDeleted) {
-        if (employeeDeleted.getEmployeeStatus().equals(EmployeeStatus.FIRED))
-            return;
-        DepartmentInfo departmentInfo = getDepartmentInfo(employeeDeleted);
-
-        departmentInfo.setDepartmentBudget(moneyService.sum(departmentInfo.getDepartmentBudget(),
-                employeeDeleted.getSalary()));
-
-        DepartmentInfoPaymentLog paymentLog =
-                DepartmentInfoPaymentLog.createPaymentLog(employeeDeleted.getCompanyBranch(),
-                        employeeDeleted.getDepartment(), employeeDeleted.getSalary(), true);
-
-        paymentLogService.deleteEmployeePaymentLogs(employeeDeleted.getEmployee().getId());
-        departmentInfoService.update(departmentInfo);
-        paymentLogService.saveDepartmentInfoPaymentLog(paymentLog);
+        processSalaryChanges(employeeUpdated, Action.UPDATE);
     }
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void fireEmployeeEventHandler(EmployeeFired employeeFired) {
-        DepartmentInfo departmentInfo = getDepartmentInfo(employeeFired);
+        processSalaryChanges(employeeFired, Action.DELETE);
+    }
 
-        DepartmentInfoPaymentLog paymentLog =
-                DepartmentInfoPaymentLog.createPaymentLog(employeeFired.getCompanyBranch(),
-                        employeeFired.getDepartment(), employeeFired.getSalary(), true);
-        departmentInfo.setDepartmentBudget(moneyService.sum(departmentInfo.getDepartmentBudget(),
-                employeeFired.getSalary()));
-        departmentInfoService.update(departmentInfo);
+    private void processSalaryChanges(EmployeeBaseEvent baseEvent, Action action) {
+        switch (action) {
+            case CREATE -> processEmployeeHiring(baseEvent);
+            case UPDATE -> processSalaryUpdated(baseEvent);
+            case DELETE -> processEmployeeRemoval(baseEvent);
+        }
+    }
+
+    private void processEmployeeHiring(EmployeeBaseEvent baseEvent) {
+        processEmployeePaymentLogCreation(baseEvent, baseEvent.getNewSalary(), true);
+        processNegativeDepartmentBudgetChanges(getDepartmentInfo(baseEvent), baseEvent.getNewSalary());
+    }
+
+    private void processSalaryUpdated(EmployeeBaseEvent baseEvent) {
+        Money oldSalary = baseEvent.getOldSalary();
+        Money newSalary = baseEvent.getNewSalary();
+        if (oldSalary.equals(newSalary)) return;
+
+        if (isPositiveSalaryChanges(newSalary, oldSalary)) processPositiveSalaryChanges(baseEvent);
+        else processNegativeSalaryChanges(baseEvent);
+    }
+
+    private void processNegativeSalaryChanges(EmployeeBaseEvent baseEvent) {
+        Money salaryChanges = MoneyService.subtract(baseEvent.getOldSalary(), baseEvent.getNewSalary());
+        processEmployeePaymentLogCreation(baseEvent, salaryChanges, false);
+        processPositiveDepartmentBudgetChanges(getDepartmentInfo(baseEvent), salaryChanges);
+    }
+
+    private void processPositiveSalaryChanges(EmployeeBaseEvent baseEvent) {
+        Money salaryChanges = MoneyService.subtract(baseEvent.getNewSalary(), baseEvent.getOldSalary());
+        processEmployeePaymentLogCreation(baseEvent, salaryChanges, true);
+        processNegativeDepartmentBudgetChanges(getDepartmentInfo(baseEvent), salaryChanges);
+    }
+
+    private void processNegativeDepartmentBudgetChanges(DepartmentInfo departmentInfo, Money budgetChanges) {
+        departmentInfoService.allocateBudgetForSalary(departmentInfo, budgetChanges);
+        processDepartmentInfoPaymentLogCreation(departmentInfo, MoneyService.abs(budgetChanges), false);
+    }
+
+    private boolean isPositiveSalaryChanges(Money newSalary, Money oldSalary) {
+        int compareResult = MoneyService.compareAmounts(newSalary, oldSalary);
+        return compareResult == 1;
+    }
+
+    private void processEmployeeRemoval(EmployeeBaseEvent baseEvent) {
+        DepartmentInfo departmentInfo = getDepartmentInfo(baseEvent);
+        processPositiveDepartmentBudgetChanges(departmentInfo, baseEvent.getOldSalary());
+    }
+
+    private void processPositiveDepartmentBudgetChanges(DepartmentInfo departmentInfo, Money budgetChanges) {
+        departmentInfoService.employeeSalaryReducing(departmentInfo, budgetChanges);
+        processDepartmentInfoPaymentLogCreation(departmentInfo, budgetChanges, true);
+    }
+
+    private void processDepartmentInfoPaymentLogCreation(DepartmentInfo departmentInfo, Money paymentAmount,
+                                                         boolean isPositive) {
+        DepartmentInfoPaymentLog paymentLog = DepartmentInfoPaymentLog
+                .createPaymentLog(departmentInfo.getPk(), MoneyService.abs(paymentAmount), isPositive);
         paymentLogService.saveDepartmentInfoPaymentLog(paymentLog);
     }
 
+    private void processEmployeePaymentLogCreation(EmployeeBaseEvent baseEvent, Money payment, boolean isPositive) {
+        EmployeePaymentLog paymentLog =
+                EmployeePaymentLog.createPaymentLog(baseEvent.getEmployee(), MoneyService.abs(payment), isPositive);
+        paymentLogService.saveEmployeePaymentLog(paymentLog);
+    }
+
     private DepartmentInfo getDepartmentInfo(EmployeeBaseEvent event) {
+        Employee employee = event.getEmployee();
         return departmentInfoService.getById(
-                new CompanyBranchDepartmentPK(event.getCompanyBranch(), event.getDepartment())
+                new CompanyBranchDepartmentPK(employee.getCompanyBranch(), employee.getPosition().getDepartment())
         );
     }
 }

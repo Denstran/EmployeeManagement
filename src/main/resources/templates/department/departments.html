@@ -22,7 +22,6 @@
         <tr>
             <th scope="col">Название отдела</th>
             <th scope="col">Обновление</th>
-            <th scope="col">Удаление</th>
         </tr>
         </thead>
         <tbody>
@@ -30,11 +29,6 @@
             <td th:text="${department.departmentName}"></td>
             <td>
                 <a class="btn btn-dark" role="button" th:href="@{/departments/{depId}/update(depId = ${department.id})}">Обновить</a>
-            </td>
-            <td>
-                <form th:action="@{/departments/{depId}/delete(depId = ${department.id})}" method="post">
-                    <button type="submit" class="btn btn-danger">Удалить</button>
-                </form>
             </td>
         </tr>
         </tbody>

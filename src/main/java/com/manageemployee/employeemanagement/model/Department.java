@@ -1,6 +1,5 @@
 package com.manageemployee.employeemanagement.model;
 
-import com.manageemployee.employeemanagement.model.events.departmentEvents.DepartmentDeleted;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -34,9 +33,5 @@ public class Department extends AbstractAggregateRoot<Department> {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    public void deleteDepartment() {
-        registerEvent(new DepartmentDeleted(this));
     }
 }

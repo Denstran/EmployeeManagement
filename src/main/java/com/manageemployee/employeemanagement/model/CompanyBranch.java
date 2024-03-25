@@ -13,6 +13,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.util.Objects;
@@ -23,6 +25,8 @@ import java.util.Objects;
                 "COMPANY_BRANCH_ZIP_CODE", "COMPANY_BRANCH_STREET", "COMPANY_BRANCH_COUNTRY",
                 "COMPANY_BRANCH_BUILDING_NUMBER"})
 })
+@SQLDelete(sql = "UPDATE COMPANY_BRANCH SET DELETED = true WHERE id=?")
+@Where(clause = "DELETED=false")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -62,6 +66,9 @@ public class CompanyBranch extends AbstractAggregateRoot<CompanyBranch> {
             message = "Неверный формат номера!")
     @Column(name = "COMPANY_BRANCH_PHONE_NUMBER", unique = true)
     private String phoneNumber;
+
+    @Column(name = "DELETED")
+    private boolean deleted = false;
 
     @Override
     public boolean equals(Object o) {

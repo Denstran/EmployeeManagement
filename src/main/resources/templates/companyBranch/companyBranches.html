@@ -24,7 +24,6 @@
                 <th scope="col">Отделы</th>
                 <th scope="col">Платежи</th>
                 <th scope="col">Обновление</th>
-                <th scope="col">Удаление</th>
             </tr>
             </thead>
             <tbody>
@@ -36,11 +35,6 @@
                 <td><a class="btn btn-dark" th:href="@{/companyBranches/{id}/payments(id = ${companyBranch.id})}" role="button">Платежи</a></td>
                 <td>
                     <a class="btn btn-dark" role="button" th:href="@{/companyBranches/update/{id}(id = ${companyBranch.id})}">Обновить</a>
-                </td>
-                <td>
-                    <form th:action="@{/companyBranches/delete/{id}(id = ${companyBranch.id})}" method="post">
-                        <button type="submit" class="btn btn-danger">Удалить</button>
-                    </form>
                 </td>
             </tr>
             </tbody>

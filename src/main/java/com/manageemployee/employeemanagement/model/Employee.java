@@ -4,7 +4,6 @@ import com.manageemployee.employeemanagement.converter.MoneyConverter;
 import com.manageemployee.employeemanagement.model.embeddable.Address;
 import com.manageemployee.employeemanagement.model.embeddable.Name;
 import com.manageemployee.employeemanagement.model.enumTypes.EmployeeStatus;
-import com.manageemployee.employeemanagement.model.events.employeeEvents.EmployeeDeleted;
 import com.manageemployee.employeemanagement.model.events.employeeEvents.EmployeeFired;
 import com.manageemployee.employeemanagement.model.events.employeeEvents.EmployeeHired;
 import com.manageemployee.employeemanagement.model.events.employeeEvents.EmployeeUpdated;
@@ -16,6 +15,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Where;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.util.Date;
@@ -23,6 +23,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "EMPLOYEE")
+@Where(clause = "EMPLOYEE_STATUS != 'FIRED'")
 @Getter
 @Setter
 public class Employee extends AbstractAggregateRoot<Employee> {
@@ -98,20 +99,14 @@ public class Employee extends AbstractAggregateRoot<Employee> {
 
     public void hireEmployee() {
         this.employeeStatus = EmployeeStatus.WORKING;
-        registerEvent(new EmployeeHired(this.salary, this.position.getDepartment(), this.companyBranch, this));
+        registerEvent(new EmployeeHired(this, salary, salary));
     }
 
     public void updateEmployee(Employee oldEmployee) {
-        registerEvent(new EmployeeUpdated(
-                this.salary, this.position.getDepartment(), this.companyBranch, oldEmployee.getSalary(), this));
-    }
-
-    public void deleteEmployee() {
-        registerEvent(new EmployeeDeleted(this.salary, this.position.getDepartment(),
-                this.companyBranch, employeeStatus, this));
+        registerEvent(new EmployeeUpdated(this, oldEmployee.salary, salary));
     }
 
     public void fireEmployee() {
-        registerEvent(new EmployeeFired(this.salary, this.position.getDepartment(), this.companyBranch));
+        registerEvent(new EmployeeFired(this, salary, salary));
     }
 }

@@ -49,6 +49,7 @@ public class DepartmentController {
     public String createDepartmentForm(Model model) {
         DepartmentDTO departmentDTO = new DepartmentDTO();
         model.addAttribute("departmentDTO", departmentDTO);
+        model.addAttribute("isUpdating", false);
         return VIEW_FOR_UPDATE_OR_CREATE;
     }
 
@@ -82,12 +83,6 @@ public class DepartmentController {
         }
 
         departmentService.createDepartment(departmentMapper.toEntity(departmentDTO));
-        return REDIRECT_LINK;
-    }
-
-    @PostMapping("/{depId}/delete")
-    public String deleteDepartment(@PathVariable("depId") Long depId) {
-        departmentService.deleteDepartment(depId);
         return REDIRECT_LINK;
     }
 }

@@ -1,5 +1,6 @@
 package com.manageemployee.employeemanagement.model;
 
+import com.manageemployee.employeemanagement.model.embeddable.CompanyBranchDepartmentPK;
 import com.manageemployee.employeemanagement.model.enumTypes.PaymentType;
 import com.manageemployee.employeemanagement.model.enumTypes.TransferAction;
 import jakarta.persistence.*;
@@ -32,5 +33,10 @@ public class DepartmentInfoPaymentLog extends BasePaymentEntity {
                 .setPaymentAmount(amount);
         departmentInfoPaymentLog.setTransferAction(isPositive ? TransferAction.INCREASE : TransferAction.DECREASE);
         return departmentInfoPaymentLog;
+    }
+
+    public static DepartmentInfoPaymentLog createPaymentLog(CompanyBranchDepartmentPK pk, Money amount,
+                                                            boolean isPositive) {
+        return createPaymentLog(pk.getCompanyBranch(), pk.getDepartment(), amount, isPositive);
     }
 }

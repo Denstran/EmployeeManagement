@@ -61,7 +61,12 @@ public class EmployeeController {
     public String createEmployeeForm(Model model, @PathVariable Long companyBranchId, @PathVariable Long depId,
                                      HttpSession session) {
         EmployeeDTO employeeDTO = new EmployeeDTO();
-        setupModel(model, depId, false, employeeDTO, session);
+        List<PositionDTO> positionDTOS = positionMapper.toDtoList(positionService.getPositionsByDepartmentId(depId));
+        model.addAttribute("positionDTOS", positionDTOS);
+        model.addAttribute("isUpdating", false);
+        model.addAttribute("employeeDTO", employeeDTO);
+
+        session.setAttribute("positionDTOS", positionDTOS);
 
         return CREATE_OR_UPDATE_FORM;
     }
@@ -87,7 +92,15 @@ public class EmployeeController {
     public String updateEmployeeFrom(@PathVariable Long companyBranchId,
                                      @PathVariable Long depId,
                                      @PathVariable Long employeeId, Model model, HttpSession session) {
-        setupModelForUpdating(model, depId, employeeId, session);
+        EmployeeDTO employeeDTO = employeeMapper.toDto(employeeService.getById(employeeId));
+        List<EmployeeStatus> employeeStatuses = List.of(EmployeeStatus.values());
+        model.addAttribute("employeeStatuses", employeeStatuses);
+        List<PositionDTO> positionDTOS = positionMapper.toDtoList(positionService.getPositionsByDepartmentId(depId));
+        model.addAttribute("positionDTOS", positionDTOS);
+        model.addAttribute("isUpdating", true);
+        model.addAttribute("employeeDTO", employeeDTO);
+
+        session.setAttribute("positionDTOS", positionDTOS);
 
         return CREATE_OR_UPDATE_FORM;
     }
@@ -113,27 +126,12 @@ public class EmployeeController {
         return String.format(REDIRECT_LINK, companyBranchId, depId);
     }
 
-    @PostMapping("/{employeeId}/delete")
-    public String deleteEmployee(@PathVariable Long companyBranchId, @PathVariable Long depId,
-                                 @PathVariable Long employeeId) {
-        employeeService.deleteEmployee(employeeService.getById(employeeId));
-        return String.format(REDIRECT_LINK, companyBranchId, depId);
-    }
-
     private void setupModel(Model model, Long departmentId, boolean isUpdating, EmployeeDTO employeeDTO, HttpSession session) {
-        List<PositionDTO> positionDTOS = positionMapper.toDtoList(positionService.getPositionsByDepartmentId(departmentId));
-        model.addAttribute("positionDTOS", positionDTOS);
-        model.addAttribute("isUpdating", isUpdating);
-        model.addAttribute("employeeDTO", employeeDTO);
 
-        session.setAttribute("positionDTOS", positionDTOS);
     }
 
     private void setupModelForUpdating(Model model, Long departmentId, Long employeeId, HttpSession session) {
-        EmployeeDTO employeeDTO = employeeMapper.toDto(employeeService.getById(employeeId));
-        List<EmployeeStatus> employeeStatuses = List.of(EmployeeStatus.values());
-        model.addAttribute("employeeStatuses", employeeStatuses);
-        setupModel(model, departmentId, true, employeeDTO, session);
+
     }
 
 }

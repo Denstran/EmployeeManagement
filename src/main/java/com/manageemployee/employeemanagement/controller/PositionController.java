@@ -113,10 +113,4 @@ public class PositionController {
         session.removeAttribute("department");
         return REDIRECT_LINK;
     }
-
-    @PostMapping("/{positionId}/delete")
-    public String deletePosition(@PathVariable Long positionId) {
-        positionService.deleteById(positionId);
-        return REDIRECT_LINK;
-    }
 }

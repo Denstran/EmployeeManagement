@@ -76,6 +76,7 @@ public class CompanyBranchController {
         CompanyBranchDTO companyBranchDTO = new CompanyBranchDTO();
 
         model.addAttribute("companyBranchDTO", companyBranchDTO);
+        model.addAttribute("isUpdating", false);
         return VIEW_FOR_UPDATE_OR_CREATE;
     }
 
@@ -88,7 +89,6 @@ public class CompanyBranchController {
 
         CompanyBranch companyBranchEntity = companyBranchMapper.toEntity(companyBranchDTO);
         CompanyBranch companyBranch = companyBranchService.createCompanyBranch(companyBranchEntity);
-
         return REDIRECT_URL;
     }
 
@@ -103,9 +103,8 @@ public class CompanyBranchController {
         CompanyBranch companyBranch = companyBranchService.getCompanyBranchById(id);
         CompanyBranchDTO companyBranchDTO = companyBranchMapper.toDto(companyBranch);
 
-        boolean isUpdating = true;
         model.addAttribute("companyBranchDTO", companyBranchDTO);
-        model.addAttribute("isUpdating", isUpdating);
+        model.addAttribute("isUpdating", true);
 
         return VIEW_FOR_UPDATE_OR_CREATE;
     }

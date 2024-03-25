@@ -22,31 +22,8 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUserName(username);
-        System.out.println(username);
-        System.out.println(username);
-        System.out.println(username);
-        System.out.println(username);
-        System.out.println(username);
-        System.out.println(username);
-        System.out.println(username);
 
-        if (user.isPresent()) {
-            User user1 = user.get();
-            System.out.println(user1.getUsername());
-            System.out.println(user1.getUsername());
-            System.out.println(user1.getUsername());
-            System.out.println(user1.getUsername());
-            System.out.println(user1.getUsername());
-            System.out.println(user1.getUsername());
-            System.out.println(user1.getUsername());
-            System.out.println(user1.getPassword());
-            System.out.println(user1.getPassword());
-            System.out.println(user1.getPassword());
-            System.out.println(user1.getPassword());
-            System.out.println(user1.getPassword());
-            System.out.println(user1.getPassword());
-
-            return user1;
-        }else throw new UsernameNotFoundException("Пользователь не найден!");
+        if (user.isPresent()) return user.get();
+        else throw new UsernameNotFoundException("Пользователь не найден!");
     }
 }

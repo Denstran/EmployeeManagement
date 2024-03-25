@@ -56,7 +56,6 @@
             <th scope="col">Отдел должности</th>
             <th scope="col">Ведущая</th>
             <th scope="col">Обновление</th>
-            <th scope="col">Удаление</th>
         </tr>
         </thead>
         <tbody>
@@ -66,11 +65,6 @@
                 <td th:text="${position.leading ? 'ДА' : 'НЕТ'}"></td>
                 <td>
                     <a class="btn btn-dark" role="button" th:href="@{/positions/{positionId}/update(positionId = ${position.id})}">Обновить</a>
-                </td>
-                <td>
-                    <form th:action="@{/positions/{positionId}/delete(positionId = ${position.id})}" method="post">
-                        <button type="submit" class="btn btn-danger">Удалить</button>
-                    </form>
                 </td>
             </tr>
         </tbody>

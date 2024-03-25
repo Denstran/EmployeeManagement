@@ -29,6 +29,4 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     @Query("SELECT d FROM Department d WHERE d = " +
             "(SELECT p.department FROM Position p WHERE p.positionName = :positionName)")
     Department findByPositionName(@Param("positionName") String positionName);
-
-    public Department findByDepartmentNameIgnoreCase(String departmentName);
 }

@@ -23,30 +23,15 @@ public class DepartmentService {
         departmentRepository.saveAndFlush(department);
     }
 
-    @Transactional
-    public void deleteDepartment(Long id) {
-        Department department = getById(id);
-        department.deleteDepartment();
-        departmentRepository.delete(department);
-    }
-
     public Department getById(Long depId) {
         return departmentRepository.findById(depId).orElseThrow(() ->
                 new IllegalArgumentException("Выбран не существующий отдел!"));
-    }
-
-    public Optional<Department> getDepartmentByPositionId(Long positionId) {
-        return departmentRepository.findDepartmentByPositionId(positionId);
     }
 
     public List<Department> getAvailableDepartments(Long companyBranchId) {
         if (companyBranchId == null || companyBranchId <= 0)
             throw new IllegalArgumentException("Выбранный филиал не существует!");
         return departmentRepository.getAvailableDepartments(companyBranchId);
-    }
-
-    public List<Department> getAvailableDepartmentsWhenUpdating(Long companyBranchId, Long departmentId) {
-        return departmentRepository.getAvailableDepartmentsWhenUpdating(companyBranchId, departmentId);
     }
 
     public List<Department> getAllDepartments() {

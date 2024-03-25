@@ -6,7 +6,6 @@ import com.manageemployee.employeemanagement.model.enumTypes.EmployeeStatus;
 import com.manageemployee.employeemanagement.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -34,7 +33,8 @@ public class EmployeeService {
     public void updateEmployee(Employee employee) {
         Employee employeeFromDB = getById(employee.getId());
 
-        if (employee.getEmployeeStatus().equals(EmployeeStatus.FIRED)) {
+        if (employee.getEmployeeStatus().equals(EmployeeStatus.FIRED)
+                && !employeeFromDB.getEmployeeStatus().equals(EmployeeStatus.FIRED)) {
             employee.setSalary(employeeFromDB.getSalary());
             employee.fireEmployee();
         }
@@ -44,31 +44,14 @@ public class EmployeeService {
         repository.saveAndFlush(employee);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteEmployee(Employee employee) {
-        employee.deleteEmployee();
-        repository.delete(employee);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteAllByCompanyBranch(CompanyBranch companyBranch) {
-        repository.deleteAllByCompanyBranch(companyBranch);
-    }
 
     @Transactional
     public void deleteAllByCompanyBranchAndDepartment(CompanyBranch companyBranch, Department department) {
-        repository.deleteAllByCompanyBranchAndPosition_Department(companyBranch, department);
+        repository.deleteEmployeesByCompanyBranchAndDepartment(companyBranch, department);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteAllByPosition(Position position) {
-        List<Employee> employees = getByPosition(position);
-        employees.forEach(this::deleteEmployee);
-        repository.deleteAllByPosition(position);
-    }
-
-    public List<Employee> getByPosition(Position position) {
-        return repository.findByPosition(position);
+    public Employee getReference(Long id) {
+        return repository.getReferenceById(id);
     }
 
     public String getEmployeeNameById(Long employeeId) {
@@ -124,16 +107,5 @@ public class EmployeeService {
 
     public boolean existsByPhoneNumber(String phoneNumber) {
         return repository.existsByPhoneNumber(phoneNumber);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteEmployeesByDepartment(Department department) {
-        List<Employee> employees = getByDepartment(department);
-        employees.forEach(this::deleteEmployee);
-        repository.deleteEmployeesByPosition_Department(department);
-    }
-
-    private List<Employee> getByDepartment(Department department) {
-        return repository.getByPosition_Department(department);
     }
 }

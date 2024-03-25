@@ -1,6 +1,8 @@
 package com.manageemployee.employeemanagement.service;
 
-import com.manageemployee.employeemanagement.model.*;
+import com.manageemployee.employeemanagement.model.CompanyBranchPaymentLog;
+import com.manageemployee.employeemanagement.model.DepartmentInfoPaymentLog;
+import com.manageemployee.employeemanagement.model.EmployeePaymentLog;
 import com.manageemployee.employeemanagement.repository.CompanyBranchPaymentLogRepository;
 import com.manageemployee.employeemanagement.repository.DepartmentInfoPaymentLogRepository;
 import com.manageemployee.employeemanagement.repository.EmployeePaymentLogRepository;
@@ -10,7 +12,6 @@ import com.manageemployee.employeemanagement.service.specs.EmployeePaymentLogSpe
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -43,42 +44,6 @@ public class PaymentLogService {
     @Transactional
     public void saveDepartmentInfoPaymentLog(DepartmentInfoPaymentLog departmentInfoPaymentLog) {
         departmentInfoPaymentLogRepository.saveAndFlush(departmentInfoPaymentLog);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteEmployeePaymentLogs(Long employeeId) {
-        employeePaymentLogRepository.deleteEmployeePaymentLogsByEmployee_Id(employeeId);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteEmployeesPaymentLogsByPosition(Position position) {
-        employeePaymentLogRepository.deleteAllByEmployee_Position(position);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteEmployeesPaymentLogsByCompanyBranchAndDepartment(CompanyBranch companyBranch,
-                                                                       Department department) {
-        employeePaymentLogRepository.deleteAllByEmployee_CompanyBranchAndEmployee_Position_Department(companyBranch, department);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteDepartmentInfoPaymentLogs(CompanyBranch companyBranch, Department department) {
-        departmentInfoPaymentLogRepository.deleteAllByCompanyBranchAndDepartment(companyBranch, department);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteEmployeePaymentLogsByCompanyBranch(CompanyBranch companyBranch) {
-        employeePaymentLogRepository.deleteAllByEmployee_CompanyBranch(companyBranch);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteDepartmentPaymentLogsByCompanyBranch(CompanyBranch companyBranch) {
-        departmentInfoPaymentLogRepository.deleteAllByCompanyBranch(companyBranch);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteCompanyBranchPaymentLogsByCompanyBranch(CompanyBranch companyBranch) {
-        companyBranchPaymentLogRepository.deleteAllByCompanyBranch(companyBranch);
     }
 
     public List<CompanyBranchPaymentLog> getCompanyBranchPayments(Long companyBranchId, String startDate,
@@ -154,15 +119,5 @@ public class PaymentLogService {
             spec = spec.and(EmployeePaymentLogSpec.isPhoneNumberEqualTo(phoneNumber));
 
         return employeePaymentLogRepository.findAll(spec);
-    }
-
-    @Transactional
-    public void deleteEmployeesPaymentLogsByDepartment(Department department) {
-        employeePaymentLogRepository.deleteAllByEmployee_Position_Department(department);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteDepartmentPaymentLogs(Department department) {
-        departmentInfoPaymentLogRepository.deleteAllByDepartment(department);
     }
 }

@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Component
 public class MoneyService {
-    public Money sum(Money first, Money second) {
+    public static Money sum(Money first, Money second) {
         if (!first.getCurrency().equals(second.getCurrency())) 
             throw new IllegalArgumentException("Нельзя складывать суммы разных валют!");
 
@@ -15,7 +15,7 @@ public class MoneyService {
         return new Money(sum, first.getCurrency());
     }
     
-    public Money subtract(Money toSubtractFrom, Money moneyForSubtraction) {
+    public static Money subtract(Money toSubtractFrom, Money moneyForSubtraction) {
         if (!toSubtractFrom.getCurrency().equals(moneyForSubtraction.getCurrency()))
             throw new IllegalArgumentException("Нельзя складывать суммы разных валют!");
 
@@ -23,17 +23,17 @@ public class MoneyService {
         return new Money(difference, toSubtractFrom.getCurrency());
     }
 
-    public boolean isPositive(Money money) {
+    public static boolean isPositive(Money money) {
         BigDecimal amount = money.getAmount();
         return amount.compareTo(BigDecimal.ZERO) >= 0;
     }
 
-    public Money abs(Money money) {
+    public static Money abs(Money money) {
         double absoluteAmount = Math.abs(money.getAmount().doubleValue());
         return new Money(BigDecimal.valueOf(absoluteAmount), money.getCurrency());
     }
 
-    public int compareAmounts(Money first, Money second) {
+    public static int compareAmounts(Money first, Money second) {
         return first.getAmount().compareTo(second.getAmount());
     }
 }

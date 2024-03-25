@@ -1,6 +1,5 @@
 package com.manageemployee.employeemanagement.model;
 
-import com.manageemployee.employeemanagement.model.events.positionEvents.PositionDeleted;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -47,7 +46,4 @@ public class Position extends AbstractAggregateRoot<Position> {
         return Objects.hash(id);
     }
 
-    public void deletePosition() {
-        registerEvent(new PositionDeleted(this));
-    }
 }
