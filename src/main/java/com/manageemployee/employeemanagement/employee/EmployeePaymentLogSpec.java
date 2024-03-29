@@ -5,7 +5,6 @@ import com.manageemployee.employeemanagement.department.model.Department;
 import com.manageemployee.employeemanagement.employee.model.Employee;
 import com.manageemployee.employeemanagement.employee.model.EmployeePaymentLog;
 import com.manageemployee.employeemanagement.position.model.Position;
-import com.manageemployee.employeemanagement.util.AbstractPaymentLogSpec;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
@@ -40,11 +39,11 @@ public class EmployeePaymentLogSpec {
         });
     }
 
-    public static Specification<EmployeePaymentLog> isBetweenDate(String startDate, String endDate) {
-        return (Specification<EmployeePaymentLog>) AbstractPaymentLogSpec.isBetweenDates(startDate, endDate);
+    public static Specification<EmployeePaymentLog> setupSpecification(Long employee) {
+        return Specification.where(isEqualToEmployeeId(employee));
     }
 
-    public static Specification<EmployeePaymentLog> isTransferActionEqualTo(String transferAction) {
-        return (Specification<EmployeePaymentLog>) AbstractPaymentLogSpec.isTransferActionEqualTo(transferAction);
+    public static Specification<EmployeePaymentLog> setupSpecification(Long companyBranchId, Long departmentId) {
+        return Specification.where(isEqualToCompanyBranchIdAndDepartmentId(companyBranchId, departmentId));
     }
 }

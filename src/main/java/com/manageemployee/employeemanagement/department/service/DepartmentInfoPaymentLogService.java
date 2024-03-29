@@ -2,6 +2,7 @@ package com.manageemployee.employeemanagement.department.service;
 
 import com.manageemployee.employeemanagement.department.model.DepartmentInfoPaymentLog;
 import com.manageemployee.employeemanagement.department.repository.DepartmentInfoPaymentLogRepository;
+import com.manageemployee.employeemanagement.util.PaymentSpecificationProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -26,19 +27,18 @@ public class DepartmentInfoPaymentLogService {
 
     public List<DepartmentInfoPaymentLog> getDepartmentPayments(Long companyBranchId, Long departmentId,
                                                                 String startDate, String endDate, String transferAction) {
-        if (companyBranchId == null || companyBranchId <= 0 || departmentId == null || departmentId <= 0)
-            throw new IllegalArgumentException("Выбран не существующий отдел!");
-
+        validateResource(companyBranchId, departmentId);
         Specification<DepartmentInfoPaymentLog> spec =
-                Specification.where(DepartmentInfoPaymentLogSpec
-                        .isEqualToCompanyBranchIdAndDepartmentId(companyBranchId, departmentId));
-
-        if (startDate != null && endDate != null && !startDate.isEmpty() && !endDate.isEmpty())
-            spec = spec.and(DepartmentInfoPaymentLogSpec.isBetweenDates(startDate, endDate));
-
-        if (transferAction != null && !transferAction.isEmpty() && !transferAction.equals("ALL"))
-            spec = spec.and(DepartmentInfoPaymentLogSpec.isTransferActionEqualTo(transferAction));
+                DepartmentInfoPaymentLogSpec.setupSpecification(companyBranchId, departmentId);
+        spec = PaymentSpecificationProcessor.processDateParams(startDate, endDate, spec);
+        spec = PaymentSpecificationProcessor.processAction(transferAction, spec);
 
         return repository.findAll(spec);
     }
+
+    private void validateResource(Long companyBranchId, Long departmentId) {
+        if (companyBranchId == null || companyBranchId <= 0 || departmentId == null || departmentId <= 0)
+            throw new IllegalArgumentException("Выбран не существующий отдел!");
+    }
+
 }

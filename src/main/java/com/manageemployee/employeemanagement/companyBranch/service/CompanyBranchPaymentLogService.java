@@ -2,6 +2,7 @@ package com.manageemployee.employeemanagement.companyBranch.service;
 
 import com.manageemployee.employeemanagement.companyBranch.model.CompanyBranchPaymentLog;
 import com.manageemployee.employeemanagement.companyBranch.repository.CompanyBranchPaymentLogRepository;
+import com.manageemployee.employeemanagement.util.PaymentSpecificationProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -26,18 +27,17 @@ public class CompanyBranchPaymentLogService {
 
     public List<CompanyBranchPaymentLog> getCompanyBranchPayments(Long companyBranchId, String startDate,
                                                                   String endDate, String transferAction) {
-        if (companyBranchId == null || companyBranchId <= 0)
-            throw new IllegalArgumentException("Выбран не существующий филиал!");
+        validateResource(companyBranchId);
 
-        Specification<CompanyBranchPaymentLog> spec =
-                Specification.where(CompanyBranchPaymentLogSpec.isIdEqual(companyBranchId));
-
-        if (startDate != null && endDate != null && !startDate.isEmpty() && !endDate.isEmpty())
-            spec = spec.and(CompanyBranchPaymentLogSpec.isBetweenDates(startDate, endDate));
-
-        if (transferAction != null && !transferAction.isEmpty() && !transferAction.equals("ALL"))
-            spec = spec.and(CompanyBranchPaymentLogSpec.isTransferActionEqualTo(transferAction));
+        Specification<CompanyBranchPaymentLog> spec = CompanyBranchPaymentLogSpec.setupSpecification(companyBranchId);
+        spec = PaymentSpecificationProcessor.processDateParams(startDate, endDate, spec);
+        spec = PaymentSpecificationProcessor.processAction(transferAction, spec);
 
         return repository.findAll(spec);
+    }
+
+    private void validateResource(Long companyBranchId) {
+        if (companyBranchId == null || companyBranchId <= 0)
+            throw new IllegalArgumentException("Выбран не существующий филиал!");
     }
 }

@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public abstract class AbstractPaymentLogSpec {
-    public static Specification<? extends BasePaymentEntity> isBetweenDates(String startDate, String endDate) {
+    public static <T extends BasePaymentEntity> Specification<T> isBetweenDates(String startDate, String endDate) {
         return ((root, query, criteriaBuilder) -> {
             Date start;
             Date end;
@@ -29,7 +29,7 @@ public abstract class AbstractPaymentLogSpec {
         });
     }
 
-    public static Specification<? extends BasePaymentEntity> isTransferActionEqualTo(String transferAction) {
+    public static <T extends BasePaymentEntity> Specification<T> isTransferActionEqualTo(String transferAction) {
         TransferAction transferActionEnum = TransferAction.valueOf(transferAction);
         return ((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("transferAction"), transferActionEnum));
     }

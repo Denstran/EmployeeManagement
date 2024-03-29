@@ -3,6 +3,7 @@ package com.manageemployee.employeemanagement.employee.service;
 import com.manageemployee.employeemanagement.employee.EmployeePaymentLogSpec;
 import com.manageemployee.employeemanagement.employee.model.EmployeePaymentLog;
 import com.manageemployee.employeemanagement.employee.repository.EmployeePaymentLogRepository;
+import com.manageemployee.employeemanagement.util.PaymentSpecificationProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -27,16 +28,10 @@ public class EmployeePaymentLogService {
 
     public List<EmployeePaymentLog> getEmployeePaymentLog(Long employeeId, String startDate, String endDate,
                                                           String transferAction) {
-        if (employeeId == null || employeeId <= 0)
-            throw new IllegalArgumentException("Выбранный сотрудник не существует!");
-
-        Specification<EmployeePaymentLog> spec =
-                Specification.where(EmployeePaymentLogSpec.isEqualToEmployeeId(employeeId));
-
-        processDateParams(startDate, endDate, spec);
-
-        if (transferAction != null && !transferAction.isEmpty() && !transferAction.equals("ALL"))
-            spec = spec.and(EmployeePaymentLogSpec.isTransferActionEqualTo(transferAction));
+        validateResources(employeeId);
+        Specification<EmployeePaymentLog> spec = EmployeePaymentLogSpec.setupSpecification(employeeId);
+        spec = PaymentSpecificationProcessor.processDateParams(startDate, endDate, spec);
+        spec = PaymentSpecificationProcessor.processAction(transferAction, spec);
 
         return repository.findAll(spec);
     }
@@ -45,32 +40,34 @@ public class EmployeePaymentLogService {
                                                                              String startDate,String endDate,
                                                                              String transferAction,
                                                                              String phoneNumber) {
-        if (companyBranchId == null || companyBranchId <= 0 || departmentId == null || departmentId <= 0)
-            throw new IllegalArgumentException("Выбран не существующий отдел!");
-
+        validateResources(companyBranchId, departmentId);
         Specification<EmployeePaymentLog> spec =
-                Specification.where
-                        (EmployeePaymentLogSpec.isEqualToCompanyBranchIdAndDepartmentId(companyBranchId, departmentId));
-
-        spec = processDateParams(startDate, endDate, spec);
-
-        if (transferAction != null && !transferAction.isEmpty() && !transferAction.equals("ALL"))
-            spec = spec.and(EmployeePaymentLogSpec.isTransferActionEqualTo(transferAction));
-
-        if (phoneNumber != null && !phoneNumber.isEmpty())
-            spec = spec.and(EmployeePaymentLogSpec.isPhoneNumberEqualTo(phoneNumber));
+                EmployeePaymentLogSpec.setupSpecification(companyBranchId, departmentId);
+        spec = PaymentSpecificationProcessor.processDateParams(startDate, endDate, spec);
+        spec = PaymentSpecificationProcessor.processAction(transferAction, spec);
+        spec = processPhoneNumberParameter(phoneNumber, spec);
 
         return repository.findAll(spec);
     }
 
-    private Specification<EmployeePaymentLog> processDateParams(String startDate, String endDate,
-                                                                Specification<EmployeePaymentLog> spec) {
-        if (!isDateParamsValid(startDate, endDate)) return spec;
+    private Specification<EmployeePaymentLog> processPhoneNumberParameter(String phoneNumber,
+                                                                          Specification<EmployeePaymentLog> spec) {
+        if (!isValidPhoneNumber(phoneNumber)) return spec;
 
-        return spec.and(EmployeePaymentLogSpec.isBetweenDate(startDate, endDate));
+        return spec.and(EmployeePaymentLogSpec.isPhoneNumberEqualTo(phoneNumber));
     }
 
-    private boolean isDateParamsValid(String startDate, String endDate) {
-        return startDate != null && endDate != null && !startDate.isEmpty() && !endDate.isEmpty();
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        return phoneNumber != null && !phoneNumber.isEmpty();
+    }
+
+    private void validateResources(Long...resources) {
+        for (Long resource : resources)
+            checkResourceValidity(resource);
+    }
+
+    private void checkResourceValidity(Long resource) {
+        if (resource == null || resource <= 0)
+            throw new IllegalArgumentException("Выбран не существующий ресурс!");
     }
 }
