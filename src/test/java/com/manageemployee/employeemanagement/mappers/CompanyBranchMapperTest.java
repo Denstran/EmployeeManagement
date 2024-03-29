@@ -1,10 +1,10 @@
 package com.manageemployee.employeemanagement.mappers;
 
-import com.manageemployee.employeemanagement.converter.dtoMappers.CompanyBranchMapper;
-import com.manageemployee.employeemanagement.dto.CompanyBranchDTO;
-import com.manageemployee.employeemanagement.model.CompanyBranch;
-import com.manageemployee.employeemanagement.model.Money;
-import com.manageemployee.employeemanagement.model.embeddable.Address;
+import com.manageemployee.employeemanagement.companyBranch.dto.CompanyBranchDTO;
+import com.manageemployee.employeemanagement.companyBranch.dto.mappers.CompanyBranchMapper;
+import com.manageemployee.employeemanagement.companyBranch.model.CompanyBranch;
+import com.manageemployee.employeemanagement.util.Address;
+import com.manageemployee.employeemanagement.util.Money;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

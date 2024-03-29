@@ -1,15 +1,15 @@
 package com.manageemployee.employeemanagement.mappers;
 
 
-import com.manageemployee.employeemanagement.converter.dtoMappers.EmployeeMapper;
-import com.manageemployee.employeemanagement.dto.EmployeeDTO;
-import com.manageemployee.employeemanagement.model.CompanyBranch;
-import com.manageemployee.employeemanagement.model.Employee;
-import com.manageemployee.employeemanagement.model.Position;
-import com.manageemployee.employeemanagement.model.embeddable.Name;
-import com.manageemployee.employeemanagement.model.enumTypes.EmployeeStatus;
-import com.manageemployee.employeemanagement.service.CompanyBranchService;
-import com.manageemployee.employeemanagement.service.PositionService;
+import com.manageemployee.employeemanagement.companyBranch.model.CompanyBranch;
+import com.manageemployee.employeemanagement.companyBranch.service.CompanyBranchService;
+import com.manageemployee.employeemanagement.employee.dto.EmployeeDTO;
+import com.manageemployee.employeemanagement.employee.dto.mapper.EmployeeMapper;
+import com.manageemployee.employeemanagement.employee.model.Employee;
+import com.manageemployee.employeemanagement.employee.model.EmployeeStatus;
+import com.manageemployee.employeemanagement.employee.model.Name;
+import com.manageemployee.employeemanagement.position.model.Position;
+import com.manageemployee.employeemanagement.position.service.PositionService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -41,6 +41,9 @@ public class EmployeeMapperTest {
 
         Employee employee = new Employee();
         employee.setName(name);
+        Position position = new Position();
+        position.setPositionName("TEST");
+        employee.setPosition(position);
 
         EmployeeDTO dto = employeeMapper.toDto(employee);
 
@@ -66,6 +69,9 @@ public class EmployeeMapperTest {
 
         Employee entity = new Employee();
         entity.setCompanyBranch(companyBranch);
+        Position position = new Position();
+        position.setPositionName("TEST");
+        entity.setPosition(position);
 
         EmployeeDTO dto = employeeMapper.toDto(entity);
 
@@ -92,6 +98,9 @@ public class EmployeeMapperTest {
     void assert_that_employee_status_is_the_same_after_convertation_from_entity_to_dto() {
         Employee entity = new Employee();
         entity.setEmployeeStatus(EmployeeStatus.WORKING);
+        Position position = new Position();
+        position.setPositionName("TEST");
+        entity.setPosition(position);
 
         EmployeeDTO dto = employeeMapper.toDto(entity);
 

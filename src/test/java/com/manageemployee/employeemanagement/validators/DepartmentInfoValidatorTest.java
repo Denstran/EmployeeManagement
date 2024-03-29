@@ -1,18 +1,17 @@
 package com.manageemployee.employeemanagement.validators;
 
-import com.manageemployee.employeemanagement.dto.DepartmentInfoDTO;
-import com.manageemployee.employeemanagement.model.CompanyBranch;
-import com.manageemployee.employeemanagement.model.Department;
-import com.manageemployee.employeemanagement.model.DepartmentInfo;
-import com.manageemployee.employeemanagement.model.Money;
-import com.manageemployee.employeemanagement.model.embeddable.CompanyBranchDepartmentPK;
-import com.manageemployee.employeemanagement.service.CompanyBranchService;
-import com.manageemployee.employeemanagement.service.DepartmentInfoService;
-import com.manageemployee.employeemanagement.service.DepartmentService;
-import com.manageemployee.employeemanagement.service.MoneyService;
-import com.manageemployee.employeemanagement.util.validators.departmentInfoValidators.DepartmentInfoNewEntryValidator;
-import com.manageemployee.employeemanagement.util.validators.departmentInfoValidators.DepartmentInfoUpdatingEntryValidator;
-import com.manageemployee.employeemanagement.util.validators.departmentInfoValidators.DepartmentInfoValidator;
+import com.manageemployee.employeemanagement.companyBranch.model.CompanyBranch;
+import com.manageemployee.employeemanagement.companyBranch.service.CompanyBranchService;
+import com.manageemployee.employeemanagement.department.dto.DepartmentInfoDTO;
+import com.manageemployee.employeemanagement.department.model.CompanyBranchDepartmentPK;
+import com.manageemployee.employeemanagement.department.model.Department;
+import com.manageemployee.employeemanagement.department.model.DepartmentInfo;
+import com.manageemployee.employeemanagement.department.service.DepartmentInfoService;
+import com.manageemployee.employeemanagement.department.service.DepartmentService;
+import com.manageemployee.employeemanagement.department.validation.departmentInfoValidation.DepartmentInfoNewEntryValidator;
+import com.manageemployee.employeemanagement.department.validation.departmentInfoValidation.DepartmentInfoUpdatingEntryValidator;
+import com.manageemployee.employeemanagement.department.validation.departmentInfoValidation.DepartmentInfoValidator;
+import com.manageemployee.employeemanagement.util.Money;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,17 +33,14 @@ public class DepartmentInfoValidatorTest {
     private static Department department;
     private static CompanyBranchDepartmentPK pk;
 
-    private static Money companyBranchBudget;
-
     @BeforeAll
     static void beforeAll() {
-        MoneyService moneyService = new MoneyService();
         DepartmentInfoNewEntryValidator newEntryValidator = new DepartmentInfoNewEntryValidator(
-                companyBranchService, departmentService, departmentInfoService, moneyService
+                companyBranchService, departmentService, departmentInfoService
         );
 
         DepartmentInfoUpdatingEntryValidator updatingEntryValidator = new DepartmentInfoUpdatingEntryValidator(
-               departmentInfoService, companyBranchService, departmentService, moneyService
+               departmentInfoService, companyBranchService, departmentService
         );
 
         departmentInfoValidator = new DepartmentInfoValidator(List.of(newEntryValidator, updatingEntryValidator));
@@ -55,7 +51,7 @@ public class DepartmentInfoValidatorTest {
         department.setId(1L);
         pk = new CompanyBranchDepartmentPK (companyBranch, department);
 
-        companyBranchBudget = Money.getMoneyFromString("100000 RUB");
+        Money companyBranchBudget = Money.getMoneyFromString("100000 RUB");
         companyBranch.setBudget(companyBranchBudget);
 
     }

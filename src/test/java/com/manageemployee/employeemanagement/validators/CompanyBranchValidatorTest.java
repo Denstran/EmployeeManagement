@@ -1,12 +1,12 @@
 package com.manageemployee.employeemanagement.validators;
 
-import com.manageemployee.employeemanagement.dto.CompanyBranchDTO;
-import com.manageemployee.employeemanagement.model.CompanyBranch;
-import com.manageemployee.employeemanagement.model.embeddable.Address;
-import com.manageemployee.employeemanagement.service.CompanyBranchService;
-import com.manageemployee.employeemanagement.util.validators.companyBranchValidators.CompanyBranchNewEntryValidator;
-import com.manageemployee.employeemanagement.util.validators.companyBranchValidators.CompanyBranchUpdatingEntryValidation;
-import com.manageemployee.employeemanagement.util.validators.companyBranchValidators.CompanyBranchValidator;
+import com.manageemployee.employeemanagement.companyBranch.dto.CompanyBranchDTO;
+import com.manageemployee.employeemanagement.companyBranch.model.CompanyBranch;
+import com.manageemployee.employeemanagement.companyBranch.service.CompanyBranchService;
+import com.manageemployee.employeemanagement.companyBranch.validation.CompanyBranchNewEntryValidator;
+import com.manageemployee.employeemanagement.companyBranch.validation.CompanyBranchUpdatingEntryValidation;
+import com.manageemployee.employeemanagement.companyBranch.validation.CompanyBranchValidator;
+import com.manageemployee.employeemanagement.util.Address;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

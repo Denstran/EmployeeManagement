@@ -1,10 +1,10 @@
 package com.manageemployee.employeemanagement.mappers;
 
-import com.manageemployee.employeemanagement.converter.dtoMappers.PositionMapper;
-import com.manageemployee.employeemanagement.dto.PositionDTO;
-import com.manageemployee.employeemanagement.model.Department;
-import com.manageemployee.employeemanagement.model.Position;
-import com.manageemployee.employeemanagement.service.DepartmentService;
+import com.manageemployee.employeemanagement.department.model.Department;
+import com.manageemployee.employeemanagement.department.service.DepartmentService;
+import com.manageemployee.employeemanagement.position.dto.PositionDTO;
+import com.manageemployee.employeemanagement.position.dto.mapper.PositionMapper;
+import com.manageemployee.employeemanagement.position.model.Position;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -33,13 +33,12 @@ public class PositionMapperTest {
         Position position = new Position();
             position.setId(1L);
             position.setPositionName("Test");
-            position.setAmountOfEmployees(1);
+            position.setDepartment(new Department(1L, "Test"));
 
         PositionDTO dto = positionMapper.toDto(position);
 
         Assertions.assertEquals(position.getId(), dto.getId());
         Assertions.assertEquals(position.getPositionName(), dto.getPositionName());
-        Assertions.assertEquals(position.getAmountOfEmployees(), dto.getAmountOfEmployees());
     }
 
     @Test
@@ -47,13 +46,11 @@ public class PositionMapperTest {
         PositionDTO dto = new PositionDTO();
             dto.setId(1L);
             dto.setPositionName("Test");
-            dto.setAmountOfEmployees(1);
 
         Position position = positionMapper.toEntity(dto);
 
         Assertions.assertEquals(position.getId(), dto.getId());
         Assertions.assertEquals(position.getPositionName(), dto.getPositionName());
-        Assertions.assertEquals(position.getAmountOfEmployees(), dto.getAmountOfEmployees());
     }
 
     @Test

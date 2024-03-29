@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    generate-unique-name: false
+    driver-class-name: org.h2.Driver
+    name: employeeManagement
+    password: root
+    username: root
+    url: jdbc:h2:mem:employeeManagement
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    defer-datasource-initialization: true
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+  thymeleaf:
+    cache: false

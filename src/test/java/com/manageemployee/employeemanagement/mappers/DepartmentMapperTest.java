@@ -1,8 +1,8 @@
 package com.manageemployee.employeemanagement.mappers;
 
-import com.manageemployee.employeemanagement.converter.dtoMappers.DepartmentMapper;
-import com.manageemployee.employeemanagement.dto.DepartmentDTO;
-import com.manageemployee.employeemanagement.model.Department;
+import com.manageemployee.employeemanagement.department.dto.DepartmentDTO;
+import com.manageemployee.employeemanagement.department.dto.mappers.DepartmentMapper;
+import com.manageemployee.employeemanagement.department.model.Department;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;

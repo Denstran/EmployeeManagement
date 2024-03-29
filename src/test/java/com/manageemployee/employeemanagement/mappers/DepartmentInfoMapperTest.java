@@ -1,14 +1,14 @@
 package com.manageemployee.employeemanagement.mappers;
 
-import com.manageemployee.employeemanagement.converter.dtoMappers.DepartmentInfoMapper;
-import com.manageemployee.employeemanagement.dto.DepartmentInfoDTO;
-import com.manageemployee.employeemanagement.model.CompanyBranch;
-import com.manageemployee.employeemanagement.model.Department;
-import com.manageemployee.employeemanagement.model.DepartmentInfo;
-import com.manageemployee.employeemanagement.model.Money;
-import com.manageemployee.employeemanagement.model.embeddable.CompanyBranchDepartmentPK;
-import com.manageemployee.employeemanagement.service.CompanyBranchService;
-import com.manageemployee.employeemanagement.service.DepartmentService;
+import com.manageemployee.employeemanagement.companyBranch.model.CompanyBranch;
+import com.manageemployee.employeemanagement.companyBranch.service.CompanyBranchService;
+import com.manageemployee.employeemanagement.department.dto.DepartmentInfoDTO;
+import com.manageemployee.employeemanagement.department.dto.mappers.DepartmentInfoMapper;
+import com.manageemployee.employeemanagement.department.model.CompanyBranchDepartmentPK;
+import com.manageemployee.employeemanagement.department.model.Department;
+import com.manageemployee.employeemanagement.department.model.DepartmentInfo;
+import com.manageemployee.employeemanagement.department.service.DepartmentService;
+import com.manageemployee.employeemanagement.util.Money;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

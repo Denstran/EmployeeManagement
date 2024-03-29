@@ -1,15 +1,15 @@
 package com.manageemployee.employeemanagement.validators;
 
-import com.manageemployee.employeemanagement.dto.EmployeeDTO;
-import com.manageemployee.employeemanagement.model.DepartmentInfo;
-import com.manageemployee.employeemanagement.model.Employee;
-import com.manageemployee.employeemanagement.model.Money;
-import com.manageemployee.employeemanagement.service.EmployeeService;
-import com.manageemployee.employeemanagement.service.MoneyService;
-import com.manageemployee.employeemanagement.service.PositionService;
-import com.manageemployee.employeemanagement.util.validators.employeeValidators.EmployeeNewEntryValidator;
-import com.manageemployee.employeemanagement.util.validators.employeeValidators.EmployeeUpdatingEntryValidator;
-import com.manageemployee.employeemanagement.util.validators.employeeValidators.EmployeeValidator;
+import com.manageemployee.employeemanagement.department.model.DepartmentInfo;
+import com.manageemployee.employeemanagement.employee.dto.EmployeeDTO;
+import com.manageemployee.employeemanagement.employee.model.Employee;
+import com.manageemployee.employeemanagement.employee.service.EmployeeService;
+import com.manageemployee.employeemanagement.employee.validation.EmployeeNewEntryValidator;
+import com.manageemployee.employeemanagement.employee.validation.EmployeeUpdatingEntryValidator;
+import com.manageemployee.employeemanagement.employee.validation.EmployeeValidator;
+import com.manageemployee.employeemanagement.position.model.Position;
+import com.manageemployee.employeemanagement.position.service.PositionService;
+import com.manageemployee.employeemanagement.util.Money;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,21 +27,24 @@ public class EmployeeValidatorTest {
     private static EmployeeValidator employeeValidator;
     private Employee employee;
     private EmployeeDTO dto;
+    private Position position;
     private DepartmentInfo departmentInfo;
     private BeanPropertyBindingResult bindingResult;
 
     @BeforeAll
     static void beforeAll() {
-        MoneyService moneyService = new MoneyService();
-        EmployeeNewEntryValidator newEntryValidator = new EmployeeNewEntryValidator(employeeService,
-                positionService, moneyService);
+        EmployeeNewEntryValidator newEntryValidator = new EmployeeNewEntryValidator(employeeService, positionService);
         EmployeeUpdatingEntryValidator updatingEntryValidator =
-                new EmployeeUpdatingEntryValidator(employeeService, moneyService, positionService);
+                new EmployeeUpdatingEntryValidator(employeeService, positionService);
         employeeValidator = new EmployeeValidator(List.of(newEntryValidator, updatingEntryValidator));
     }
 
     @BeforeEach
     void beforeEach() {
+        position = new Position();
+            position.setLeading(false);
+            position.setId(1L);
+
         dto = new EmployeeDTO();
             dto.setCompanyBranchId(1L);
             dto.setPositionId(1L);
@@ -67,6 +70,7 @@ public class EmployeeValidatorTest {
         Mockito.when(employeeService.existsByPhoneNumber(dto.getPhoneNumber())).thenReturn(false);
         Mockito.when(employeeService.getEmployeeDepartmentInfo(dto.getCompanyBranchId(), dto.getPositionId()))
                 .thenReturn(departmentInfo);
+        Mockito.when(positionService.getById(1L)).thenReturn(position);
 
         dto.setSalary(Money.getMoneyFromString("1000 RUB"));
         employeeValidator.validate(dto, bindingResult);
@@ -80,6 +84,7 @@ public class EmployeeValidatorTest {
         Mockito.when(employeeService.existsByPhoneNumber(dto.getPhoneNumber())).thenReturn(true);
         Mockito.when(employeeService.getEmployeeDepartmentInfo(dto.getCompanyBranchId(), dto.getPositionId()))
                 .thenReturn(departmentInfo);
+        Mockito.when(positionService.getById(1L)).thenReturn(position);
 
         dto.setSalary(Money.getMoneyFromString("1000 RUB"));
         employeeValidator.validate(dto, bindingResult);
@@ -93,6 +98,7 @@ public class EmployeeValidatorTest {
         Mockito.when(employeeService.existsByPhoneNumber(dto.getPhoneNumber())).thenReturn(false);
         Mockito.when(employeeService.getEmployeeDepartmentInfo(dto.getCompanyBranchId(), dto.getPositionId()))
                 .thenReturn(departmentInfo);
+        Mockito.when(positionService.getById(1L)).thenReturn(position);
 
         dto.setSalary(Money.getMoneyFromString("100000000000000 RUB"));
         employeeValidator.validate(dto, bindingResult);
@@ -106,6 +112,7 @@ public class EmployeeValidatorTest {
         Mockito.when(employeeService.existsByPhoneNumber(dto.getPhoneNumber())).thenReturn(false);
         Mockito.when(employeeService.getEmployeeDepartmentInfo(dto.getCompanyBranchId(), dto.getPositionId()))
                 .thenReturn(departmentInfo);
+        Mockito.when(positionService.getById(1L)).thenReturn(position);
 
         dto.setSalary(Money.getMoneyFromString("100 EUR"));
         employeeValidator.validate(dto, bindingResult);
@@ -121,6 +128,7 @@ public class EmployeeValidatorTest {
         Mockito.when(employeeService.existsByPhoneNumber(dto.getPhoneNumber())).thenReturn(true);
         Mockito.when(employeeService.getEmployeeDepartmentInfo(dto.getCompanyBranchId(), dto.getPositionId()))
                 .thenReturn(departmentInfo);
+        Mockito.when(positionService.getById(1L)).thenReturn(position);
 
         dto.setSalary(Money.getMoneyFromString("100 EUR"));
         employeeValidator.validate(dto, bindingResult);
@@ -137,6 +145,7 @@ public class EmployeeValidatorTest {
         Mockito.when(employeeService.getEmployeeDepartmentInfo(dto.getCompanyBranchId(), dto.getPositionId()))
                 .thenReturn(departmentInfo);
         Mockito.when(employeeService.getById(dto.getId())).thenReturn(employee);
+        Mockito.when(positionService.getById(1L)).thenReturn(position);
 
         dto.setSalary(Money.getMoneyFromString("1000 RUB"));
 
@@ -153,6 +162,7 @@ public class EmployeeValidatorTest {
         Mockito.when(employeeService.getEmployeeDepartmentInfo(dto.getCompanyBranchId(), dto.getPositionId()))
                 .thenReturn(departmentInfo);
         Mockito.when(employeeService.getById(dto.getId())).thenReturn(employee);
+        Mockito.when(positionService.getById(1L)).thenReturn(position);
 
         dto.setSalary(Money.getMoneyFromString("1000 RUB"));
 
@@ -170,6 +180,7 @@ public class EmployeeValidatorTest {
         Mockito.when(employeeService.getEmployeeDepartmentInfo(dto.getCompanyBranchId(), dto.getPositionId()))
                 .thenReturn(departmentInfo);
         Mockito.when(employeeService.getById(dto.getId())).thenReturn(employee);
+        Mockito.when(positionService.getById(1L)).thenReturn(position);
 
         dto.setSalary(Money.getMoneyFromString("1000000000000000 RUB"));
         employeeValidator.validate(dto, bindingResult);
@@ -185,6 +196,7 @@ public class EmployeeValidatorTest {
         Mockito.when(employeeService.getEmployeeDepartmentInfo(dto.getCompanyBranchId(), dto.getPositionId()))
                 .thenReturn(departmentInfo);
         Mockito.when(employeeService.getById(dto.getId())).thenReturn(employee);
+        Mockito.when(positionService.getById(1L)).thenReturn(position);
 
         dto.setSalary(Money.getMoneyFromString("1000 EUR"));
         employeeValidator.validate(dto, bindingResult);
