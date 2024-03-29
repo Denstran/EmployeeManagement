@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
-@RequestMapping("/companyBranches/{companyBranchId}/payments")
+@RequestMapping("/companyBranches/{companyBranchId}/departments/{depId}/employees")
 public class EmployeePaymentLogController {
     private final EmployeePaymentLogService paymentLogService;
     private final EmployeePaymentLogMapper paymentLogMapper;
@@ -34,7 +34,7 @@ public class EmployeePaymentLogController {
         this.departmentService = departmentService;
     }
 
-    @GetMapping("/departments/{depId}/employees/{employeeId}/payments")
+    @GetMapping("/{employeeId}/payments")
     public String getEmployeePayments(Model model, @PathVariable Long companyBranchId, @PathVariable Long depId,
                                       @PathVariable Long employeeId,
                                       @RequestParam(name = "startDate", required = false) String startDate,
@@ -49,7 +49,7 @@ public class EmployeePaymentLogController {
         return EMPLOYEE_PAYMENTS_VIEW;
     }
 
-    @GetMapping("/departments/{depId}/employees/payments")
+    @GetMapping("/payments")
     public String getEveryEmployeePayments(Model model, @PathVariable Long companyBranchId,
                                            @PathVariable Long depId,
                                            @RequestParam(name = "phoneNumber", required = false) String phoneNumber,

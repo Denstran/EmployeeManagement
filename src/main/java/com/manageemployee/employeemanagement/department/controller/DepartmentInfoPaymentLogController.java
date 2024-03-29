@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
-@RequestMapping("/companyBranches/{companyBranchId}/payments")
+@RequestMapping("/companyBranches/{companyBranchId}/departments")
 public class DepartmentInfoPaymentLogController {
     private final DepartmentInfoPaymentLogMapper paymentLogMapper;
     private final DepartmentInfoPaymentLogService paymentLogService;
@@ -30,7 +30,7 @@ public class DepartmentInfoPaymentLogController {
         this.departmentService = departmentService;
     }
 
-    @GetMapping("/departments/{depId}/payments")
+    @GetMapping("/{depId}/payments")
     public String getDepartmentPayments(Model model, @PathVariable Long companyBranchId, @PathVariable Long depId,
                                         @RequestParam(name = "startDate", required = false) String startDate,
                                         @RequestParam(name = "endDate", required = false) String endDate,

@@ -6,6 +6,7 @@ import com.manageemployee.employeemanagement.employee.repository.EmployeePayment
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class EmployeePaymentLogService {
         this.repository = repository;
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void saveEmployeePaymentLog(EmployeePaymentLog employeePaymentLog) {
         repository.save(employeePaymentLog);
     }
@@ -51,7 +52,7 @@ public class EmployeePaymentLogService {
                 Specification.where
                         (EmployeePaymentLogSpec.isEqualToCompanyBranchIdAndDepartmentId(companyBranchId, departmentId));
 
-        processDateParams(startDate, endDate, spec);
+        spec = processDateParams(startDate, endDate, spec);
 
         if (transferAction != null && !transferAction.isEmpty() && !transferAction.equals("ALL"))
             spec = spec.and(EmployeePaymentLogSpec.isTransferActionEqualTo(transferAction));
@@ -62,9 +63,11 @@ public class EmployeePaymentLogService {
         return repository.findAll(spec);
     }
 
-    private void processDateParams(String startDate, String endDate, Specification<EmployeePaymentLog> spec) {
-        if (isDateParamsValid(startDate, endDate))
-            spec = spec.and(EmployeePaymentLogSpec.isBetweenDate(startDate, endDate));
+    private Specification<EmployeePaymentLog> processDateParams(String startDate, String endDate,
+                                                                Specification<EmployeePaymentLog> spec) {
+        if (!isDateParamsValid(startDate, endDate)) return spec;
+
+        return spec.and(EmployeePaymentLogSpec.isBetweenDate(startDate, endDate));
     }
 
     private boolean isDateParamsValid(String startDate, String endDate) {

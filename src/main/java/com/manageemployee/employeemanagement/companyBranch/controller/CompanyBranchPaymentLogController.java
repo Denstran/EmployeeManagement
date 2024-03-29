@@ -26,7 +26,7 @@ public class CompanyBranchPaymentLogController {
         this.paymentLogService = paymentLogService;
     }
 
-    @GetMapping("/payments")
+    @GetMapping
     public String getCompanyBranchPayments(Model model, @PathVariable Long companyBranchId,
                                            @RequestParam(name = "startDate", required = false) String startDate,
                                            @RequestParam(name = "endDate", required = false) String endDate,

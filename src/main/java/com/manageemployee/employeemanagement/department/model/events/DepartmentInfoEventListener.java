@@ -50,8 +50,10 @@ public class DepartmentInfoEventListener {
 
     private void processBudgetChanges(DepartmentInfoBaseEvent baseEvent, Action action) {
         switch (action) {
-            case CREATE -> processCompanyBranchNegativeBudgetChanges(baseEvent.getCompanyBranch(),
-                    baseEvent.getNewBudget());
+            case CREATE -> {
+                processCompanyBranchNegativeBudgetChanges(baseEvent.getCompanyBranch(), baseEvent.getNewBudget());
+                processDepartmentInfoPaymentLogCreation(baseEvent, baseEvent.getNewBudget(), true);
+            }
             case UPDATE -> processDepInfoChanges(baseEvent);
             case DELETE -> processDepartmentInfoRemoval(baseEvent);
         }
@@ -92,8 +94,7 @@ public class DepartmentInfoEventListener {
     }
 
     private void processCompanyBranchPositiveBudgetChanges(CompanyBranch companyBranch, Money budgetChange) {
-        companyBranch.setBudget(MoneyUtil.sum(companyBranch.getBudget(), budgetChange));
-        companyBranchService.updateCompanyBranch(companyBranch);
+        companyBranchService.increaseBudget(companyBranch, budgetChange);
         processCompanyBranchPaymentLogCreation(companyBranch, budgetChange, true);
     }
 
@@ -106,7 +107,7 @@ public class DepartmentInfoEventListener {
 
     private void processCompanyBranchNegativeBudgetChanges(CompanyBranch companyBranch, Money budgetChange) {
         companyBranch.setBudget(MoneyUtil.subtract(companyBranch.getBudget(), budgetChange));
-        companyBranchService.updateCompanyBranch(companyBranch);
+        companyBranchService.allocateBudget(companyBranch, budgetChange);
         processCompanyBranchPaymentLogCreation(companyBranch, budgetChange, false);
     }
 

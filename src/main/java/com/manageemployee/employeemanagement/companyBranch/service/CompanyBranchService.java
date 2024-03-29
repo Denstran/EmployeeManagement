@@ -4,7 +4,10 @@ import com.manageemployee.employeemanagement.companyBranch.model.CompanyBranch;
 import com.manageemployee.employeemanagement.companyBranch.repository.CompanyBranchRepository;
 import com.manageemployee.employeemanagement.department.model.DepartmentInfo;
 import com.manageemployee.employeemanagement.util.Address;
+import com.manageemployee.employeemanagement.util.Money;
+import com.manageemployee.employeemanagement.util.MoneyUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -27,7 +30,7 @@ public class CompanyBranchService {
         return  companyBranchRepository.saveAndFlush(companyBranch);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public CompanyBranch updateCompanyBranch(CompanyBranch companyBranch) {
         if (companyBranch == null)
             throw new IllegalArgumentException("Выбран некорректный филиал для обновления!");
@@ -35,6 +38,20 @@ public class CompanyBranchService {
         companyBranch.updateCompanyBranch(companyBranchFromDB);
 
         return companyBranchRepository.saveAndFlush(companyBranch);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void allocateBudget(CompanyBranch companyBranch, Money budgetChanges) {
+        Money reducedBudget = MoneyUtil.subtract(companyBranch.getBudget(), budgetChanges);
+        companyBranch.setBudget(reducedBudget);
+        companyBranchRepository.saveAndFlush(companyBranch);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void increaseBudget(CompanyBranch companyBranch, Money budgetChanges) {
+        Money increasedBudget = MoneyUtil.sum(companyBranch.getBudget(), budgetChanges);
+        companyBranch.setBudget(increasedBudget);
+        companyBranchRepository.saveAndFlush(companyBranch);
     }
 
     public CompanyBranch getCompanyBranchById(Long id) {

@@ -8,7 +8,6 @@ import com.manageemployee.employeemanagement.util.converter.MoneyConverter;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Formula;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.util.Objects;
@@ -25,10 +24,6 @@ public class DepartmentInfo extends AbstractAggregateRoot<DepartmentInfo> {
     @Column(name = "DEPARTMENT_BUDGET")
     @Convert(converter = MoneyConverter.class)
     private Money departmentBudget;
-
-    @Formula("SELECT COUNT(*) FROM EMPLOYEE AS e WHERE e.COMPANY_BRANCH_ID = COMPANY_BRANCH_ID AND " +
-            "e.POSITION_ID IN (SELECT p.ID FROM POSITION AS p WHERE p.DEP_ID = DEPARTMENT_ID)")
-    private int amountOfEmployee;
 
     public void registerDepartmentInfo() {
         registerEvent(new DepartmentInfoRegistered(this.pk.getCompanyBranch(), this.pk.getDepartment(),
