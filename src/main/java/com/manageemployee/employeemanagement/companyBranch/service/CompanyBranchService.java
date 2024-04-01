@@ -2,7 +2,6 @@ package com.manageemployee.employeemanagement.companyBranch.service;
 
 import com.manageemployee.employeemanagement.companyBranch.model.CompanyBranch;
 import com.manageemployee.employeemanagement.companyBranch.repository.CompanyBranchRepository;
-import com.manageemployee.employeemanagement.department.model.DepartmentInfo;
 import com.manageemployee.employeemanagement.util.Address;
 import com.manageemployee.employeemanagement.util.Money;
 import com.manageemployee.employeemanagement.util.MoneyUtil;
@@ -55,13 +54,8 @@ public class CompanyBranchService {
     }
 
     public CompanyBranch getCompanyBranchById(Long id) {
-
         return companyBranchRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("Выбран несуществующий филиал!"));
-    }
-
-    public List<DepartmentInfo> getDepartments(Long companyBranchId) {
-        return companyBranchRepository.getDepartments(companyBranchId);
     }
 
     public CompanyBranch getReference(Long id) {

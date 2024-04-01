@@ -15,18 +15,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Currency;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class EmployeeService implements com.manageemployee.employeemanagement.department.service.EmployeeService {
     private final EmployeeRepository repository;
-    private final MoneyUtil moneyService;
 
     @Autowired
-    public EmployeeService(EmployeeRepository repository, MoneyUtil moneyService) {
+    public EmployeeService(EmployeeRepository repository) {
         this.repository = repository;
-        this.moneyService = moneyService;
     }
 
     @Transactional
@@ -39,17 +38,18 @@ public class EmployeeService implements com.manageemployee.employeemanagement.de
     public void updateEmployee(Employee employee) {
         Employee employeeFromDB = getById(employee.getId());
 
-        if (employee.getEmployeeStatus().equals(EmployeeStatus.FIRED)
-                && !employeeFromDB.getEmployeeStatus().equals(EmployeeStatus.FIRED)) {
-            employee.setSalary(employeeFromDB.getSalary());
-            employee.fireEmployee();
-        }
-        else {
+        if (isEmployeeFired(employee, employeeFromDB))
+            employee.fireEmployee(employeeFromDB.getSalary());
+        else
             employee.updateEmployee(employeeFromDB);
-        }
+
         repository.saveAndFlush(employee);
     }
 
+    private boolean isEmployeeFired(Employee employee, Employee employeeFromDB) {
+        return employee.getEmployeeStatus().equals(EmployeeStatus.FIRED)
+                && !employeeFromDB.getEmployeeStatus().equals(EmployeeStatus.FIRED);
+    }
 
     @Transactional
     public void deleteAllByCompanyBranchAndDepartment(CompanyBranch companyBranch, Department department) {
@@ -92,10 +92,13 @@ public class EmployeeService implements com.manageemployee.employeemanagement.de
         List<Employee> employees =
                 repository.findWorkingEmployeesByCompanyBranchAndDepartment(companyBranch, department);
 
-        Money totalResult = new Money(BigDecimal.ZERO, companyBranch.getBudget().getCurrency());
-        for (Employee employee : employees)
-            totalResult = moneyService.sum(totalResult, employee.getSalary());
+        return countEmployeesTotalSalary(employees, companyBranch.getBudget().getCurrency());
+    }
 
+    private Money countEmployeesTotalSalary(List<Employee> employees, Currency currency) {
+        Money totalResult = new Money(BigDecimal.ZERO, currency);
+        for (Employee employee : employees)
+            totalResult = MoneyUtil.sum(totalResult, employee.getSalary());
         return totalResult;
     }
 

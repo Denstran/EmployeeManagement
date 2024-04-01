@@ -107,7 +107,8 @@ public class Employee extends AbstractAggregateRoot<Employee> {
         registerEvent(new EmployeeUpdated(this, oldEmployee.salary, salary));
     }
 
-    public void fireEmployee() {
+    public void fireEmployee(Money salaryFromDB) {
+        this.salary = salaryFromDB;
         registerEvent(new EmployeeFired(this, salary, salary));
     }
 }
