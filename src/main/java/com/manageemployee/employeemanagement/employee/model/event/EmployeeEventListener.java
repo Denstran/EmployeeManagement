@@ -3,11 +3,14 @@ package com.manageemployee.employeemanagement.employee.model.event;
 import com.manageemployee.employeemanagement.department.model.CompanyBranchDepartmentPK;
 import com.manageemployee.employeemanagement.department.model.DepartmentInfo;
 import com.manageemployee.employeemanagement.department.model.DepartmentInfoPaymentLog;
+import com.manageemployee.employeemanagement.department.model.DepartmentType;
 import com.manageemployee.employeemanagement.department.service.DepartmentInfoPaymentLogService;
 import com.manageemployee.employeemanagement.department.service.DepartmentInfoService;
 import com.manageemployee.employeemanagement.employee.model.Employee;
 import com.manageemployee.employeemanagement.employee.model.EmployeePaymentLog;
 import com.manageemployee.employeemanagement.employee.service.EmployeePaymentLogService;
+import com.manageemployee.employeemanagement.security.User;
+import com.manageemployee.employeemanagement.security.UserRole;
 import com.manageemployee.employeemanagement.util.Money;
 import com.manageemployee.employeemanagement.util.MoneyUtil;
 import com.manageemployee.employeemanagement.util.enumType.Action;
@@ -15,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class EmployeeEventListener {
@@ -39,11 +45,80 @@ public class EmployeeEventListener {
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void updateEmployeeEventHandler(EmployeeUpdated employeeUpdated) {
         processSalaryChanges(employeeUpdated, Action.UPDATE);
+        processPositionChanges(employeeUpdated);
     }
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void fireEmployeeEventHandler(EmployeeFired employeeFired) {
         processSalaryChanges(employeeFired, Action.DELETE);
+        blockAccount(employeeFired);
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public void restoreEmployeeEventHandler(EmployeeRestored employeeRestored) {
+        processSalaryChanges(employeeRestored, Action.CREATE);
+        unBlockAccount(employeeRestored);
+        restoreRoles(employeeRestored);
+    }
+
+    private void restoreRoles(EmployeeRestored employeeRestored) {
+        User user = employeeRestored.getEmployee().getUser();
+        Set<UserRole> roles = prepareRoles(employeeRestored);
+        user.setRoles(roles);
+    }
+
+    private void unBlockAccount(EmployeeRestored employeeRestored) {
+        User user = employeeRestored.getEmployee().getUser();
+        user.setEnabled(true);
+    }
+
+    private Set<UserRole> prepareRoles(EmployeeRestored employeeRestored) {
+        Set<UserRole> roles = new HashSet<>();
+        if (isLeadingPosition(employeeRestored)) roles.add(UserRole.ROLE_HEAD_OF_DEPARTMENT);
+        if (isHR(employeeRestored)) roles.add(UserRole.ROLE_HR);
+        else roles.add(UserRole.ROLE_EMPLOYEE);
+
+        return roles;
+    }
+
+    private boolean isHR(EmployeeRestored employeeRestored) {
+        Employee employee = employeeRestored.getEmployee();
+        return DepartmentType.HR.equals(employee.getPosition().getDepartment().getDepartmentType());
+    }
+
+    private boolean isLeadingPosition(EmployeeRestored employeeRestored) {
+        Employee employee = employeeRestored.getEmployee();
+        return employee.getPosition().isLeading();
+    }
+
+    private void blockAccount(EmployeeFired employeeFired) {
+        User user = employeeFired.getEmployee().getUser();
+        user.setEnabled(false);
+        user.clearRoles();
+    }
+
+    private void processPositionChanges(EmployeeUpdated employeeUpdated) {
+        if (isSamePosition(employeeUpdated)) return;
+        if (isPositionChangedToLeading(employeeUpdated)) addLeadingRole(employeeUpdated);
+        else removeLeadingRole(employeeUpdated);
+    }
+
+    private boolean isPositionChangedToLeading(EmployeeUpdated employeeUpdated) {
+        return employeeUpdated.getEmployee().getPosition().isLeading();
+    }
+
+    private void addLeadingRole(EmployeeUpdated employeeUpdated) {
+        User user = employeeUpdated.getEmployee().getUser();
+        user.addRole(UserRole.ROLE_HEAD_OF_BRANCH);
+    }
+
+    private void removeLeadingRole(EmployeeUpdated employeeUpdated) {
+        User user = employeeUpdated.getEmployee().getUser();
+        user.removeRole(UserRole.ROLE_HEAD_OF_DEPARTMENT);
+    }
+
+    private boolean isSamePosition(EmployeeUpdated employeeUpdated) {
+        return employeeUpdated.getEmployee().getPosition().equals(employeeUpdated.getOldPosition());
     }
 
     private void processSalaryChanges(EmployeeBaseEvent baseEvent, Action action) {

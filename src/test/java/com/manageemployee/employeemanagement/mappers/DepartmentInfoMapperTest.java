@@ -49,14 +49,12 @@ public class DepartmentInfoMapperTest {
         DepartmentInfo departmentInfo = new DepartmentInfo();
             departmentInfo.setDepartmentBudget(new Money(BigDecimal.valueOf(100L),
                     Currency.getInstance("RUB")));
-            departmentInfo.setAmountOfEmployee(1);
             departmentInfo.setPk(pk);
 
         DepartmentInfoDTO dto = departmentInfoMapper.toDto(departmentInfo);
 
         Assertions.assertEquals(departmentInfo.getPk().getDepartment().getId(), dto.getDepartmentId());
         Assertions.assertEquals(departmentInfo.getPk().getCompanyBranch().getId(), dto.getCompanyBranchId());
-        Assertions.assertEquals(departmentInfo.getAmountOfEmployee(), dto.getAmountOfEmployee());
         Assertions.assertEquals(departmentInfo.getDepartmentBudget(), dto.getDepartmentBudget());
     }
 
@@ -110,7 +108,6 @@ public class DepartmentInfoMapperTest {
 
         Assertions.assertEquals(departmentInfo.getPk().getDepartment().getId(), dto.getDepartmentId());
         Assertions.assertEquals(departmentInfo.getPk().getCompanyBranch().getId(), dto.getCompanyBranchId());
-        Assertions.assertEquals(departmentInfo.getAmountOfEmployee(), dto.getAmountOfEmployee());
         Assertions.assertEquals(departmentInfo.getDepartmentBudget(), dto.getDepartmentBudget());
     }
 

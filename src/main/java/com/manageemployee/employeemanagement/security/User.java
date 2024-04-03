@@ -1,24 +1,36 @@
 package com.manageemployee.employeemanagement.security;
 
+import com.manageemployee.employeemanagement.employee.model.Employee;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "UZER")
+@NoArgsConstructor
 public class User implements UserDetails {
     @Getter
+    @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
+
+    @Getter
+    @Setter
+    @OneToOne
+    @JoinColumn(name = "EMPLOYEE_ID", foreignKey = @ForeignKey(name = "FK_UZER_EMPLOYEE"))
+    private Employee employee;
 
     @Column(name = "UZER_NAME")
     @NotNull
@@ -30,14 +42,43 @@ public class User implements UserDetails {
     @Size(min = 1, max = 255)
     private String password;
 
-    @Column(name = "UZER_ROLE")
-    @Enumerated(value = EnumType.STRING)
-    @NotNull
-    private Role role;
+    @ElementCollection
+    @Setter
+    private Set<UserRole> roles;
+
+    @Column(name = "IS_ENABLED", nullable = false)
+    @Setter
+    private boolean isEnabled;
+
+    public void addRole(UserRole role) {
+        roles.add(role);
+    }
+
+    public void removeRole(UserRole role) {
+        roles.remove(role);
+    }
+    public void clearRoles() {
+        roles.clear();
+    }
+
+    private User(String userName, String password, Set<UserRole> roles, Employee employee) {
+        this.userName = userName;
+        this.password = password;
+        this.roles = roles;
+        this.employee = employee;
+    }
+
+    public static User createUser(String userName, Set<UserRole> roles, String password, Employee employee) {
+        User user = new User(userName, password, roles, employee);
+        user.setEnabled(true);
+        return user;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(this.role.toString()));
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority(role.toString()))
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -67,10 +108,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
-    }
-
-    enum Role {
-        ROLE_ADMIN
+        return isEnabled;
     }
 }

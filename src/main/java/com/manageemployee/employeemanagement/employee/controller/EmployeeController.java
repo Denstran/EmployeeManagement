@@ -14,7 +14,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/companyBranches/{companyBranchId}/departments/{depId}/employees")
@@ -41,10 +40,10 @@ public class EmployeeController {
     }
 
     @GetMapping("/new")
-    public String createEmployeeForm(Model model, @PathVariable Map<String, String> pathVars,
+    public String createEmployeeForm(Model model, @PathVariable String companyBranchId, @PathVariable String depId,
                                      HttpSession session) {
         EmployeeDTO employeeDTO = new EmployeeDTO();
-        List<PositionDTO> positionDTOS = controllerFacade.getPositionDTOList(pathVars.get("depId"));
+        List<PositionDTO> positionDTOS = controllerFacade.getPositionDTOList(depId);
         model.addAttribute("positionDTOS", positionDTOS);
         model.addAttribute("isUpdating", false);
         model.addAttribute("employeeDTO", employeeDTO);
@@ -57,7 +56,7 @@ public class EmployeeController {
     @PostMapping("/new")
     public String createEmployee(@ModelAttribute("employeeDTO") @Validated(DefaultGroup.class) EmployeeDTO employeeDTO,
                                  BindingResult bindingResult, Model model, HttpSession session,
-                                 @PathVariable Long depId, @PathVariable Long companyBranchId) {
+                                 @PathVariable String companyBranchId, @PathVariable String depId) {
         controllerFacade.validate(employeeDTO, bindingResult);
         if (bindingResult.hasErrors()) {
             List<PositionDTO> positionDTOS = (List<PositionDTO>) session.getAttribute("positionDTOS");
@@ -65,17 +64,20 @@ public class EmployeeController {
             return CREATE_OR_UPDATE_FORM;
         }
 
-        employeeDTO.setCompanyBranchId(companyBranchId);
+        employeeDTO.setCompanyBranchId(Long.valueOf(companyBranchId));
         controllerFacade.createEmployee(employeeDTO);
         session.removeAttribute("positionDTOS");
         return String.format(REDIRECT_LINK, companyBranchId, depId);
     }
 
     @GetMapping("/{employeeId}/update")
-    public String updateEmployeeFrom(@PathVariable Map<String, String> pathVars, Model model, HttpSession session) {
-        EmployeeDTO employeeDTO = controllerFacade.getEmployeeDTO(pathVars.get("employeeId"));
+    public String updateEmployeeFrom(Model model, HttpSession session,
+                                     @PathVariable String companyBranchId,
+                                     @PathVariable String depId,
+                                     @PathVariable String employeeId) {
+        EmployeeDTO employeeDTO = controllerFacade.getEmployeeDTO(employeeId);
         List<EmployeeStatus> employeeStatuses = List.of(EmployeeStatus.values());
-        List<PositionDTO> positionDTOS = controllerFacade.getPositionDTOList(pathVars.get("depId"));
+        List<PositionDTO> positionDTOS = controllerFacade.getPositionDTOList(depId);
         model.addAttribute("employeeStatuses", employeeStatuses);
         model.addAttribute("positionDTOS", positionDTOS);
         model.addAttribute("isUpdating", true);
@@ -90,7 +92,9 @@ public class EmployeeController {
     public String updateEmployee(@ModelAttribute("employeeDTO") @Validated({DefaultGroup.class, UpdatingGroup.class})
                                  EmployeeDTO employeeDTO,
                                  BindingResult bindingResult, Model model, HttpSession session,
-                                 @PathVariable Map<String, String> pathVars) {
+                                 @PathVariable String depId,
+                                 @PathVariable String employeeId,
+                                 @PathVariable String companyBranchId) {
         controllerFacade.validate(employeeDTO, bindingResult);
         if (bindingResult.hasErrors()) {
             List<PositionDTO> positionDTOS = (List<PositionDTO>) session.getAttribute("positionDTOS");
@@ -103,6 +107,6 @@ public class EmployeeController {
 
         controllerFacade.updateEmployee(employeeDTO);
         session.removeAttribute("positionDTOS");
-        return String.format(REDIRECT_LINK, pathVars.get("companyBranchId"), pathVars.get("depId"));
+        return String.format(REDIRECT_LINK, companyBranchId, depId);
     }
 }

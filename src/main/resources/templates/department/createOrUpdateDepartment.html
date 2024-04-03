@@ -37,6 +37,22 @@
                        class="form-text text-danger">Error</small>
             </div>
             <hr/>
+            <h2>Тип отдела:</h2>
+            <div class="form-group">
+                <label for="typeSelect" aria-describedby="typeError">Тип</label>
+                <select th:disabled="${isUpdating} ? true : false" class="form-control" id="typeSelect" name="typeSelect" th:field="*{departmentType}">
+                    <option th:if="${!isUpdating}" th:each="type : ${types}" th:value="${type}"
+                            th:text="${type}"></option>
+
+                    <option th:if="${isUpdating}" th:value="${departmentDTO.departmentType}" th:text="${departmentDTO.departmentType}"></option>
+                </select>
+
+                <small th:if="${#fields.hasErrors('departmentType')}" th:errors="*{departmentType}"
+                       id="typeError"
+                       class="form-text text-danger">Error</small>
+            </div>
+
+            <hr/>
             <input type="hidden" name="isUpdating" th:value="${isUpdating}" />
             <input type="hidden" th:if="${isUpdating}" th:field="*{id}" th:value="${departmentDTO.id}">
             <button type="submit" class="btn btn-primary">Подтвердить</button>

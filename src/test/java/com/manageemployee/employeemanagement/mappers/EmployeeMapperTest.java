@@ -10,6 +10,7 @@ import com.manageemployee.employeemanagement.employee.model.EmployeeStatus;
 import com.manageemployee.employeemanagement.employee.model.Name;
 import com.manageemployee.employeemanagement.position.model.Position;
 import com.manageemployee.employeemanagement.position.service.PositionService;
+import com.manageemployee.employeemanagement.security.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ public class EmployeeMapperTest {
 
     private static final CompanyBranchService companyBranchService = Mockito.mock(CompanyBranchService.class);
     private static final PositionService positionService = Mockito.mock(PositionService.class);
+    private static final UserService userService = Mockito.mock(UserService.class);
     private static EmployeeMapper employeeMapper;
 
     @BeforeAll
@@ -31,7 +33,7 @@ public class EmployeeMapperTest {
                 .setFieldMatchingEnabled(true)
                 .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE);
 
-        employeeMapper = new EmployeeMapper(modelMapper, companyBranchService, positionService);
+        employeeMapper = new EmployeeMapper(modelMapper, companyBranchService, positionService, userService);
         employeeMapper.setupMapper();
     }
 

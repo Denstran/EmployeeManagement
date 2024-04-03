@@ -3,47 +3,74 @@ package com.manageemployee.employeemanagement.employee.service;
 import com.manageemployee.employeemanagement.companyBranch.model.CompanyBranch;
 import com.manageemployee.employeemanagement.department.model.Department;
 import com.manageemployee.employeemanagement.department.model.DepartmentInfo;
+import com.manageemployee.employeemanagement.department.model.DepartmentType;
 import com.manageemployee.employeemanagement.employee.model.Employee;
 import com.manageemployee.employeemanagement.employee.model.EmployeeStatus;
 import com.manageemployee.employeemanagement.employee.model.Name;
 import com.manageemployee.employeemanagement.employee.repository.EmployeeRepository;
 import com.manageemployee.employeemanagement.position.model.Position;
+import com.manageemployee.employeemanagement.security.PasswordGenerator;
+import com.manageemployee.employeemanagement.security.UserRole;
 import com.manageemployee.employeemanagement.util.Money;
 import com.manageemployee.employeemanagement.util.MoneyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Currency;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class EmployeeService implements com.manageemployee.employeemanagement.department.service.EmployeeService {
     private final EmployeeRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public EmployeeService(EmployeeRepository repository) {
+    public EmployeeService(EmployeeRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
     public void createEmployee(Employee employee) {
-        employee.hireEmployee();
+        Set<UserRole> roles = prepareUserRoles(employee);
+
+        String password = passwordEncoder.encode(PasswordGenerator.generatePassword());
+        employee.hireEmployee(roles, password);
         repository.saveAndFlush(employee);
+    }
+
+    private Set<UserRole> prepareUserRoles(Employee employee) {
+        Set<UserRole> roles = new HashSet<>();
+        if (isOnLeadingPosition(employee)) roles.add(UserRole.ROLE_HEAD_OF_DEPARTMENT);
+        if (isHR(employee)) roles.add(UserRole.ROLE_HR);
+        else roles.add(UserRole.ROLE_EMPLOYEE);
+
+        return roles;
+    }
+
+    private boolean isOnLeadingPosition(Employee employee) {
+        return employee.getPosition().isLeading();
+    }
+
+    private boolean isHR(Employee employee) {
+        return DepartmentType.HR.equals(employee.getPosition().getDepartment().getDepartmentType());
     }
 
     @Transactional
     public void updateEmployee(Employee employee) {
         Employee employeeFromDB = getById(employee.getId());
-
-        if (isEmployeeFired(employee, employeeFromDB))
-            employee.fireEmployee(employeeFromDB.getSalary());
-        else
-            employee.updateEmployee(employeeFromDB);
+        if (isRestoringEmployee(employee, employeeFromDB)) employee.restore();
+        else if (isEmployeeFired(employee, employeeFromDB)) employee.fireEmployee(employeeFromDB.getSalary());
+        else employee.updateEmployee(employee);
 
         repository.saveAndFlush(employee);
+    }
+
+    private boolean isRestoringEmployee(Employee employee, Employee employeeFromDB) {
+        return EmployeeStatus.FIRED.equals(employeeFromDB.getEmployeeStatus()) &&
+                !EmployeeStatus.FIRED.equals(employee.getEmployeeStatus());
     }
 
     private boolean isEmployeeFired(Employee employee, Employee employeeFromDB) {

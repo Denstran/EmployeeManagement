@@ -3,6 +3,7 @@ package com.manageemployee.employeemanagement.department.controller;
 import com.manageemployee.employeemanagement.department.dto.DepartmentDTO;
 import com.manageemployee.employeemanagement.department.dto.mappers.DepartmentMapper;
 import com.manageemployee.employeemanagement.department.model.Department;
+import com.manageemployee.employeemanagement.department.model.DepartmentType;
 import com.manageemployee.employeemanagement.department.service.DepartmentService;
 import com.manageemployee.employeemanagement.department.validation.departmentValidation.DepartmentValidator;
 import jakarta.validation.Valid;
@@ -48,6 +49,7 @@ public class DepartmentController {
     @GetMapping("/new")
     public String createDepartmentForm(Model model) {
         DepartmentDTO departmentDTO = new DepartmentDTO();
+        model.addAttribute("types", DepartmentType.values());
         model.addAttribute("departmentDTO", departmentDTO);
         model.addAttribute("isUpdating", false);
         return VIEW_FOR_UPDATE_OR_CREATE;
@@ -55,9 +57,13 @@ public class DepartmentController {
 
     @PostMapping("/new")
     public String createDepartment(@ModelAttribute("departmentDTO") @Valid DepartmentDTO departmentDTO,
-                                   BindingResult bindingResult) {
+                                   BindingResult bindingResult, Model model) {
         departmentValidator.validate(departmentDTO, bindingResult);
-        if (bindingResult.hasErrors()) return VIEW_FOR_UPDATE_OR_CREATE;
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("types", DepartmentType.values());
+            model.addAttribute("isUpdating", false);
+            return VIEW_FOR_UPDATE_OR_CREATE;
+        }
         departmentService.createDepartment(departmentMapper.toEntity(departmentDTO));
 
         return REDIRECT_LINK;

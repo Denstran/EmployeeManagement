@@ -1,6 +1,7 @@
 package com.manageemployee.employeemanagement.department.validation.departmentValidation;
 
 import com.manageemployee.employeemanagement.department.dto.DepartmentDTO;
+import com.manageemployee.employeemanagement.department.model.DepartmentType;
 import com.manageemployee.employeemanagement.department.service.DepartmentService;
 import com.manageemployee.employeemanagement.util.validators.ValidatorQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +32,9 @@ public class DepartmentNewEntryValidation implements Validator {
 
         if (departmentService.existsByName(dto.getDepartmentName()))
             errors.rejectValue("departmentName", "", "Отдел с таким название уже существует!");
+
+        if (!dto.getDepartmentType().equals(DepartmentType.OTHER))
+            if (departmentService.existsByType(dto.getDepartmentType()))
+                errors.rejectValue("departmentName", "", "Отдел с таким типом уже существует!");
     }
 }

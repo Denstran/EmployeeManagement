@@ -3,8 +3,11 @@ package com.manageemployee.employeemanagement.employee.model;
 import com.manageemployee.employeemanagement.companyBranch.model.CompanyBranch;
 import com.manageemployee.employeemanagement.employee.model.event.EmployeeFired;
 import com.manageemployee.employeemanagement.employee.model.event.EmployeeHired;
+import com.manageemployee.employeemanagement.employee.model.event.EmployeeRestored;
 import com.manageemployee.employeemanagement.employee.model.event.EmployeeUpdated;
 import com.manageemployee.employeemanagement.position.model.Position;
+import com.manageemployee.employeemanagement.security.User;
+import com.manageemployee.employeemanagement.security.UserRole;
 import com.manageemployee.employeemanagement.util.Address;
 import com.manageemployee.employeemanagement.util.Money;
 import com.manageemployee.employeemanagement.util.converter.MoneyConverter;
@@ -21,6 +24,7 @@ import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "EMPLOYEE")
@@ -86,6 +90,11 @@ public class Employee extends AbstractAggregateRoot<Employee> {
     @JoinColumn(name = "POSITION_ID", nullable = false, foreignKey = @ForeignKey(name = "FK_EMPLOYEE_POSITION"))
     private Position position;
 
+    // TODO: ИЗМЕНИТЬ НА NULLABLE = FALSE
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "USER_ID", nullable = true, foreignKey = @ForeignKey(name = "FK_EMPLOYEE_USER"))
+    private User user;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -98,17 +107,24 @@ public class Employee extends AbstractAggregateRoot<Employee> {
         return Objects.hash(id);
     }
 
-    public void hireEmployee() {
+    public void hireEmployee(Set<UserRole> roles, String password) {
         this.employeeStatus = EmployeeStatus.WORKING;
+        this.user = User.createUser(email, roles, password, this);
         registerEvent(new EmployeeHired(this, salary, salary));
     }
 
+
     public void updateEmployee(Employee oldEmployee) {
-        registerEvent(new EmployeeUpdated(this, oldEmployee.salary, salary));
+        System.out.println(this.user);
+        registerEvent(new EmployeeUpdated(this, oldEmployee.salary, salary, oldEmployee.getPosition()));
     }
 
     public void fireEmployee(Money salaryFromDB) {
         this.salary = salaryFromDB;
         registerEvent(new EmployeeFired(this, salary, salary));
+    }
+
+    public void restore() {
+        registerEvent(new EmployeeRestored(this, salary, salary));
     }
 }

@@ -43,14 +43,14 @@ public class DepartmentInfoService {
         repository.saveAndFlush(departmentInfo);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void allocateBudgetForSalary(DepartmentInfo departmentInfo, Money amountForAllocation) {
         departmentInfo.setDepartmentBudget(MoneyUtil.subtract(departmentInfo.getDepartmentBudget(),
                 amountForAllocation));
         repository.saveAndFlush(departmentInfo);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void employeeSalaryReducing(DepartmentInfo departmentInfo, Money reducedSalary) {
         departmentInfo.setDepartmentBudget(MoneyUtil.sum(departmentInfo.getDepartmentBudget(), reducedSalary));
         repository.saveAndFlush(departmentInfo);

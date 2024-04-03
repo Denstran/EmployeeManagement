@@ -1,6 +1,7 @@
 package com.manageemployee.employeemanagement.department.service;
 
 import com.manageemployee.employeemanagement.department.model.Department;
+import com.manageemployee.employeemanagement.department.model.DepartmentType;
 import com.manageemployee.employeemanagement.department.repository.DepartmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,5 +56,10 @@ public class DepartmentService {
             throw new IllegalArgumentException("Выбранный отдел не существует!");
 
         return departmentRepository.getReferenceById(id);
+    }
+
+    public boolean existsByType(DepartmentType departmentType) {
+        if (departmentType == null) return false;
+        return departmentRepository.existsByDepartmentType(departmentType);
     }
 }

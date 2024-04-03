@@ -1,6 +1,7 @@
 package com.manageemployee.employeemanagement.mappers;
 
 import com.manageemployee.employeemanagement.department.model.Department;
+import com.manageemployee.employeemanagement.department.model.DepartmentType;
 import com.manageemployee.employeemanagement.department.service.DepartmentService;
 import com.manageemployee.employeemanagement.position.dto.PositionDTO;
 import com.manageemployee.employeemanagement.position.dto.mapper.PositionMapper;
@@ -33,7 +34,7 @@ public class PositionMapperTest {
         Position position = new Position();
             position.setId(1L);
             position.setPositionName("Test");
-            position.setDepartment(new Department(1L, "Test"));
+            position.setDepartment(new Department(1L, "Test", DepartmentType.OTHER));
 
         PositionDTO dto = positionMapper.toDto(position);
 

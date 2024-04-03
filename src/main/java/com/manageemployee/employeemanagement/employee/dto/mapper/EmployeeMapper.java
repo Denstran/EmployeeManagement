@@ -4,10 +4,14 @@ import com.manageemployee.employeemanagement.companyBranch.service.CompanyBranch
 import com.manageemployee.employeemanagement.employee.dto.EmployeeDTO;
 import com.manageemployee.employeemanagement.employee.model.Employee;
 import com.manageemployee.employeemanagement.position.service.PositionService;
+import com.manageemployee.employeemanagement.security.User;
+import com.manageemployee.employeemanagement.security.UserService;
 import com.manageemployee.employeemanagement.util.dtomapper.AbstractMapperWithSpecificFields;
 import jakarta.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -19,13 +23,15 @@ import java.util.Objects;
 public class EmployeeMapper extends AbstractMapperWithSpecificFields<Employee, EmployeeDTO> {
     private final CompanyBranchService companyBranchService;
     private final PositionService positionService;
+    private final UserDetailsService userService;
 
     @Autowired
     public EmployeeMapper(ModelMapper mapper, CompanyBranchService companyBranchService,
-                          PositionService positionService) {
+                          PositionService positionService, UserService userService) {
         super(Employee.class, EmployeeDTO.class, mapper);
         this.companyBranchService = companyBranchService;
         this.positionService = positionService;
+        this.userService = userService;
     }
 
     /**
@@ -45,6 +51,7 @@ public class EmployeeMapper extends AbstractMapperWithSpecificFields<Employee, E
                 .addMappings(m -> {
                     m.skip(Employee::setCompanyBranch);
                     m.skip(Employee::setPosition);
+                    m.skip(Employee::setUser);
                 }).setPostConverter(toEntityConverter());
     }
 
@@ -76,5 +83,11 @@ public class EmployeeMapper extends AbstractMapperWithSpecificFields<Employee, E
 
         destination.setPosition(Objects.isNull(source.getPositionId()) ? null :
                 positionService.getReference(source.getPositionId()));
+        try {
+            User user = (User) userService.loadUserByUsername(source.getEmail());
+            destination.setUser(user);
+        }catch (UsernameNotFoundException e) {
+            destination.setUser(null);
+        }
     }
 }

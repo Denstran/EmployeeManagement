@@ -18,12 +18,12 @@ INSERT INTO company_branch (
       (9, '70000 RUB', 'City9', 'Country9', '901-234-5678', 'Street9', '90123', true),
       (10, '80000 RUB', 'City10', 'Country10', '012-345-6789', 'Street10', '01234', true);
 
-INSERT INTO department (department_name) VALUES
-                                             ('Marketing'),
-                                             ('Finance'),
-                                             ('Human Resources'),
-                                             ('Research and Development'),
-                                             ('Sales');
+INSERT INTO department (department_name, department_type) VALUES
+                                             ('Marketing', 'OTHER'),
+                                             ('Finance', 'OTHER'),
+                                             ('Human Resources', 'HR'),
+                                             ('Research and Development', 'OTHER'),
+                                             ('Sales', 'OTHER');
 
 
 -- Marketing
@@ -82,6 +82,6 @@ VALUES
     ('2023-05-15', 123, 1, 'WORKING', 5, '50000 RUB', 'john.doe@ample.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4564'),
     ('2023-05-15', 123, 1, 'WORKING', 6, '50000 RUB', 'john.doe@exale.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4565');
 
-INSERT INTO UZER (uzer_name, password, uzer_role) VALUES ( 'admin', '$2a$12$kprqzMBw3sRsWU4s1Svlwuqz/b29gQ/q1h2f7H6k./xAuFqwR8PJu', 'ROLE_ADMIN' )
+INSERT INTO UZER (uzer_name, password, IS_ENABLED) VALUES ( 'admin', '$2a$12$kprqzMBw3sRsWU4s1Svlwuqz/b29gQ/q1h2f7H6k./xAuFqwR8PJu', true)
 
 

@@ -27,6 +27,11 @@ public class Department extends AbstractAggregateRoot<Department> {
     @Column(name = "DEPARTMENT_NAME", unique = true)
     private String departmentName;
 
+    @NotNull(message = "Тип отдела не может быть пустым!")
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "DEPARTMENT_TYPE")
+    private DepartmentType departmentType;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

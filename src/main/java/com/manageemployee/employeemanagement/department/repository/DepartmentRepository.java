@@ -1,6 +1,7 @@
 package com.manageemployee.employeemanagement.department.repository;
 
 import com.manageemployee.employeemanagement.department.model.Department;
+import com.manageemployee.employeemanagement.department.model.DepartmentType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,4 +30,6 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     @Query("SELECT d FROM Department d WHERE d = " +
             "(SELECT p.department FROM Position p WHERE p.positionName = :positionName)")
     Department findByPositionName(@Param("positionName") String positionName);
+
+    boolean existsByDepartmentType(DepartmentType departmentType);
 }
