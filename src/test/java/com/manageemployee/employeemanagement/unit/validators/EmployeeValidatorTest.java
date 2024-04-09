@@ -1,4 +1,4 @@
-package com.manageemployee.employeemanagement.validators;
+package com.manageemployee.employeemanagement.unit.validators;
 
 import com.manageemployee.employeemanagement.department.model.DepartmentInfo;
 import com.manageemployee.employeemanagement.employee.dto.EmployeeDTO;

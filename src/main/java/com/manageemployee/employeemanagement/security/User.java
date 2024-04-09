@@ -1,6 +1,5 @@
 package com.manageemployee.employeemanagement.security;
 
-import com.manageemployee.employeemanagement.employee.model.Employee;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -25,12 +24,6 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-
-    @Getter
-    @Setter
-    @OneToOne
-    @JoinColumn(name = "EMPLOYEE_ID", foreignKey = @ForeignKey(name = "FK_UZER_EMPLOYEE"))
-    private Employee employee;
 
     @Column(name = "UZER_NAME")
     @NotNull
@@ -61,15 +54,14 @@ public class User implements UserDetails {
         roles.clear();
     }
 
-    private User(String userName, String password, Set<UserRole> roles, Employee employee) {
+    private User(String userName, String password, Set<UserRole> roles) {
         this.userName = userName;
         this.password = password;
         this.roles = roles;
-        this.employee = employee;
     }
 
-    public static User createUser(String userName, Set<UserRole> roles, String password, Employee employee) {
-        User user = new User(userName, password, roles, employee);
+    public static User createUser(String userName, Set<UserRole> roles, String password) {
+        User user = new User(userName, password, roles);
         user.setEnabled(true);
         return user;
     }

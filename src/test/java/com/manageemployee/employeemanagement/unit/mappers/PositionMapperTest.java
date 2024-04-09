@@ -1,4 +1,4 @@
-package com.manageemployee.employeemanagement.mappers;
+package com.manageemployee.employeemanagement.unit.mappers;
 
 import com.manageemployee.employeemanagement.department.model.Department;
 import com.manageemployee.employeemanagement.department.model.DepartmentType;
