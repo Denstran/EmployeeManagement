@@ -15,6 +15,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -51,6 +53,8 @@ public class EmployeeDTO {
 
     @NotNull(groups = {DefaultGroup.class}, message = "Сотрудник обязан иметь должность!")
     private Long positionId;
+
+    private Date employmentDate;
 
     private String positionName;
 }

@@ -16,6 +16,34 @@
     <a class="btn btn-dark" th:href="@{/companyBranches/{companyBranchId}/departments/{depId}/employees/new(
     companyBranchId=${companyBranchId}, depId=${depId})}" role="button">Добавить Сотрудника</a>
     <hr/>
+    <form th:action="@{/companyBranches/{companyBranchId}/departments/{depId}/employees(companyBranchId=${companyBranchId}, depId=${depId})}" method="get">
+        <label for="employeeStatus">Employee Status:</label>
+        <select id="employeeStatus" name="employeeStatus">
+            <option th:each="status : ${statuses}" th:text="${status.name()}" th:value="${status.name()}"></option>
+        </select><br>
+
+        <label for="phoneNumber">Phone Number:</label>
+        <input type="text" id="phoneNumber" name="phoneNumber"><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" ><br>
+
+        <label for="salaryStart">Salary Start:</label>
+        <input type="number" id="salaryStart" name="salaryStart"><br>
+
+        <label for="salaryEnd">Salary End:</label>
+        <input type="number" id="salaryEnd" name="salaryEnd"><br>
+
+        <label for="startAmountOfWorkingYears">Start Amount of Working Years:</label>
+        <input type="number" id="startAmountOfWorkingYears" name="startAmountOfWorkingYears"><br>
+
+        <label for="endAmountOfWorkingYears">End Amount of Working Years:</label>
+        <input type="number" id="endAmountOfWorkingYears" name="endAmountOfWorkingYears"><br>
+
+        <input type="hidden" th:value="${companyBranchId}" name="companyBranchId">
+        <input type="hidden" th:value="${depId}" name="departmentId">
+        <button type="submit">Search</button>
+    </form>
     <table class="table">
         <thead class="table-dark">
         <tr>
@@ -25,6 +53,7 @@
             <th scope="col">Должность</th>
             <th scope="col">Адрес</th>
             <th scope="col">Зарплата</th>
+            <th scope="col">Дата найма</th>
             <th scope="col">Статус</th>
             <th scope="col">ПЛАТЕЖИ</th>
             <th scope="col">ОБНОВИТЬ</th>
@@ -37,7 +66,8 @@
             <td th:text="${employee.email}"></td>
             <td th:text="${employee.positionName}"></td>
             <td th:text="${employee.homeAddress}"></td>
-            <td th:text="${employee.salary}"></td>
+            <td th:text="${employee.salary.amount}"></td>
+            <td th:text="${employee.employmentDate}"></td>
             <td th:text="${employee.employeeStatus}"></td>
             <td><a class="btn btn-dark" th:href="@{/companyBranches/{id}/departments/{depId}/employees/{employeeId}/payments(id = ${employee.companyBranchId}, employeeId = ${employee.id}, depId = ${depId})}" role="button">Платежи</a></td>
             <td>
@@ -50,6 +80,21 @@
 </div>
 
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+<script>
+    /*<![CDATA[*/
+    let currency = /*[[${currency}]]*/ '';
+    /*]]>*/
+    let input = document.getElementById('salaryStart')
+    input.oninput = function () {
+        input.value
+    }
+
+    /*document.getElementById('salaryStart').addEventListener('input', function(e) {
+        let input = e.target.value;
+        input = input.replace(/\D/g, '');
+        input += ' ' + currency;
+        e.target.value = input;
+    });*/
+</script>
 </body>
 </html>

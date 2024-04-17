@@ -95,12 +95,6 @@
                    aria-describedby="budgetError" placeholder="Введите количество средств"
                    th:value="${isUpdating} ? ${employeeDTO.salary.amount} : ''">
         </div>
-        <div class="form-group">
-            <label for="currencyInput">Валюта</label>
-            <input type="text" th:field="*{salary.currency}" class="form-control" id="currencyInput"
-                   aria-describedby="currencyError" placeholder="Введите валюту"
-                   th:value="${isUpdating} ? ${employeeDTO.salary.currency} : ''" th:readonly="${isUpdating}">
-        </div>
 
         <hr/>
 

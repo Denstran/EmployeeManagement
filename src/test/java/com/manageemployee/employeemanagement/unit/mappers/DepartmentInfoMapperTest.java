@@ -16,9 +16,6 @@ import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 
-import java.math.BigDecimal;
-import java.util.Currency;
-
 public class DepartmentInfoMapperTest {
     private static final CompanyBranchService companyBranchService = Mockito.mock(CompanyBranchService.class);
     private static final DepartmentService departmentService = Mockito.mock(DepartmentService.class);
@@ -47,8 +44,7 @@ public class DepartmentInfoMapperTest {
     @Test
     void assert_that_fields_are_equal_after_convertation_from_entity_to_dto() {
         DepartmentInfo departmentInfo = new DepartmentInfo();
-            departmentInfo.setDepartmentBudget(new Money(BigDecimal.valueOf(100L),
-                    Currency.getInstance("RUB")));
+            departmentInfo.setDepartmentBudget(new Money(100.0));
             departmentInfo.setPk(pk);
 
         DepartmentInfoDTO dto = departmentInfoMapper.toDto(departmentInfo);
@@ -92,8 +88,7 @@ public class DepartmentInfoMapperTest {
         DepartmentInfoDTO dto = new DepartmentInfoDTO();
             dto.setDepartmentId(1L);
             dto.setCompanyBranchId(1L);
-            dto.setDepartmentBudget(new Money(BigDecimal.valueOf(100L),
-                    Currency.getInstance("RUB")));
+            dto.setDepartmentBudget(new Money(100.0));
             dto.setAmountOfEmployee(1);
 
         CompanyBranch companyBranch = new CompanyBranch();

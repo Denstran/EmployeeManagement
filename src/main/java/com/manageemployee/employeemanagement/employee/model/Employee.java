@@ -10,7 +10,6 @@ import com.manageemployee.employeemanagement.security.User;
 import com.manageemployee.employeemanagement.security.UserRole;
 import com.manageemployee.employeemanagement.util.Address;
 import com.manageemployee.employeemanagement.util.Money;
-import com.manageemployee.employeemanagement.util.converter.MoneyConverter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -19,7 +18,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.Formula;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.util.Date;
@@ -28,7 +27,6 @@ import java.util.Set;
 
 @Entity
 @Table(name = "EMPLOYEE")
-@Where(clause = "EMPLOYEE_STATUS != 'FIRED'")
 @Getter
 @Setter
 public class Employee extends AbstractAggregateRoot<Employee> {
@@ -71,15 +69,17 @@ public class Employee extends AbstractAggregateRoot<Employee> {
     @CreationTimestamp
     private Date employmentDate;
 
+    @Transient
+    @Formula("YEAR(CURRENT_DATE) - YEAR(EMPLOYMENT_DATE)")
+    private Integer yearsOfWorking;
+
     @Column(name = "EMPLOYEE_STATUS")
     @Enumerated(value = EnumType.STRING)
     private EmployeeStatus employeeStatus;
 
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "SALARY"))
     @NotNull
-    @Convert(
-            converter = MoneyConverter.class
-    )
-    @Column(name = "SALARY", length = 63)
     private Money salary;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -119,7 +119,7 @@ public class Employee extends AbstractAggregateRoot<Employee> {
     }
 
     public void fireEmployee(Money salaryFromDB) {
-        this.salary = salaryFromDB;
+        this.salary = new Money(salaryFromDB);
         registerEvent(new EmployeeFired(this, salary, salary));
     }
 

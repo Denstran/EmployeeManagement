@@ -12,7 +12,6 @@ import com.manageemployee.employeemanagement.employee.service.EmployeePaymentLog
 import com.manageemployee.employeemanagement.security.User;
 import com.manageemployee.employeemanagement.security.UserRole;
 import com.manageemployee.employeemanagement.util.Money;
-import com.manageemployee.employeemanagement.util.MoneyUtil;
 import com.manageemployee.employeemanagement.util.enumType.Action;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -144,24 +143,24 @@ public class EmployeeEventListener {
     }
 
     private void processNegativeSalaryChanges(EmployeeBaseEvent baseEvent) {
-        Money salaryChanges = MoneyUtil.subtract(baseEvent.getOldSalary(), baseEvent.getNewSalary());
+        Money salaryChanges = Money.subtract(baseEvent.getOldSalary(), baseEvent.getNewSalary());
         processEmployeePaymentLogCreation(baseEvent, salaryChanges, false);
         processPositiveDepartmentBudgetChanges(getDepartmentInfo(baseEvent), salaryChanges);
     }
 
     private void processPositiveSalaryChanges(EmployeeBaseEvent baseEvent) {
-        Money salaryChanges = MoneyUtil.subtract(baseEvent.getNewSalary(), baseEvent.getOldSalary());
+        Money salaryChanges = Money.subtract(baseEvent.getNewSalary(), baseEvent.getOldSalary());
         processEmployeePaymentLogCreation(baseEvent, salaryChanges, true);
         processNegativeDepartmentBudgetChanges(getDepartmentInfo(baseEvent), salaryChanges);
     }
 
     private void processNegativeDepartmentBudgetChanges(DepartmentInfo departmentInfo, Money budgetChanges) {
         departmentInfoService.allocateBudgetForSalary(departmentInfo, budgetChanges);
-        processDepartmentInfoPaymentLogCreation(departmentInfo, MoneyUtil.abs(budgetChanges), false);
+        processDepartmentInfoPaymentLogCreation(departmentInfo, Money.abs(budgetChanges), false);
     }
 
     private boolean isPositiveSalaryChanges(Money newSalary, Money oldSalary) {
-        int compareResult = MoneyUtil.compareAmounts(newSalary, oldSalary);
+        int compareResult = Money.compareTo(newSalary, oldSalary);
         return compareResult == 1;
     }
 
@@ -178,13 +177,13 @@ public class EmployeeEventListener {
     private void processDepartmentInfoPaymentLogCreation(DepartmentInfo departmentInfo, Money paymentAmount,
                                                          boolean isPositive) {
         DepartmentInfoPaymentLog paymentLog = DepartmentInfoPaymentLog
-                .createPaymentLog(departmentInfo.getPk(), MoneyUtil.abs(paymentAmount), isPositive);
+                .createPaymentLog(departmentInfo.getPk(), Money.abs(paymentAmount), isPositive);
         departmentInfoPaymentLogService.saveDepartmentInfoPaymentLog(paymentLog);
     }
 
     private void processEmployeePaymentLogCreation(EmployeeBaseEvent baseEvent, Money payment, boolean isPositive) {
         EmployeePaymentLog paymentLog =
-                EmployeePaymentLog.createPaymentLog(baseEvent.getEmployee(), MoneyUtil.abs(payment), isPositive);
+                EmployeePaymentLog.createPaymentLog(baseEvent.getEmployee(), Money.abs(payment), isPositive);
         employeePaymentLogService.saveEmployeePaymentLog(paymentLog);
     }
 

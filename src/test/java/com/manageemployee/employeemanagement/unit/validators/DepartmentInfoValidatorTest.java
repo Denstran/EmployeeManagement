@@ -51,7 +51,7 @@ public class DepartmentInfoValidatorTest {
         department.setId(1L);
         pk = new CompanyBranchDepartmentPK (companyBranch, department);
 
-        Money companyBranchBudget = Money.getMoneyFromString("100000 RUB");
+        Money companyBranchBudget = new Money(100000.0);
         companyBranch.setBudget(companyBranchBudget);
 
     }
@@ -66,7 +66,7 @@ public class DepartmentInfoValidatorTest {
 
         departmentInfo = new DepartmentInfo();
         departmentInfo.setPk(pk);
-        departmentInfo.setDepartmentBudget(Money.getMoneyFromString("100000 RUB"));
+        departmentInfo.setDepartmentBudget(new Money(100000.0));
     }
 
     @Test
@@ -75,22 +75,10 @@ public class DepartmentInfoValidatorTest {
         Mockito.when(companyBranchService.getCompanyBranchById(dto.getCompanyBranchId())).thenReturn(companyBranch);
         Mockito.when(departmentService.getById(dto.getDepartmentId())).thenReturn(department);
 
-        dto.setDepartmentBudget(Money.getMoneyFromString("1000 RUB"));
+        dto.setDepartmentBudget(new Money(1000.0));
         departmentInfoValidator.validate(dto, bindingResult);
 
         Assertions.assertFalse(bindingResult.hasErrors());
-    }
-
-    @Test
-    void assert_that_when_different_budget_currencies_then_will_be_errors_when_inserting_new_entry() {
-        Mockito.when(departmentInfoService.existsById(pk)).thenReturn(false);
-        Mockito.when(companyBranchService.getCompanyBranchById(dto.getCompanyBranchId())).thenReturn(companyBranch);
-        Mockito.when(departmentService.getById(dto.getDepartmentId())).thenReturn(department);
-
-        dto.setDepartmentBudget(Money.getMoneyFromString("10000 EUR"));
-        departmentInfoValidator.validate(dto, bindingResult);
-
-        Assertions.assertTrue(bindingResult.hasErrors());
     }
 
     @Test
@@ -99,7 +87,7 @@ public class DepartmentInfoValidatorTest {
         Mockito.when(companyBranchService.getCompanyBranchById(dto.getCompanyBranchId())).thenReturn(companyBranch);
         Mockito.when(departmentService.getById(dto.getDepartmentId())).thenReturn(department);
 
-        dto.setDepartmentBudget(Money.getMoneyFromString("10000000000000 RUB"));
+        dto.setDepartmentBudget(new Money(1000000000.0));
         departmentInfoValidator.validate(dto, bindingResult);
 
         Assertions.assertTrue(bindingResult.hasErrors());
@@ -124,22 +112,10 @@ public class DepartmentInfoValidatorTest {
         Mockito.when(departmentService.getById(dto.getDepartmentId())).thenReturn(department);
         Mockito.when(departmentInfoService.getById(pk)).thenReturn(departmentInfo);
 
-        dto.setDepartmentBudget(Money.getMoneyFromString("1000 RUB"));
+        dto.setDepartmentBudget(new Money(1000.0));
         departmentInfoValidator.validate(dto, bindingResult);
 
         Assertions.assertFalse(bindingResult.hasErrors());
-    }
-
-    @Test
-    void  assert_that_when_different_budget_currencies_then_will_be_errors_when_updating_new_entry() {
-        Mockito.when(departmentInfoService.existsById(pk)).thenReturn(true);
-        Mockito.when(companyBranchService.getCompanyBranchById(dto.getCompanyBranchId())).thenReturn(companyBranch);
-        Mockito.when(departmentService.getById(dto.getDepartmentId())).thenReturn(department);
-        Mockito.when(departmentInfoService.getById(pk)).thenReturn(departmentInfo);
-
-        dto.setDepartmentBudget(Money.getMoneyFromString("1000 EUR"));
-        departmentInfoValidator.validate(dto, bindingResult);
-        Assertions.assertTrue(bindingResult.hasErrors());
     }
 
     @Test
@@ -149,7 +125,7 @@ public class DepartmentInfoValidatorTest {
         Mockito.when(departmentService.getById(dto.getDepartmentId())).thenReturn(department);
         Mockito.when(departmentInfoService.getById(pk)).thenReturn(departmentInfo);
 
-        dto.setDepartmentBudget(Money.getMoneyFromString("1000000000 RUB"));
+        dto.setDepartmentBudget(new Money(100000000.0));
         departmentInfoValidator.validate(dto, bindingResult);
         Assertions.assertTrue(bindingResult.hasErrors());
     }

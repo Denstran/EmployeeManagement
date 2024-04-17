@@ -9,7 +9,6 @@ import com.manageemployee.employeemanagement.department.model.DepartmentInfo;
 import com.manageemployee.employeemanagement.department.service.DepartmentInfoService;
 import com.manageemployee.employeemanagement.department.service.DepartmentService;
 import com.manageemployee.employeemanagement.util.Money;
-import com.manageemployee.employeemanagement.util.MoneyUtil;
 import com.manageemployee.employeemanagement.util.validators.ValidatorQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -51,14 +50,9 @@ public class DepartmentInfoUpdatingEntryValidator implements Validator {
 
         if (dto.getDepartmentBudget().equals(departmentInfo.getDepartmentBudget())) return;
 
-        if (!dto.getDepartmentBudget().getCurrency().equals(companyBranch.getBudget().getCurrency())) {
-            errors.rejectValue("departmentBudget", "", "Валюта не совпадает с валютой филиала!");
-            return;
-        }
+        Money budgetIncrease = Money.subtract(dto.getDepartmentBudget(), departmentInfo.getDepartmentBudget());
 
-        Money budgetIncrease = MoneyUtil.subtract(dto.getDepartmentBudget(), departmentInfo.getDepartmentBudget());
-
-        if (MoneyUtil.compareAmounts(companyBranch.getBudget(), budgetIncrease) < 0)
+        if (Money.compareTo(companyBranch.getBudget(), budgetIncrease) < 0)
             errors.rejectValue("departmentBudget", "", "Повышение бюджета превышает бюджет филиала!");
 
     }

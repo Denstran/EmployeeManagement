@@ -7,6 +7,7 @@ import com.manageemployee.employeemanagement.employee.model.Employee;
 import com.manageemployee.employeemanagement.employee.model.Name;
 import com.manageemployee.employeemanagement.position.model.Position;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,7 +15,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+public interface EmployeeRepository extends JpaRepository<Employee, Long>, JpaSpecificationExecutor<Employee> {
 
     @Query("SELECT e FROM Employee e WHERE e.companyBranch.id = :companyBranchId " +
             "AND e.position.department.id = :departmentId")

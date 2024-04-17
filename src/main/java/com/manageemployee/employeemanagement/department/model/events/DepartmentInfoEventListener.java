@@ -9,7 +9,6 @@ import com.manageemployee.employeemanagement.department.model.DepartmentInfoPaym
 import com.manageemployee.employeemanagement.department.service.DepartmentInfoPaymentLogService;
 import com.manageemployee.employeemanagement.department.service.EmployeeService;
 import com.manageemployee.employeemanagement.util.Money;
-import com.manageemployee.employeemanagement.util.MoneyUtil;
 import com.manageemployee.employeemanagement.util.enumType.Action;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
@@ -77,18 +76,18 @@ public class DepartmentInfoEventListener {
     }
 
     private boolean isPositiveBudgetChanges(Money newBudget, Money oldBudget) {
-        int compareResult = MoneyUtil.compareAmounts(newBudget, oldBudget);
+        int compareResult = Money.compareTo(newBudget, oldBudget);
         return compareResult == 1;
     }
 
     private void processPositiveBudgetChanges(DepartmentInfoBaseEvent baseEvent) {
-        Money budgetChanges = MoneyUtil.subtract(baseEvent.getNewBudget(), baseEvent.getOldBudget());
+        Money budgetChanges = Money.subtract(baseEvent.getNewBudget(), baseEvent.getOldBudget());
         processDepartmentInfoPaymentLogCreation(baseEvent, budgetChanges, true);
         processCompanyBranchNegativeBudgetChanges(baseEvent.getCompanyBranch(), budgetChanges);
     }
 
     private void processNegativeBudgetChanges(DepartmentInfoBaseEvent baseEvent) {
-        Money budgetChanges = MoneyUtil.subtract(baseEvent.getOldBudget(), baseEvent.getNewBudget());
+        Money budgetChanges = Money.subtract(baseEvent.getOldBudget(), baseEvent.getNewBudget());
         processDepartmentInfoPaymentLogCreation(baseEvent, budgetChanges, false);
         processCompanyBranchPositiveBudgetChanges(baseEvent.getCompanyBranch(), budgetChanges);
     }
@@ -101,12 +100,12 @@ public class DepartmentInfoEventListener {
     private void processDepartmentInfoPaymentLogCreation(DepartmentInfoBaseEvent baseEvent, Money payment,
                                                          boolean isPositive) {
         DepartmentInfoPaymentLog paymentLog = DepartmentInfoPaymentLog.createPaymentLog(baseEvent.getCompanyBranch(),
-                baseEvent.getDepartment(), MoneyUtil.abs(payment), isPositive);
+                baseEvent.getDepartment(), Money.abs(payment), isPositive);
         departmentInfoPaymentLogService.saveDepartmentInfoPaymentLog(paymentLog);
     }
 
     private void processCompanyBranchNegativeBudgetChanges(CompanyBranch companyBranch, Money budgetChange) {
-        companyBranch.setBudget(MoneyUtil.subtract(companyBranch.getBudget(), budgetChange));
+        companyBranch.setBudget(Money.subtract(companyBranch.getBudget(), budgetChange));
         companyBranchService.allocateBudget(companyBranch, budgetChange);
         processCompanyBranchPaymentLogCreation(companyBranch, budgetChange, false);
     }
@@ -114,7 +113,7 @@ public class DepartmentInfoEventListener {
     private void processCompanyBranchPaymentLogCreation(CompanyBranch companyBranch, Money budgetChange,
                                                         boolean isPositive) {
         CompanyBranchPaymentLog paymentLog =
-                CompanyBranchPaymentLog.createPaymentLog(companyBranch, MoneyUtil.abs(budgetChange), isPositive);
+                CompanyBranchPaymentLog.createPaymentLog(companyBranch, Money.abs(budgetChange), isPositive);
         companyBranchPaymentLogService.saveCompanyBranchPaymentLog(paymentLog);
     }
 
@@ -122,6 +121,6 @@ public class DepartmentInfoEventListener {
         Money employeeSalaries =
                 employeeService.countEmployeeSalariesByCompanyBranchAndDepartment(baseEvent.getCompanyBranch(),
                         baseEvent.getDepartment());
-        return MoneyUtil.sum(employeeSalaries, baseEvent.getOldBudget());
+        return Money.sum(employeeSalaries, baseEvent.getOldBudget());
     }
 }

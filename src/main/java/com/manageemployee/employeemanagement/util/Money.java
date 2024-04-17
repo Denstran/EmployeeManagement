@@ -1,59 +1,40 @@
 package com.manageemployee.employeemanagement.util;
 
 import com.manageemployee.employeemanagement.util.validationgroups.DefaultGroup;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.Embeddable;
+import jakarta.validation.constraints.PositiveOrZero;
+import lombok.*;
 
-import java.math.BigDecimal;
-import java.util.Currency;
-import java.util.Objects;
-
+@AllArgsConstructor
+@NoArgsConstructor
+@Embeddable
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class Money implements Comparable<Money> {
-
-    @Min(groups = DefaultGroup.class, value = 1, message = "Количество средств должно быть больше нуля!")
-    @NotNull(groups = DefaultGroup.class, message = "Количество средств не может быть пустым")
-    private BigDecimal amount;
-
-    @NotNull(groups = DefaultGroup.class, message = "Валюта не должны быть пустой!")
-    private Currency currency;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Money)) return false;
-        Money money = (Money) o;
-        return amount.equals(money.amount) && currency.equals(money.currency);
+@ToString
+public class Money {
+    @PositiveOrZero(message = "Количество средств должно быть положительным!", groups = {DefaultGroup.class})
+    private Double amount;
+    public Money(Money money) {
+        this.amount = money.getAmount();
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(amount, currency);
+    public static Money sum(Money first, Money second) {
+        return new Money(first.getAmount() + second.getAmount());
+    }
+    public static Money subtract(Money toSubtractFrom, Money moneyForSubtraction) {
+        return new Money(toSubtractFrom.getAmount() - moneyForSubtraction.getAmount());
     }
 
-    @Override
-    public String toString() {
-        return getAmount() + " " + getCurrency();
+    public static boolean isPositive(Money money) {
+        return money.amount > 0;
     }
 
-    public static Money getMoneyFromString(String s) {
-        String[] strings = s.split(" ");
-
-        return new Money(new BigDecimal(strings[0]), Currency.getInstance(strings[1]));
+    public static Money abs(Money money) {
+        double absoluteAmount = Math.abs(money.getAmount());
+        return new Money(absoluteAmount);
     }
 
-    @Override
-    public int compareTo(Money o) {
-        if (o.getCurrency() == null || !o.getCurrency().equals(this.currency))
-            throw new IllegalArgumentException("Операция сравнения денежных единиц различных валют не поддерживается!");
-
-        return this.amount.compareTo(o.getAmount());
+    public static int compareTo(Money first, Money second) {
+        return Double.compare(first.getAmount(), second.getAmount());
     }
 }

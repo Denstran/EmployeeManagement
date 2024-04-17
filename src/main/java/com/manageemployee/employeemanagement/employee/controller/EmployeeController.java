@@ -57,6 +57,7 @@ public class EmployeeController {
     public String createEmployee(@ModelAttribute("employeeDTO") @Validated(DefaultGroup.class) EmployeeDTO employeeDTO,
                                  BindingResult bindingResult, Model model, HttpSession session,
                                  @PathVariable String companyBranchId, @PathVariable String depId) {
+        log.info("FROM EMPLOYEE_CONTROLLER: RECEIVED DTO {} ON CREATION", employeeDTO);
         controllerFacade.validate(employeeDTO, bindingResult);
         if (bindingResult.hasErrors()) {
             List<PositionDTO> positionDTOS = (List<PositionDTO>) session.getAttribute("positionDTOS");

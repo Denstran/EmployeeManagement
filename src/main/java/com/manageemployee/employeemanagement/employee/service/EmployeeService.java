@@ -119,13 +119,13 @@ public class EmployeeService implements com.manageemployee.employeemanagement.de
         List<Employee> employees =
                 repository.findWorkingEmployeesByCompanyBranchAndDepartment(companyBranch, department);
 
-        return countEmployeesTotalSalary(employees, companyBranch.getBudget().getCurrency());
+        return countEmployeesTotalSalary(employees);
     }
 
-    private Money countEmployeesTotalSalary(List<Employee> employees, Currency currency) {
-        Money totalResult = new Money(BigDecimal.ZERO, currency);
+    private Money countEmployeesTotalSalary(List<Employee> employees) {
+        Money totalResult = new Money(0.0);
         for (Employee employee : employees)
-            totalResult = MoneyUtil.sum(totalResult, employee.getSalary());
+            totalResult = Money.sum(totalResult, employee.getSalary());
         return totalResult;
     }
 

@@ -55,10 +55,10 @@ public class EmployeeValidatorTest {
             employee.setId(1L);
             employee.setEmail(dto.getEmail());
             employee.setPhoneNumber(dto.getPhoneNumber());
-            employee.setSalary(Money.getMoneyFromString("10000 RUB"));
+            employee.setSalary(new Money(10000.0));
 
         departmentInfo = new DepartmentInfo();
-            departmentInfo.setDepartmentBudget(Money.getMoneyFromString("1000000 RUB"));
+            departmentInfo.setDepartmentBudget(new Money(1000000.0));
 
         bindingResult = new BeanPropertyBindingResult(dto, "dto");
         bindingResult = Mockito.spy(bindingResult);
@@ -72,7 +72,7 @@ public class EmployeeValidatorTest {
                 .thenReturn(departmentInfo);
         Mockito.when(positionService.getById(1L)).thenReturn(position);
 
-        dto.setSalary(Money.getMoneyFromString("1000 RUB"));
+        dto.setSalary(new Money(1000.0));
         employeeValidator.validate(dto, bindingResult);
 
         Assertions.assertFalse(bindingResult.hasErrors());
@@ -86,7 +86,7 @@ public class EmployeeValidatorTest {
                 .thenReturn(departmentInfo);
         Mockito.when(positionService.getById(1L)).thenReturn(position);
 
-        dto.setSalary(Money.getMoneyFromString("1000 RUB"));
+        dto.setSalary(new Money(1000.0));
         employeeValidator.validate(dto, bindingResult);
 
         Assertions.assertTrue(bindingResult.hasFieldErrors("email") && bindingResult.hasFieldErrors("phoneNumber"));
@@ -100,21 +100,7 @@ public class EmployeeValidatorTest {
                 .thenReturn(departmentInfo);
         Mockito.when(positionService.getById(1L)).thenReturn(position);
 
-        dto.setSalary(Money.getMoneyFromString("100000000000000 RUB"));
-        employeeValidator.validate(dto, bindingResult);
-
-        Assertions.assertTrue(bindingResult.hasFieldErrors("salary"));
-    }
-
-    @Test
-    void assert_that_has_errors_when_inserting_employee_with_salary_currency_different_from_department_currency() {
-        Mockito.when(employeeService.existsByEmail(dto.getEmail())).thenReturn(false);
-        Mockito.when(employeeService.existsByPhoneNumber(dto.getPhoneNumber())).thenReturn(false);
-        Mockito.when(employeeService.getEmployeeDepartmentInfo(dto.getCompanyBranchId(), dto.getPositionId()))
-                .thenReturn(departmentInfo);
-        Mockito.when(positionService.getById(1L)).thenReturn(position);
-
-        dto.setSalary(Money.getMoneyFromString("100 EUR"));
+        dto.setSalary(new Money(100000000.0));
         employeeValidator.validate(dto, bindingResult);
 
         Assertions.assertTrue(bindingResult.hasFieldErrors("salary"));
@@ -130,7 +116,7 @@ public class EmployeeValidatorTest {
                 .thenReturn(departmentInfo);
         Mockito.when(positionService.getById(1L)).thenReturn(position);
 
-        dto.setSalary(Money.getMoneyFromString("100 EUR"));
+        dto.setSalary(new Money(100.0));
         employeeValidator.validate(dto, bindingResult);
 
         Mockito.verify(bindingResult, Mockito.never())
@@ -147,7 +133,7 @@ public class EmployeeValidatorTest {
         Mockito.when(employeeService.getById(dto.getId())).thenReturn(employee);
         Mockito.when(positionService.getById(1L)).thenReturn(position);
 
-        dto.setSalary(Money.getMoneyFromString("1000 RUB"));
+        dto.setSalary(new Money(1000.0));
 
         employeeValidator.validate(dto, bindingResult);
 
@@ -164,7 +150,7 @@ public class EmployeeValidatorTest {
         Mockito.when(employeeService.getById(dto.getId())).thenReturn(employee);
         Mockito.when(positionService.getById(1L)).thenReturn(position);
 
-        dto.setSalary(Money.getMoneyFromString("1000 RUB"));
+        dto.setSalary(new Money(1000.0));
 
         employeeValidator.validate(dto, bindingResult);
 
@@ -182,23 +168,7 @@ public class EmployeeValidatorTest {
         Mockito.when(employeeService.getById(dto.getId())).thenReturn(employee);
         Mockito.when(positionService.getById(1L)).thenReturn(position);
 
-        dto.setSalary(Money.getMoneyFromString("1000000000000000 RUB"));
-        employeeValidator.validate(dto, bindingResult);
-
-        Assertions.assertTrue(bindingResult.hasFieldErrors("salary"));
-    }
-
-    @Test
-    void assert_that_errors_when_updating_entry_salary_currency_different_from_department_budget_currency() {
-        dto.setId(1L);
-        Mockito.when(employeeService.getByEmail(dto.getEmail())).thenReturn(Optional.of(employee));
-        Mockito.when(employeeService.getByPhoneNumber(dto.getPhoneNumber())).thenReturn(Optional.of(employee));
-        Mockito.when(employeeService.getEmployeeDepartmentInfo(dto.getCompanyBranchId(), dto.getPositionId()))
-                .thenReturn(departmentInfo);
-        Mockito.when(employeeService.getById(dto.getId())).thenReturn(employee);
-        Mockito.when(positionService.getById(1L)).thenReturn(position);
-
-        dto.setSalary(Money.getMoneyFromString("1000 EUR"));
+        dto.setSalary(new Money(1000000000.0));
         employeeValidator.validate(dto, bindingResult);
 
         Assertions.assertTrue(bindingResult.hasFieldErrors("salary"));

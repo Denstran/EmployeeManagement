@@ -5,7 +5,7 @@ import com.manageemployee.employeemanagement.employee.dto.EmployeeDTO;
 import com.manageemployee.employeemanagement.employee.service.EmployeeService;
 import com.manageemployee.employeemanagement.position.model.Position;
 import com.manageemployee.employeemanagement.position.service.PositionService;
-import com.manageemployee.employeemanagement.util.MoneyUtil;
+import com.manageemployee.employeemanagement.util.Money;
 import com.manageemployee.employeemanagement.util.validators.ValidatorQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -52,10 +52,7 @@ public class EmployeeNewEntryValidator implements Validator {
         DepartmentInfo departmentInfo = employeeService.getEmployeeDepartmentInfo(dto.getCompanyBranchId(),
                 dto.getPositionId());
 
-        if (!dto.getSalary().getCurrency().equals(departmentInfo.getDepartmentBudget().getCurrency()))
-            errors.rejectValue("salary", "", "Валюта не совпадает с валютой отдела!");
-
-        if (MoneyUtil.compareAmounts(departmentInfo.getDepartmentBudget(), dto.getSalary()) < 0)
+        if (Money.compareTo(departmentInfo.getDepartmentBudget(), dto.getSalary()) < 0)
             errors.rejectValue("salary", "", "Зарплата превышает бюджет отдела!");
     }
 

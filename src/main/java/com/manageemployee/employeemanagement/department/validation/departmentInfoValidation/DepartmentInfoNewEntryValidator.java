@@ -7,7 +7,7 @@ import com.manageemployee.employeemanagement.department.model.CompanyBranchDepar
 import com.manageemployee.employeemanagement.department.model.Department;
 import com.manageemployee.employeemanagement.department.service.DepartmentInfoService;
 import com.manageemployee.employeemanagement.department.service.DepartmentService;
-import com.manageemployee.employeemanagement.util.MoneyUtil;
+import com.manageemployee.employeemanagement.util.Money;
 import com.manageemployee.employeemanagement.util.validators.ValidatorQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -46,10 +46,7 @@ public class DepartmentInfoNewEntryValidator implements Validator {
         CompanyBranchDepartmentPK id = new CompanyBranchDepartmentPK(companyBranch, department);
         if (departmentInfoService.existsById(id)) return;
 
-        if (!dto.getDepartmentBudget().getCurrency().equals(companyBranch.getBudget().getCurrency()))
-            errors.rejectValue("departmentBudget", "", "Валюта не совпадает с валютой филиала!");
-
-        if (MoneyUtil.compareAmounts(companyBranch.getBudget(), dto.getDepartmentBudget()) < 0)
+        if (Money.compareTo(companyBranch.getBudget(), dto.getDepartmentBudget()) < 0)
             errors.rejectValue("departmentBudget", "", "Выделенный бюджет превышает бюджет филиала!");
     }
 }

@@ -132,7 +132,7 @@ public class EmployeeServiceTest {
         Employee employee = new Employee();
         Name name = new Name("Test", "Test", "test");
         Address address = new Address("test", "test", "test", 1, "test");
-        Money salary = Money.getMoneyFromString("1000 RUB");
+        Money salary = new Money(1000.0);
         String email = "test@email.com";
         String phone = "+79818339627";
 

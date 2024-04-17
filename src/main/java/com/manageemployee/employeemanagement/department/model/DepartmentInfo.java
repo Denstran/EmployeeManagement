@@ -4,7 +4,6 @@ import com.manageemployee.employeemanagement.department.model.events.DepartmentI
 import com.manageemployee.employeemanagement.department.model.events.DepartmentInfoRemoved;
 import com.manageemployee.employeemanagement.department.model.events.DepartmentInfoUpdated;
 import com.manageemployee.employeemanagement.util.Money;
-import com.manageemployee.employeemanagement.util.converter.MoneyConverter;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,8 +20,8 @@ public class DepartmentInfo extends AbstractAggregateRoot<DepartmentInfo> {
     @EmbeddedId
     private CompanyBranchDepartmentPK pk;
 
-    @Column(name = "DEPARTMENT_BUDGET")
-    @Convert(converter = MoneyConverter.class)
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "DEPARTMENT_BUDGET"))
     private Money departmentBudget;
 
     public void registerDepartmentInfo() {

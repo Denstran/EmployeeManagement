@@ -6,8 +6,8 @@ import com.manageemployee.employeemanagement.department.model.CompanyBranchDepar
 import com.manageemployee.employeemanagement.department.model.Department;
 import com.manageemployee.employeemanagement.department.model.DepartmentInfo;
 import com.manageemployee.employeemanagement.department.repository.DepartmentInfoRepository;
+import com.manageemployee.employeemanagement.employee.service.BudgetOnly;
 import com.manageemployee.employeemanagement.util.Money;
-import com.manageemployee.employeemanagement.util.MoneyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -45,14 +45,14 @@ public class DepartmentInfoService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void allocateBudgetForSalary(DepartmentInfo departmentInfo, Money amountForAllocation) {
-        departmentInfo.setDepartmentBudget(MoneyUtil.subtract(departmentInfo.getDepartmentBudget(),
+        departmentInfo.setDepartmentBudget(Money.subtract(departmentInfo.getDepartmentBudget(),
                 amountForAllocation));
         repository.saveAndFlush(departmentInfo);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void employeeSalaryReducing(DepartmentInfo departmentInfo, Money reducedSalary) {
-        departmentInfo.setDepartmentBudget(MoneyUtil.sum(departmentInfo.getDepartmentBudget(), reducedSalary));
+        departmentInfo.setDepartmentBudget(Money.sum(departmentInfo.getDepartmentBudget(), reducedSalary));
         repository.saveAndFlush(departmentInfo);
     }
 
