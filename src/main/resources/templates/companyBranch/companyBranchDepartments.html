@@ -30,7 +30,7 @@
         <tbody>
         <tr th:each="departmentInfo : ${departmentInfoDTOS}">
             <td th:text="${departmentInfo.departmentName}"></td>
-            <td th:text="${departmentInfo.departmentBudget}"></td>
+            <td th:text="${departmentInfo.departmentBudget.amount}"></td>
             <td>
                 <a class="btn btn-dark" role="button" th:href="@{/companyBranches/{id}/departments/{depId}/employees(id = ${companyBranchId}, depId = ${departmentInfo.departmentId})}">Сотрудники</a>
             </td>

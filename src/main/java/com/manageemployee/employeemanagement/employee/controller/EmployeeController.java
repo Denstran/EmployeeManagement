@@ -1,11 +1,13 @@
 package com.manageemployee.employeemanagement.employee.controller;
 
 import com.manageemployee.employeemanagement.employee.dto.EmployeeDTO;
+import com.manageemployee.employeemanagement.employee.dto.SearchEmployeeFilters;
 import com.manageemployee.employeemanagement.employee.model.EmployeeStatus;
 import com.manageemployee.employeemanagement.position.dto.PositionDTO;
 import com.manageemployee.employeemanagement.util.validationgroups.DefaultGroup;
 import com.manageemployee.employeemanagement.util.validationgroups.UpdatingGroup;
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +19,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/companyBranches/{companyBranchId}/departments/{depId}/employees")
+@Slf4j
 public class EmployeeController {
 
     private final EmployeeControllerFacade controllerFacade;
@@ -30,12 +33,22 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public String getEmployees(Model model, @PathVariable Long companyBranchId, @PathVariable Long depId) {
-        List<EmployeeDTO> employeeDTOS = controllerFacade.getEmployeeDTOList(companyBranchId, depId);
+    public String getEmployees(SearchEmployeeFilters filters, Model model,
+                               @PathVariable Long companyBranchId, @PathVariable Long depId) {
+        if (filters == null)
+            filters = new SearchEmployeeFilters(companyBranchId, depId);
+        filters.setDepartmentId(depId);
         String departmentName = controllerFacade.getDepartmentName(depId);
-        model.addAttribute("employeeDTOS", employeeDTOS);
-        model.addAttribute("departmentName", departmentName);
+        log.info("FROM: EMPLOYEE_CONTROLLER. RECEIVED FILTERS: {}", filters);
 
+        List<EmployeeDTO> employeeDTOS = controllerFacade.getEmployeeDTOListFiltered(filters);
+        List<PositionDTO> positions = controllerFacade.getPositionDTOList(String.valueOf(depId));
+
+        model.addAttribute("employeeDTOS", employeeDTOS);
+        model.addAttribute("positions", positions);
+        model.addAttribute("departmentName", departmentName);
+        model.addAttribute("filters", filters);
+        model.addAttribute("statuses", EmployeeStatus.values());
         return SHOW_EMPLOYEE;
     }
 

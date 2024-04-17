@@ -90,16 +90,6 @@
                        id="budgetError"
                        class="form-text text-danger">Error</small>
             </div>
-            <div class="form-group">
-                <label for="currencyInput">Валюта</label>
-                <input th:readonly="${isUpdating}" type="text" th:field="*{budget.currency}" class="form-control" id="currencyInput"
-                       aria-describedby="currencyError" placeholder="Введите валюту"
-                       th:value="${isUpdating} ? ${companyBranchDTO.budget.currency} : ''">
-
-                <small th:if="${#fields.hasErrors('budget.currency')}" th:errors="*{budget.currency}"
-                       id="currencyError"
-                       class="form-text text-danger">Error</small>
-            </div>
             <hr/>
             <h2>Контактная информация</h2>
             <div class="form-group">

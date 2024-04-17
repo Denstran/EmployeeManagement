@@ -13,9 +13,6 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration;
 import org.modelmapper.convention.MatchingStrategies;
 
-import java.math.BigDecimal;
-import java.util.Currency;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @Log4j2
@@ -45,9 +42,7 @@ public class CompanyBranchMapperTest {
             entity.setId(1L);
             entity.setCompanyBranchAddress(new Address("city", "zipCode",
                     "street", 2, "country"));
-            entity.setBudget(new Money(
-                    new BigDecimal(100), Currency.getInstance("RUB")
-            ));
+            entity.setBudget(new Money(100.0));
             entity.setPhoneNumber("+79999999999");
 
         CompanyBranchDTO dto = companyBranchMapper.toDto(entity);
@@ -61,9 +56,7 @@ public class CompanyBranchMapperTest {
         dto.setId(1L);
         dto.setCompanyBranchAddress(new Address("city", "zipCode",
                     "street", 1, "country"));
-        dto.setBudget(new Money(
-                    new BigDecimal(100), Currency.getInstance("RUB")
-            ));
+        dto.setBudget(new Money(100.0));
         dto.setPhoneNumber("+79999999999");
 
         CompanyBranch entity = companyBranchMapper.toEntity(dto);

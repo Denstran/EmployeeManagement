@@ -28,7 +28,7 @@
             </thead>
             <tbody>
             <tr th:each="companyBranch : ${companyBranches}">
-                <td th:text="${companyBranch.budget}"></td>
+                <td th:text="${companyBranch.budget.amount}"></td>
                 <td th:text="${companyBranch.companyBranchAddress}"></td>
                 <td th:text="${companyBranch.phoneNumber}"></td>
                 <td><a class="btn btn-dark" role="button" th:href="@{/companyBranches/{id}/departments(id = ${companyBranch.id})}">Отделы</a></td>

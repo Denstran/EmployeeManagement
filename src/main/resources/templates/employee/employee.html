@@ -20,6 +20,13 @@
         <label for="employeeStatus">Employee Status:</label>
         <select id="employeeStatus" name="employeeStatus">
             <option th:each="status : ${statuses}" th:text="${status.name()}" th:value="${status.name()}"></option>
+            <option th:value="ALL">ALL</option>
+        </select><br>
+
+        <label for="positionName">Должность:</label>
+        <select id="positionName" name="positionName">
+            <option th:each="position : ${positions}" th:text="${position.positionName}" th:value="${position.positionName}"></option>
+            <option th:value="ALL">ALL</option>
         </select><br>
 
         <label for="phoneNumber">Phone Number:</label>
@@ -81,20 +88,56 @@
 
 
 <script>
-    /*<![CDATA[*/
-    let currency = /*[[${currency}]]*/ '';
-    /*]]>*/
-    let input = document.getElementById('salaryStart')
-    input.oninput = function () {
-        input.value
-    }
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
 
-    /*document.getElementById('salaryStart').addEventListener('input', function(e) {
-        let input = e.target.value;
-        input = input.replace(/\D/g, '');
-        input += ' ' + currency;
-        e.target.value = input;
-    });*/
+        form.addEventListener('submit', function(event) {
+            const startAmountInput = document.getElementById('startAmountOfWorkingYears');
+            const endAmountInput = document.getElementById('endAmountOfWorkingYears');
+            if (startAmountInput.value === '' && endAmountInput.value === '') {
+                return true;
+            }
+
+            if (startAmountInput.value !== '' && endAmountInput.value !== '') {
+                if (startAmountInput.value.includes('-') || startAmountInput.value.includes('+')
+                    || endAmountInput.value.includes('-') || endAmountInput.value.includes('+')) {
+                    alert('Строки не должны содержать сторонних символов');
+                    event.preventDefault();
+                    return false;
+                }
+                return true
+            }
+
+            // Возвращаем false если хотя бы одна дата не заполнена
+            alert('Пожалуйста, заполните обе даты.');
+            event.preventDefault();
+            return false;
+        });
+
+        form.addEventListener('submit', function (event) {
+            const salaryStart = document.getElementById('salaryStart');
+            const salaryEnd = document.getElementById('salaryEnd');
+            if (salaryStart.value === '' && salaryEnd.value === '') {
+                return true;
+            }
+
+            if (salaryStart.value !== '' && salaryEnd.value !== '') {
+                if (salaryStart.value.includes('-') || salaryStart.value.includes('+')
+                    || salaryEnd.value.includes('-') || salaryEnd.value.includes('+')) {
+                    alert('Строки не должны содержать сторонних символов');
+                    event.preventDefault();
+                    return false;
+                }
+                return true;
+            }
+
+            // Возвращаем false если хотя бы одна дата не заполнена
+            alert('Пожалуйста, заполните оба поля зарплаты.');
+            event.preventDefault();
+            return false;
+        })
+    });
 </script>
+
 </body>
 </html>

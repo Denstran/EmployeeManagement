@@ -6,7 +6,6 @@ import com.manageemployee.employeemanagement.department.model.CompanyBranchDepar
 import com.manageemployee.employeemanagement.department.model.Department;
 import com.manageemployee.employeemanagement.department.model.DepartmentInfo;
 import com.manageemployee.employeemanagement.department.repository.DepartmentInfoRepository;
-import com.manageemployee.employeemanagement.employee.service.BudgetOnly;
 import com.manageemployee.employeemanagement.util.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

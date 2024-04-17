@@ -1,11 +1,9 @@
 package com.manageemployee.employeemanagement.employee.controller;
 
-import com.manageemployee.employeemanagement.department.service.DepartmentInfoService;
 import com.manageemployee.employeemanagement.department.service.DepartmentService;
 import com.manageemployee.employeemanagement.employee.dto.EmployeeDTO;
 import com.manageemployee.employeemanagement.employee.dto.SearchEmployeeFilters;
 import com.manageemployee.employeemanagement.employee.dto.mapper.EmployeeMapper;
-import com.manageemployee.employeemanagement.employee.model.Employee;
 import com.manageemployee.employeemanagement.employee.service.EmployeeService;
 import com.manageemployee.employeemanagement.employee.validation.EmployeeValidator;
 import com.manageemployee.employeemanagement.position.dto.PositionDTO;
@@ -22,7 +20,6 @@ import java.util.List;
 public class EmployeeControllerFacade {
     private final EmployeeService employeeService;
     private final DepartmentService departmentService;
-    private final DepartmentInfoService departmentInfoService;
     private final PositionService positionService;
     private final PositionMapper positionMapper;
     private final EmployeeMapper employeeMapper;
@@ -31,12 +28,11 @@ public class EmployeeControllerFacade {
     @Autowired
     public EmployeeControllerFacade(EmployeeService employeeService,
                                     DepartmentService departmentService,
-                                    DepartmentInfoService departmentInfoService, PositionService positionService,
+                                    PositionService positionService,
                                     PositionMapper positionMapper,
                                     EmployeeMapper employeeMapper, EmployeeValidator employeeValidator) {
         this.employeeService = employeeService;
         this.departmentService = departmentService;
-        this.departmentInfoService = departmentInfoService;
         this.positionService = positionService;
         this.positionMapper = positionMapper;
         this.employeeMapper = employeeMapper;
@@ -57,10 +53,6 @@ public class EmployeeControllerFacade {
 
     public List<EmployeeDTO> getEmployeeDTOListFiltered(SearchEmployeeFilters filters) {
         return employeeMapper.toDtoList(employeeService.getAllEmployee(filters));
-    }
-
-    private List<Employee> getEmployees(Long companyBranchId, Long departmentId) {
-        return employeeService.getEmployeesByCompanyBranchAndDepartment(companyBranchId, departmentId);
     }
 
     public String getDepartmentName(Long departmentId) {

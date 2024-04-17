@@ -34,8 +34,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
         http
                 .authorizeHttpRequests(requests -> requests
-                        /*.requestMatchers(mvc.pattern("/auth/login"), mvc.pattern("/auth/logout"), mvc.pattern("/process_login"),
-                                mvc.pattern("/errors")).permitAll()*/
+                        .requestMatchers(mvc.pattern("/auth/login"), mvc.pattern("/auth/logout"), mvc.pattern("/process_login"),
+                                mvc.pattern("/errors")).permitAll()
                         .requestMatchers(PathRequest.toH2Console()).permitAll()
                         .anyRequest().permitAll())
                 .headers(httpSecurityHeadersConfigurer -> httpSecurityHeadersConfigurer.frameOptions().disable())

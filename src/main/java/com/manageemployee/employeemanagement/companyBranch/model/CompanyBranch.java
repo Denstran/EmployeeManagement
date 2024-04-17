@@ -5,7 +5,6 @@ import com.manageemployee.employeemanagement.companyBranch.model.events.CompanyB
 import com.manageemployee.employeemanagement.companyBranch.model.events.CompanyBranchUpdated;
 import com.manageemployee.employeemanagement.util.Address;
 import com.manageemployee.employeemanagement.util.Money;
-import com.manageemployee.employeemanagement.util.converter.MoneyConverter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -38,11 +37,9 @@ public class CompanyBranch extends AbstractAggregateRoot<CompanyBranch> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "COMPANY_BRANCH_BUDGET"))
     @NotNull
-    @Convert(
-            converter = MoneyConverter.class
-    )
-    @Column(name = "COMPANY_BRANCH_BUDGET", length = 63)
     private Money budget;
 
     @Embedded

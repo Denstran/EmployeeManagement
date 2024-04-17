@@ -4,7 +4,6 @@ import com.manageemployee.employeemanagement.companyBranch.model.CompanyBranch;
 import com.manageemployee.employeemanagement.companyBranch.model.CompanyBranchPaymentLog;
 import com.manageemployee.employeemanagement.companyBranch.service.CompanyBranchPaymentLogService;
 import com.manageemployee.employeemanagement.util.Money;
-import com.manageemployee.employeemanagement.util.MoneyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
@@ -34,11 +33,11 @@ public class CompanyBranchEventListener {
         Money oldBudget = companyBranchUpdated.getOldBudget();
         if (updatedCompanyBranch.getBudget().equals(oldBudget)) return;
 
-        Money amountToReduce = MoneyUtil.subtract(updatedCompanyBranch.getBudget(), oldBudget);
+        Money amountToReduce = Money.subtract(updatedCompanyBranch.getBudget(), oldBudget);
 
         CompanyBranchPaymentLog paymentLog =
                 CompanyBranchPaymentLog.createPaymentLog(updatedCompanyBranch,
-                        MoneyUtil.abs(amountToReduce), MoneyUtil.isPositive(amountToReduce));
+                        Money.abs(amountToReduce), Money.isPositive(amountToReduce));
 
         paymentLogService.saveCompanyBranchPaymentLog(paymentLog);
     }

@@ -1,6 +1,5 @@
 package com.manageemployee.employeemanagement.util;
 
-import com.manageemployee.employeemanagement.util.converter.MoneyConverter;
 import com.manageemployee.employeemanagement.util.enumType.PaymentType;
 import com.manageemployee.employeemanagement.util.enumType.TransferAction;
 import jakarta.persistence.*;
@@ -24,10 +23,8 @@ public abstract class BasePaymentEntity {
     @Enumerated(value = EnumType.STRING)
     private PaymentType paymentType;
 
-    @Convert(
-            converter = MoneyConverter.class
-    )
-    @Column(name = "PAYMENT_AMOUNT", length = 63)
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "PAYMENT_AMOUNT"))
     private Money paymentAmount;
 
     @Temporal(value = TemporalType.DATE)
