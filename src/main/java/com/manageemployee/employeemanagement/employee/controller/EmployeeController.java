@@ -1,17 +1,13 @@
 package com.manageemployee.employeemanagement.employee.controller;
 
-import com.manageemployee.employeemanagement.companyBranch.dto.CompanyBranchDTO;
 import com.manageemployee.employeemanagement.employee.dto.EmployeeDTO;
 import com.manageemployee.employeemanagement.employee.dto.SearchEmployeeFilters;
 import com.manageemployee.employeemanagement.employee.model.EmployeeStatus;
 import com.manageemployee.employeemanagement.position.dto.PositionDTO;
 import com.manageemployee.employeemanagement.util.validationgroups.DefaultGroup;
 import com.manageemployee.employeemanagement.util.validationgroups.UpdatingGroup;
-import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,7 +25,6 @@ public class EmployeeController {
     private static final String SHOW_EMPLOYEE = "employee/employee";
     private static final String CREATE_OR_UPDATE_FORM = "employee/createOrUpdateEmployee";
     private static final String REDIRECT_LINK = "redirect:/companyBranches/%s/departments/%s/employees";
-    private static final String EMPLOYEE_PRIVATE_PAGE = "employee/employeePrivatePage";
 
     @Autowired
     public EmployeeController(EmployeeControllerFacade controllerFacade) {
@@ -41,10 +36,16 @@ public class EmployeeController {
                                @PathVariable Long companyBranchId, @PathVariable Long depId) {
         if (filters == null)
             filters = new SearchEmployeeFilters(companyBranchId, depId);
+
         filters.setDepartmentId(depId);
-        String departmentName = controllerFacade.getDepartmentName(depId);
         log.info("FROM: EMPLOYEE_CONTROLLER. RECEIVED FILTERS: {}", filters);
 
+        setupModelForShowingData(model, filters, depId);
+        return SHOW_EMPLOYEE;
+    }
+
+    private void setupModelForShowingData(Model model, SearchEmployeeFilters filters, Long depId) {
+        String departmentName = controllerFacade.getDepartmentName(depId);
         List<EmployeeDTO> employeeDTOS = controllerFacade.getEmployeeDTOListFiltered(filters);
         List<PositionDTO> positions = controllerFacade.getPositionDTOList(String.valueOf(depId));
 
@@ -53,89 +54,78 @@ public class EmployeeController {
         model.addAttribute("departmentName", departmentName);
         model.addAttribute("filters", filters);
         model.addAttribute("statuses", EmployeeStatus.values());
-        return SHOW_EMPLOYEE;
     }
 
     @GetMapping("/new")
-    public String createEmployeeForm(Model model, @PathVariable String companyBranchId, @PathVariable String depId,
-                                     HttpSession session) {
+    public String createEmployeeForm(Model model, @PathVariable String depId) {
         EmployeeDTO employeeDTO = new EmployeeDTO();
         List<PositionDTO> positionDTOS = controllerFacade.getPositionDTOList(depId);
-        model.addAttribute("positionDTOS", positionDTOS);
-        model.addAttribute("isUpdating", false);
-        model.addAttribute("employeeDTO", employeeDTO);
-
-        session.setAttribute("positionDTOS", positionDTOS);
+        setupModelForCreatingEmployee(model, employeeDTO, positionDTOS);
 
         return CREATE_OR_UPDATE_FORM;
     }
 
+    private void setupModelForCreatingEmployee(Model model, EmployeeDTO employeeDTO, List<PositionDTO> positionDTOS) {
+        model.addAttribute("positionDTOS", positionDTOS);
+        model.addAttribute("isUpdating", false);
+        model.addAttribute("employeeDTO", employeeDTO);
+    }
+
     @PostMapping("/new")
     public String createEmployee(@ModelAttribute("employeeDTO") @Validated(DefaultGroup.class) EmployeeDTO employeeDTO,
-                                 BindingResult bindingResult, Model model, HttpSession session,
+                                 BindingResult bindingResult, Model model,
                                  @PathVariable String companyBranchId, @PathVariable String depId) {
         log.info("FROM EMPLOYEE_CONTROLLER: RECEIVED DTO {} ON CREATION", employeeDTO);
         controllerFacade.validate(employeeDTO, bindingResult);
         if (bindingResult.hasErrors()) {
-            List<PositionDTO> positionDTOS = (List<PositionDTO>) session.getAttribute("positionDTOS");
+            List<PositionDTO> positionDTOS = controllerFacade.getPositionDTOList(depId);
             model.addAttribute("positionDTOS", positionDTOS);
             return CREATE_OR_UPDATE_FORM;
         }
 
         employeeDTO.setCompanyBranchId(Long.valueOf(companyBranchId));
         controllerFacade.createEmployee(employeeDTO);
-        session.removeAttribute("positionDTOS");
         return String.format(REDIRECT_LINK, companyBranchId, depId);
     }
 
     @GetMapping("/{employeeId}/update")
-    public String updateEmployeeFrom(Model model, HttpSession session,
-                                     @PathVariable String companyBranchId,
+    public String updateEmployeeFrom(Model model,
                                      @PathVariable String depId,
                                      @PathVariable String employeeId) {
-        EmployeeDTO employeeDTO = controllerFacade.getEmployeeDTO(employeeId);
-        List<EmployeeStatus> employeeStatuses = List.of(EmployeeStatus.values());
         List<PositionDTO> positionDTOS = controllerFacade.getPositionDTOList(depId);
-        model.addAttribute("employeeStatuses", employeeStatuses);
+        EmployeeDTO employeeDTO = controllerFacade.getEmployeeDTO(employeeId);
+        setupModelForUpdating(model, positionDTOS, employeeDTO);
+
+        return CREATE_OR_UPDATE_FORM;
+    }
+
+    private void setupModelForUpdating(Model model, List<PositionDTO> positionDTOS, EmployeeDTO employeeDTO) {
+        model.addAttribute("employeeStatuses", List.of(EmployeeStatus.values()));
         model.addAttribute("positionDTOS", positionDTOS);
         model.addAttribute("isUpdating", true);
         model.addAttribute("employeeDTO", employeeDTO);
-
-        session.setAttribute("positionDTOS", positionDTOS);
-
-        return CREATE_OR_UPDATE_FORM;
     }
 
     @PostMapping("/{employeeId}/update")
     public String updateEmployee(@ModelAttribute("employeeDTO") @Validated({DefaultGroup.class, UpdatingGroup.class})
                                  EmployeeDTO employeeDTO,
-                                 BindingResult bindingResult, Model model, HttpSession session,
+                                 BindingResult bindingResult, Model model,
                                  @PathVariable String depId,
-                                 @PathVariable String employeeId,
                                  @PathVariable String companyBranchId) {
         controllerFacade.validate(employeeDTO, bindingResult);
         if (bindingResult.hasErrors()) {
-            List<PositionDTO> positionDTOS = (List<PositionDTO>) session.getAttribute("positionDTOS");
-            List<EmployeeStatus> employeeStatuses = List.of(EmployeeStatus.values());
-            model.addAttribute("positionDTOS", positionDTOS);
-            model.addAttribute("employeeStatuses", employeeStatuses);
-            model.addAttribute("isUpdating", true);
+            List<PositionDTO> positionDTOS = controllerFacade.getPositionDTOList(depId);
+            recoverModelOnUpdatingError(model, positionDTOS);
             return CREATE_OR_UPDATE_FORM;
         }
 
         controllerFacade.updateEmployee(employeeDTO);
-        session.removeAttribute("positionDTOS");
         return String.format(REDIRECT_LINK, companyBranchId, depId);
     }
 
-    @GetMapping(path = "/myPage")
-    public String getEmployeePage(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        log.info("FROM EMPLOYEE_CONTROLLER: RECEIVED REQUEST FOR PRIVATE PAGE FROM USER: {}", userDetails);
-        CompanyBranchDTO companyBranchDTO = controllerFacade.getCompanyBranchDTO(userDetails);
-        EmployeeDTO employeeDTO = controllerFacade.getEmployeeDTOFromUser(userDetails);
-
-        model.addAttribute("companyBranchDTO", companyBranchDTO);
-        model.addAttribute("employeeDTO", employeeDTO);
-        return EMPLOYEE_PRIVATE_PAGE;
+    private void recoverModelOnUpdatingError(Model model, List<PositionDTO> positionDTOS) {
+        model.addAttribute("positionDTOS", positionDTOS);
+        model.addAttribute("employeeStatuses", List.of(EmployeeStatus.values()));
+        model.addAttribute("isUpdating", true);
     }
 }

@@ -2,7 +2,6 @@ package com.manageemployee.employeemanagement.employee.controller;
 
 import com.manageemployee.employeemanagement.companyBranch.dto.CompanyBranchDTO;
 import com.manageemployee.employeemanagement.companyBranch.dto.mappers.CompanyBranchMapper;
-import com.manageemployee.employeemanagement.companyBranch.service.CompanyBranchService;
 import com.manageemployee.employeemanagement.department.service.DepartmentService;
 import com.manageemployee.employeemanagement.employee.dto.EmployeeDTO;
 import com.manageemployee.employeemanagement.employee.dto.SearchEmployeeFilters;
@@ -24,7 +23,6 @@ import java.util.List;
 @Component
 public class EmployeeControllerFacade {
     private final EmployeeService employeeService;
-    private final CompanyBranchService companyBranchService;
     private final CompanyBranchMapper companyBranchMapper;
     private final DepartmentService departmentService;
     private final PositionService positionService;
@@ -33,14 +31,13 @@ public class EmployeeControllerFacade {
     private final EmployeeValidator employeeValidator;
 
     @Autowired
-    public EmployeeControllerFacade(EmployeeService employeeService, CompanyBranchService companyBranchService,
+    public EmployeeControllerFacade(EmployeeService employeeService,
                                     CompanyBranchMapper companyBranchMapper,
                                     DepartmentService departmentService,
                                     PositionService positionService,
                                     PositionMapper positionMapper,
                                     EmployeeMapper employeeMapper, EmployeeValidator employeeValidator) {
         this.employeeService = employeeService;
-        this.companyBranchService = companyBranchService;
         this.companyBranchMapper = companyBranchMapper;
         this.departmentService = departmentService;
         this.positionService = positionService;
