@@ -57,4 +57,6 @@ public class EmployeeDTO {
     private Date employmentDate;
 
     private String positionName;
+    private String departmentName;
+    private Integer yearsOfWorking;
 }

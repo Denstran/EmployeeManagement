@@ -8,18 +8,21 @@ import com.manageemployee.employeemanagement.security.User;
 import com.manageemployee.employeemanagement.security.UserService;
 import com.manageemployee.employeemanagement.util.dtomapper.AbstractMapperWithSpecificFields;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.Objects;
 
 /**
  * Implementation of AbstractMapperWithSpecificFields for Employee and EmployeeDTO
  */
 @Component
+@Slf4j
 public class EmployeeMapper extends AbstractMapperWithSpecificFields<Employee, EmployeeDTO> {
     private final CompanyBranchService companyBranchService;
     private final PositionService positionService;
@@ -45,6 +48,8 @@ public class EmployeeMapper extends AbstractMapperWithSpecificFields<Employee, E
                     m.skip(EmployeeDTO::setCompanyBranchId);
                     m.skip(EmployeeDTO::setPositionId);
                     m.skip(EmployeeDTO::setPositionName);
+                    m.skip(EmployeeDTO::setDepartmentName);
+                    m.skip(EmployeeDTO::setYearsOfWorking);
                 }).setPostConverter(toDtoConverter());
 
         mapper.createTypeMap(EmployeeDTO.class, Employee.class)
@@ -62,6 +67,7 @@ public class EmployeeMapper extends AbstractMapperWithSpecificFields<Employee, E
      */
     @Override
     protected void mapSpecificFieldsForDto(Employee source, EmployeeDTO destination) {
+        log.info("FROM EMPLOYEE_MAPPER: MAPPING {} TO DTO", source);
         destination.setCompanyBranchId(Objects.isNull(source) ||
                 Objects.isNull(source.getCompanyBranch()) ? null : source.getCompanyBranch().getId());
 
@@ -69,6 +75,10 @@ public class EmployeeMapper extends AbstractMapperWithSpecificFields<Employee, E
                 Objects.isNull(source.getPosition()) ? null : source.getPosition().getId());
 
         destination.setPositionName(source.getPosition().getPositionName());
+        destination.setDepartmentName(source.getPosition().getDepartment().getDepartmentName());
+        int yearsOfWorking = new Date().getYear() - source.getEmploymentDate().getYear();
+        destination.setYearsOfWorking(yearsOfWorking);
+        log.info("FROM EMPLOYEE_MAPPER: MAPPING END, RESULT: {}", destination);
     }
 
     /**

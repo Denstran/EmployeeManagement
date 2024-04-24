@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет сотрудника</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<header th:replace="fragments/header :: header(text='ЛИЧНЫЙ КАБИНЕТ')">
+</header>
+
+<div class="container">
+    <!-- Блок контактной информации о сотруднике -->
+    <div class="card">
+        <div class="card-header">
+            Контактная информация
+        </div>
+        <div class="card-body">
+            <p class="card-text" th:text="'Имя ' + ${employeeDTO.name}">Имя: Иван Иванов</p>
+            <p class="card-text" th:text="'Почта ' + ${employeeDTO.email}">Почта: ivan@example.com</p>
+            <p class="card-text" th:text="'Телефон ' + ${employeeDTO.phoneNumber}">Телефон: +7 (123) 456-7890</p>
+            <p class="card-text" th:text="'Адрес ' + ${employeeDTO.homeAddress}">Адрес: г. Москва, ул. Пушкина, д. 10</p>
+        </div>
+    </div>
+
+    <!-- Блок филиала -->
+    <div class="card">
+        <div class="card-header">
+            Филиал
+        </div>
+        <div class="card-body">
+            <p class="card-text" th:text="'Телефон ' + ${companyBranchDTO.phoneNumber}">Контактные данные: +7 (987) 654-3210</p>
+            <p class="card-text" th:text="'Адрес ' + ${companyBranchDTO.companyBranchAddress}">Адрес: г. Москва, ул. Ленина, д. 5</p>
+        </div>
+    </div>
+
+    <!-- Блок отдела и должности -->
+    <div class="card">
+        <div class="card-header">
+            Отдел и должность
+        </div>
+        <div class="card-body">
+            <p class="card-text" th:text="'Отдел ' + ${employeeDTO.departmentName}">Отдел: Разработка</p>
+            <p class="card-text" th:text="'Статус ' + ${employeeDTO.employeeStatus}">Статус: Активный</p>
+            <p class="card-text" th:text="'Должность ' + ${employeeDTO.positionName}">Должность: Senior Frontend Developer</p>
+            <p class="card-text" th:text="'Зарплата ' + ${employeeDTO.salary}">Зарплата: $5000</p>
+        </div>
+    </div>
+
+    <!-- Блок результативности -->
+    <div class="card">
+        <div class="card-header">
+            Результативность
+        </div>
+        <div class="card-body">
+            <p class="card-text" th:text="'Дата найма ' + ${employeeDTO.employmentDate}">Дата найма: 01.01.2018</p>
+            <p class="card-text" th:text="'Проработано лет ' + ${employeeDTO.yearsOfWorking}">Проработано лет: 6</p>
+        </div>
+    </div>
+
+    <!-- Блок отображающий количество дней до следующей зарплаты -->
+    <div class="card">
+        <div class="card-header">
+            До следующей зарплаты осталось:
+        </div>
+        <div class="card-body">
+            <p class="card-text" id="daysLeft"></p>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Получаем текущую дату
+        var currentDate = new Date();
+        var currentDay = currentDate.getDate();
+
+        // Проверяем, сколько дней осталось до конца месяца (28 числа)
+        var daysLeft = 28 - currentDay;
+
+        // Выводим количество дней до следующей зарплаты
+        document.getElementById("daysLeft").textContent = daysLeft + " дней";
+    });
+</script>
+</body>
+</html>

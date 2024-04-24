@@ -3,14 +3,16 @@ package com.manageemployee.employeemanagement.util;
 import com.manageemployee.employeemanagement.util.validationgroups.DefaultGroup;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
 @Getter
 @Setter
-@ToString
 public class Money {
     @PositiveOrZero(message = "Количество средств должно быть положительным!", groups = {DefaultGroup.class})
     private Double amount;
@@ -36,5 +38,10 @@ public class Money {
 
     public static int compareTo(Money first, Money second) {
         return Double.compare(first.getAmount(), second.getAmount());
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(amount);
     }
 }

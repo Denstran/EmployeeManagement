@@ -17,8 +17,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Formula;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.util.Date;
@@ -29,6 +29,7 @@ import java.util.Set;
 @Table(name = "EMPLOYEE")
 @Getter
 @Setter
+@ToString
 public class Employee extends AbstractAggregateRoot<Employee> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,10 +70,6 @@ public class Employee extends AbstractAggregateRoot<Employee> {
     @CreationTimestamp
     private Date employmentDate;
 
-    @Transient
-    @Formula("YEAR(CURRENT_DATE) - YEAR(EMPLOYMENT_DATE)")
-    private Integer yearsOfWorking;
-
     @Column(name = "EMPLOYEE_STATUS")
     @Enumerated(value = EnumType.STRING)
     private EmployeeStatus employeeStatus;
@@ -84,15 +81,18 @@ public class Employee extends AbstractAggregateRoot<Employee> {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "COMPANY_BRANCH_ID", nullable = false, foreignKey =  @ForeignKey(name = "FK_EMPLOYEE_COMPANY_BRANCH"))
+    @ToString.Exclude
     private CompanyBranch companyBranch;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "POSITION_ID", nullable = false, foreignKey = @ForeignKey(name = "FK_EMPLOYEE_POSITION"))
+    @ToString.Exclude
     private Position position;
 
     // TODO: ИЗМЕНИТЬ НА NULLABLE = FALSE
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "USER_ID", nullable = true, foreignKey = @ForeignKey(name = "FK_EMPLOYEE_USER"))
+    @ToString.Exclude
     private User user;
 
     @Override

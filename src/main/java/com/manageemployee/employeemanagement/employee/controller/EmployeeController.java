@@ -1,5 +1,6 @@
 package com.manageemployee.employeemanagement.employee.controller;
 
+import com.manageemployee.employeemanagement.companyBranch.dto.CompanyBranchDTO;
 import com.manageemployee.employeemanagement.employee.dto.EmployeeDTO;
 import com.manageemployee.employeemanagement.employee.dto.SearchEmployeeFilters;
 import com.manageemployee.employeemanagement.employee.model.EmployeeStatus;
@@ -9,6 +10,8 @@ import com.manageemployee.employeemanagement.util.validationgroups.UpdatingGroup
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,9 +26,10 @@ import java.util.List;
 public class EmployeeController {
 
     private final EmployeeControllerFacade controllerFacade;
-    private final String SHOW_EMPLOYEE = "employee/employee";
-    private final String CREATE_OR_UPDATE_FORM = "employee/createOrUpdateEmployee";
-    private final String REDIRECT_LINK = "redirect:/companyBranches/%s/departments/%s/employees";
+    private static final String SHOW_EMPLOYEE = "employee/employee";
+    private static final String CREATE_OR_UPDATE_FORM = "employee/createOrUpdateEmployee";
+    private static final String REDIRECT_LINK = "redirect:/companyBranches/%s/departments/%s/employees";
+    private static final String EMPLOYEE_PRIVATE_PAGE = "employee/employeePrivatePage";
 
     @Autowired
     public EmployeeController(EmployeeControllerFacade controllerFacade) {
@@ -122,5 +126,16 @@ public class EmployeeController {
         controllerFacade.updateEmployee(employeeDTO);
         session.removeAttribute("positionDTOS");
         return String.format(REDIRECT_LINK, companyBranchId, depId);
+    }
+
+    @GetMapping(path = "/myPage")
+    public String getEmployeePage(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        log.info("FROM EMPLOYEE_CONTROLLER: RECEIVED REQUEST FOR PRIVATE PAGE FROM USER: {}", userDetails);
+        CompanyBranchDTO companyBranchDTO = controllerFacade.getCompanyBranchDTO(userDetails);
+        EmployeeDTO employeeDTO = controllerFacade.getEmployeeDTOFromUser(userDetails);
+
+        model.addAttribute("companyBranchDTO", companyBranchDTO);
+        model.addAttribute("employeeDTO", employeeDTO);
+        return EMPLOYEE_PRIVATE_PAGE;
     }
 }
