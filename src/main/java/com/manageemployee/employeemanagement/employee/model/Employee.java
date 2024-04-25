@@ -1,10 +1,10 @@
 package com.manageemployee.employeemanagement.employee.model;
 
 import com.manageemployee.employeemanagement.companyBranch.model.CompanyBranch;
-import com.manageemployee.employeemanagement.employee.model.event.EmployeeFired;
-import com.manageemployee.employeemanagement.employee.model.event.EmployeeHired;
-import com.manageemployee.employeemanagement.employee.model.event.EmployeeRestored;
-import com.manageemployee.employeemanagement.employee.model.event.EmployeeUpdated;
+import com.manageemployee.employeemanagement.employee.model.event.employeeEvent.EmployeeFired;
+import com.manageemployee.employeemanagement.employee.model.event.employeeEvent.EmployeeHired;
+import com.manageemployee.employeemanagement.employee.model.event.employeeEvent.EmployeeRestored;
+import com.manageemployee.employeemanagement.employee.model.event.employeeEvent.EmployeeUpdated;
 import com.manageemployee.employeemanagement.position.model.Position;
 import com.manageemployee.employeemanagement.security.User;
 import com.manageemployee.employeemanagement.security.UserRole;

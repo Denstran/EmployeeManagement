@@ -1,4 +1,4 @@
-package com.manageemployee.employeemanagement.employee.model.event;
+package com.manageemployee.employeemanagement.employee.model.event.employeeEvent;
 
 import com.manageemployee.employeemanagement.employee.model.Employee;
 import com.manageemployee.employeemanagement.util.Money;
