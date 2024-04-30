@@ -20,18 +20,8 @@ spring:
   thymeleaf:
     cache: false
   mail:
-    host: smtp.yandex.ru
-    port: 465
-    username: kirstradz11@yandex.ru
-    password: teshegeptebgkurl
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-          ssl:
-            enable: true
-        transport:
-          protocol: smtps
-    protocol: smtps
+    host: 127.0.0.1
+    port: 3025
+    username: username
+    password: secret
+    protocol: smtp
