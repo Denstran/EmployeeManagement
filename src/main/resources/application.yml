@@ -35,3 +35,8 @@ spring:
         transport:
           protocol: smtps
     protocol: smtps
+
+vacation-payment-calculator:
+  url: http://localhost:8080/calculate
+server:
+  port: 8081

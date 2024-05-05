@@ -1,7 +1,7 @@
 package com.manageemployee.employeemanagement.employee.dto.mapper;
 
 import com.manageemployee.employeemanagement.employee.dto.EmployeePaymentLogDTO;
-import com.manageemployee.employeemanagement.employee.model.EmployeePaymentLog;
+import com.manageemployee.employeemanagement.employee.model.employee.EmployeePaymentLog;
 import com.manageemployee.employeemanagement.employee.service.EmployeeService;
 import com.manageemployee.employeemanagement.util.dtomapper.AbstractMapperWithSpecificFields;
 import jakarta.annotation.PostConstruct;

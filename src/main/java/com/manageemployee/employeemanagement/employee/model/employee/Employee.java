@@ -1,4 +1,4 @@
-package com.manageemployee.employeemanagement.employee.model;
+package com.manageemployee.employeemanagement.employee.model.employee;
 
 import com.manageemployee.employeemanagement.companyBranch.model.CompanyBranch;
 import com.manageemployee.employeemanagement.employee.model.event.employeeEvent.EmployeeFired;
@@ -91,7 +91,7 @@ public class Employee extends AbstractAggregateRoot<Employee> {
 
     // TODO: ИЗМЕНИТЬ НА NULLABLE = FALSE
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "USER_ID", nullable = true, foreignKey = @ForeignKey(name = "FK_EMPLOYEE_USER"))
+    @JoinColumn(name = "USER_ID", nullable = false, foreignKey = @ForeignKey(name = "FK_EMPLOYEE_USER"))
     @ToString.Exclude
     private User user;
 

@@ -1,8 +1,8 @@
 package com.manageemployee.employeemanagement.integration;
 
 import com.manageemployee.employeemanagement.companyBranch.service.CompanyBranchService;
-import com.manageemployee.employeemanagement.employee.model.Employee;
-import com.manageemployee.employeemanagement.employee.model.Name;
+import com.manageemployee.employeemanagement.employee.model.employee.Employee;
+import com.manageemployee.employeemanagement.employee.model.employee.Name;
 import com.manageemployee.employeemanagement.employee.service.EmployeeService;
 import com.manageemployee.employeemanagement.position.service.PositionService;
 import com.manageemployee.employeemanagement.security.User;

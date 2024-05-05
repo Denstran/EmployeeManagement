@@ -1,5 +1,6 @@
-package com.manageemployee.employeemanagement.employee.model;
+package com.manageemployee.employeemanagement.employee.model.vacation;
 
+import com.manageemployee.employeemanagement.employee.model.employee.Employee;
 import com.manageemployee.employeemanagement.employee.model.event.vacationEvent.VacationRequestCreated;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
@@ -10,7 +11,7 @@ import lombok.ToString;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Entity
 @Table(name = "VACATION_REQUEST")
@@ -38,14 +39,16 @@ public class VacationRequest extends AbstractAggregateRoot<VacationRequest> {
     @Future
     private LocalDate vacationEndDate;
 
-    public long getVacationDays() {
-        return vacationStartDate.until(vacationEndDate, ChronoUnit.DAYS);
-    }
-
     @Column(name = "REQUEST_STATUS", nullable = false)
     private RequestStatus requestStatus;
 
     public void createRequest() {
-        registerEvent(new VacationRequestCreated());
+        List<String> employeeContacts = List.of(employee.getPhoneNumber(), employee.getEmail());
+        requestStatus = RequestStatus.IN_PROCESS;
+
+        registerEvent(new VacationRequestCreated(
+                employee.getCompanyBranch(), employee.getPosition().getDepartment(),
+                vacationStartDate, vacationEndDate,
+                employeeContacts, employee.getName()));
     }
 }

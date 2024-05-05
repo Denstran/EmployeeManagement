@@ -1,4 +1,4 @@
-package com.manageemployee.employeemanagement.employee.model;
+package com.manageemployee.employeemanagement.employee.model.employee;
 
 public enum EmployeeStatus {
     WORKING,

@@ -5,9 +5,9 @@ import com.manageemployee.employeemanagement.department.model.Department;
 import com.manageemployee.employeemanagement.department.model.DepartmentInfo;
 import com.manageemployee.employeemanagement.department.model.DepartmentType;
 import com.manageemployee.employeemanagement.employee.dto.SearchEmployeeFilters;
-import com.manageemployee.employeemanagement.employee.model.Employee;
-import com.manageemployee.employeemanagement.employee.model.EmployeeStatus;
-import com.manageemployee.employeemanagement.employee.model.Name;
+import com.manageemployee.employeemanagement.employee.model.employee.Employee;
+import com.manageemployee.employeemanagement.employee.model.employee.EmployeeStatus;
+import com.manageemployee.employeemanagement.employee.model.employee.Name;
 import com.manageemployee.employeemanagement.employee.repository.EmployeeRepository;
 import com.manageemployee.employeemanagement.position.model.Position;
 import com.manageemployee.employeemanagement.security.PasswordGenerator;
@@ -212,4 +212,9 @@ public class EmployeeService implements com.manageemployee.employeemanagement.de
     private boolean isStringFilterOn(String filter) {
         return filter != null && !filter.isEmpty() && !filter.equals("ALL");
     }
+
+    public Employee getDepartmentBoss(CompanyBranch companyBranch, Department department) {
+        return repository.findDepartmentBoss(companyBranch, department);
+    }
+
 }

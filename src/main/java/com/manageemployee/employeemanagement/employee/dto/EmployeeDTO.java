@@ -1,7 +1,7 @@
 package com.manageemployee.employeemanagement.employee.dto;
 
-import com.manageemployee.employeemanagement.employee.model.EmployeeStatus;
-import com.manageemployee.employeemanagement.employee.model.Name;
+import com.manageemployee.employeemanagement.employee.model.employee.EmployeeStatus;
+import com.manageemployee.employeemanagement.employee.model.employee.Name;
 import com.manageemployee.employeemanagement.util.Address;
 import com.manageemployee.employeemanagement.util.Money;
 import com.manageemployee.employeemanagement.util.validationgroups.DefaultGroup;

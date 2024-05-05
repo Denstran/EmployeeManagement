@@ -2,9 +2,9 @@ package com.manageemployee.employeemanagement.employee.service;
 
 import com.manageemployee.employeemanagement.companyBranch.model.CompanyBranch;
 import com.manageemployee.employeemanagement.department.model.Department;
-import com.manageemployee.employeemanagement.employee.model.Employee;
-import com.manageemployee.employeemanagement.employee.model.EmployeeStatus;
-import com.manageemployee.employeemanagement.employee.model.Employee_;
+import com.manageemployee.employeemanagement.employee.model.employee.Employee;
+import com.manageemployee.employeemanagement.employee.model.employee.EmployeeStatus;
+import com.manageemployee.employeemanagement.employee.model.employee.Employee_;
 import com.manageemployee.employeemanagement.position.model.Position;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Join;

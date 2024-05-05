@@ -46,7 +46,6 @@ public class Mail {
                 """
                 Запрос поступил от сотрудника %s
                 Отпуск планируется с %s по %s, общая продолжительность: %d
-                Количество выделенных отпускных: %s
                 Контактные данные сотрудника: %s
                 """;
 
@@ -55,7 +54,6 @@ public class Mail {
                 vacationRequest.getVacationStartDate().toString(),
                 vacationRequest.getVacationEndDate().toString(),
                 vacationRequest.getVacationDays(),
-                vacationRequest.getVacationMoney().getAmount(),
                 vacationRequest.getRequesterContacts()));
     }
 

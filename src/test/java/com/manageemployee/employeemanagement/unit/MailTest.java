@@ -3,7 +3,6 @@ package com.manageemployee.employeemanagement.unit;
 import com.manageemployee.employeemanagement.mail.Mail;
 import com.manageemployee.employeemanagement.mail.VacationRequest;
 import com.manageemployee.employeemanagement.mail.VacationResponse;
-import com.manageemployee.employeemanagement.util.Money;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -29,9 +28,7 @@ public class MailTest {
         Mockito.when(VACATION_REQUEST.getVacationEndDate())
                 .thenReturn(LocalDate.of(2000, Month.APRIL, 14));
         Mockito.when(VACATION_REQUEST.getVacationDays())
-                .thenReturn(14);
-        Mockito.when(VACATION_REQUEST.getVacationMoney())
-                .thenReturn(new Money(1000.0));
+                .thenReturn(14L);
         Mockito.when(VACATION_REQUEST.getRequesterName())
                 .thenReturn("Requester");
         Mockito.when(VACATION_REQUEST.getRequesterContacts())
@@ -52,7 +49,6 @@ public class MailTest {
                 """
                 Запрос поступил от сотрудника Requester
                 Отпуск планируется с 2000-04-01 по 2000-04-14, общая продолжительность: 14
-                Количество выделенных отпускных: 1000.0
                 Контактные данные сотрудника: test@gmail.com
                 """;
         assertEquals(mail.getContent(), expectedContent);

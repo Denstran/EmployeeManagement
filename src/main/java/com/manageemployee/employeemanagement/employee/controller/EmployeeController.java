@@ -2,7 +2,7 @@ package com.manageemployee.employeemanagement.employee.controller;
 
 import com.manageemployee.employeemanagement.employee.dto.EmployeeDTO;
 import com.manageemployee.employeemanagement.employee.dto.SearchEmployeeFilters;
-import com.manageemployee.employeemanagement.employee.model.EmployeeStatus;
+import com.manageemployee.employeemanagement.employee.model.employee.EmployeeStatus;
 import com.manageemployee.employeemanagement.position.dto.PositionDTO;
 import com.manageemployee.employeemanagement.util.validationgroups.DefaultGroup;
 import com.manageemployee.employeemanagement.util.validationgroups.UpdatingGroup;

@@ -3,8 +3,8 @@ package com.manageemployee.employeemanagement.employee.repository;
 import com.manageemployee.employeemanagement.companyBranch.model.CompanyBranch;
 import com.manageemployee.employeemanagement.department.model.Department;
 import com.manageemployee.employeemanagement.department.model.DepartmentInfo;
-import com.manageemployee.employeemanagement.employee.model.Employee;
-import com.manageemployee.employeemanagement.employee.model.Name;
+import com.manageemployee.employeemanagement.employee.model.employee.Employee;
+import com.manageemployee.employeemanagement.employee.model.employee.Name;
 import com.manageemployee.employeemanagement.position.model.Position;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -40,6 +40,13 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>, JpaSp
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     void deleteEmployeesByCompanyBranchAndDepartment(@Param("companyBranch") CompanyBranch companyBranch,
                                                      @Param("department") Department department);
+
+    @Query("SELECT e FROM Employee e WHERE e.position.leading = true " +
+            "AND e.companyBranch = :companyBranch " +
+            "AND e.position.department = :department " +
+            "AND e.employeeStatus != 'FIRED'")
+    Employee findDepartmentBoss(@Param("companyBranch") CompanyBranch companyBranch,
+                                @Param("department") Department department);
 
     boolean existsByPhoneNumber(String phoneNumber);
     boolean existsByEmail(String email);

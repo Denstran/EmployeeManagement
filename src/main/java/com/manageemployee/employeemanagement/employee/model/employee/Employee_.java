@@ -1,4 +1,4 @@
-package com.manageemployee.employeemanagement.employee.model;
+package com.manageemployee.employeemanagement.employee.model.employee;
 
 import com.manageemployee.employeemanagement.companyBranch.model.CompanyBranch;
 import com.manageemployee.employeemanagement.position.model.Position;

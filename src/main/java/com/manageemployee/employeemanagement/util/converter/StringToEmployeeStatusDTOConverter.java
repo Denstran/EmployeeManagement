@@ -1,6 +1,6 @@
 package com.manageemployee.employeemanagement.util.converter;
 
-import com.manageemployee.employeemanagement.employee.model.EmployeeStatus;
+import com.manageemployee.employeemanagement.employee.model.employee.EmployeeStatus;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 

@@ -2,8 +2,8 @@ package com.manageemployee.employeemanagement.employee;
 
 import com.manageemployee.employeemanagement.companyBranch.model.CompanyBranch;
 import com.manageemployee.employeemanagement.department.model.Department;
-import com.manageemployee.employeemanagement.employee.model.Employee;
-import com.manageemployee.employeemanagement.employee.model.EmployeePaymentLog;
+import com.manageemployee.employeemanagement.employee.model.employee.Employee;
+import com.manageemployee.employeemanagement.employee.model.employee.EmployeePaymentLog;
 import com.manageemployee.employeemanagement.position.model.Position;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;

@@ -2,7 +2,7 @@ package com.manageemployee.employeemanagement.employee.dto.mapper;
 
 import com.manageemployee.employeemanagement.companyBranch.service.CompanyBranchService;
 import com.manageemployee.employeemanagement.employee.dto.EmployeeDTO;
-import com.manageemployee.employeemanagement.employee.model.Employee;
+import com.manageemployee.employeemanagement.employee.model.employee.Employee;
 import com.manageemployee.employeemanagement.position.service.PositionService;
 import com.manageemployee.employeemanagement.security.User;
 import com.manageemployee.employeemanagement.security.UserService;

@@ -2,7 +2,7 @@ package com.manageemployee.employeemanagement.employee.validation;
 
 import com.manageemployee.employeemanagement.department.model.DepartmentInfo;
 import com.manageemployee.employeemanagement.employee.dto.EmployeeDTO;
-import com.manageemployee.employeemanagement.employee.model.Employee;
+import com.manageemployee.employeemanagement.employee.model.employee.Employee;
 import com.manageemployee.employeemanagement.employee.service.EmployeeService;
 import com.manageemployee.employeemanagement.position.model.Position;
 import com.manageemployee.employeemanagement.position.service.PositionService;

@@ -6,8 +6,8 @@ import com.manageemployee.employeemanagement.department.model.DepartmentInfoPaym
 import com.manageemployee.employeemanagement.department.model.DepartmentType;
 import com.manageemployee.employeemanagement.department.service.DepartmentInfoPaymentLogService;
 import com.manageemployee.employeemanagement.department.service.DepartmentInfoService;
-import com.manageemployee.employeemanagement.employee.model.Employee;
-import com.manageemployee.employeemanagement.employee.model.EmployeePaymentLog;
+import com.manageemployee.employeemanagement.employee.model.employee.Employee;
+import com.manageemployee.employeemanagement.employee.model.employee.EmployeePaymentLog;
 import com.manageemployee.employeemanagement.employee.service.EmployeePaymentLogService;
 import com.manageemployee.employeemanagement.security.User;
 import com.manageemployee.employeemanagement.security.UserRole;

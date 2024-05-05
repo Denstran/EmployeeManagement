@@ -7,7 +7,6 @@ import com.icegreen.greenmail.util.ServerSetupTest;
 import com.manageemployee.employeemanagement.mail.EmailService;
 import com.manageemployee.employeemanagement.mail.VacationRequest;
 import com.manageemployee.employeemanagement.mail.VacationResponse;
-import com.manageemployee.employeemanagement.util.Money;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.test.context.TestPropertySource;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -26,7 +25,7 @@ import java.time.Month;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-@PropertySource("classpath:application.yml")
+@TestPropertySource("classpath:application.yml")
 @Slf4j
 public class EmailServiceTest {
     @Autowired
@@ -53,9 +52,7 @@ public class EmailServiceTest {
         Mockito.when(VACATION_REQUEST.getVacationEndDate())
                 .thenReturn(LocalDate.of(2000, Month.APRIL, 14));
         Mockito.when(VACATION_REQUEST.getVacationDays())
-                .thenReturn(14);
-        Mockito.when(VACATION_REQUEST.getVacationMoney())
-                .thenReturn(new Money(1000.0));
+                .thenReturn(14L);
         Mockito.when(VACATION_REQUEST.getRequesterName())
                 .thenReturn("Requester");
         Mockito.when(VACATION_REQUEST.getRequesterContacts())
@@ -86,7 +83,6 @@ public class EmailServiceTest {
                 """
                 Запрос поступил от сотрудника Requester
                 Отпуск планируется с 2000-04-01 по 2000-04-14, общая продолжительность: 14
-                Количество выделенных отпускных: 1000.0
                 Контактные данные сотрудника: test@gmail.com
                 """;
         assertEquals(expectedContent, message.getContent());

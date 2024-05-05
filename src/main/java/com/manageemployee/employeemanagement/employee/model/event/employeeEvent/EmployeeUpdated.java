@@ -1,7 +1,7 @@
 package com.manageemployee.employeemanagement.employee.model.event.employeeEvent;
 
 
-import com.manageemployee.employeemanagement.employee.model.Employee;
+import com.manageemployee.employeemanagement.employee.model.employee.Employee;
 import com.manageemployee.employeemanagement.position.model.Position;
 import com.manageemployee.employeemanagement.util.Money;
 import lombok.Getter;

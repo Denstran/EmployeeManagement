@@ -6,7 +6,7 @@ import com.manageemployee.employeemanagement.department.service.DepartmentServic
 import com.manageemployee.employeemanagement.employee.dto.EmployeeDTO;
 import com.manageemployee.employeemanagement.employee.dto.SearchEmployeeFilters;
 import com.manageemployee.employeemanagement.employee.dto.mapper.EmployeeMapper;
-import com.manageemployee.employeemanagement.employee.model.Employee;
+import com.manageemployee.employeemanagement.employee.model.employee.Employee;
 import com.manageemployee.employeemanagement.employee.service.EmployeeService;
 import com.manageemployee.employeemanagement.employee.validation.EmployeeValidator;
 import com.manageemployee.employeemanagement.position.dto.PositionDTO;
