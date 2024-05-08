@@ -89,11 +89,13 @@ public class Employee extends AbstractAggregateRoot<Employee> {
     @ToString.Exclude
     private Position position;
 
-    // TODO: ИЗМЕНИТЬ НА NULLABLE = FALSE
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "USER_ID", nullable = false, foreignKey = @ForeignKey(name = "FK_EMPLOYEE_USER"))
     @ToString.Exclude
     private User user;
+
+    @Column(name = "VACATION_DAYS", nullable = false)
+    private long vacationDays = 28;
 
     @Override
     public boolean equals(Object o) {

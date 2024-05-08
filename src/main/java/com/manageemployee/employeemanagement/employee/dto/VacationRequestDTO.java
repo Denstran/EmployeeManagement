@@ -12,6 +12,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 /**
  * DTO for {@link VacationRequest}
@@ -29,4 +30,8 @@ public class VacationRequestDTO implements Serializable {
     @Future(message = "Дата конца отпуска должна быть в будущем!")
     private LocalDate vacationEndDate;
     private RequestStatus requestStatus;
+
+    public long getVacationDaysAmount() {
+        return vacationStartDate.until(vacationEndDate, ChronoUnit.DAYS);
+    }
 }

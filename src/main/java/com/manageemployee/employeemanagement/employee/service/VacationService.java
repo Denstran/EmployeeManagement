@@ -1,15 +1,19 @@
 package com.manageemployee.employeemanagement.employee.service;
 
 import com.manageemployee.employeemanagement.employee.model.employee.Employee;
+import com.manageemployee.employeemanagement.employee.model.vacation.RequestStatus;
 import com.manageemployee.employeemanagement.employee.model.vacation.VacationRequest;
 import com.manageemployee.employeemanagement.employee.repository.VacationRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
+@Slf4j
 public class VacationService {
     private final VacationRepository repository;
 
@@ -19,11 +23,29 @@ public class VacationService {
     }
 
     @Transactional
-    public VacationRequest saveRequest(VacationRequest vacationRequest) {
+    public VacationRequest createRequest(VacationRequest vacationRequest) {
         if (vacationRequest == null) throw new NullPointerException("Передано null значение!");
 
         vacationRequest.createRequest();
         return repository.save(vacationRequest);
+    }
+
+    // Метод для тестирования
+    @Transactional
+    public VacationRequest saveRequest(VacationRequest vacationRequest) {
+        if (vacationRequest == null) throw new NullPointerException("Передано null значение!");
+
+        return repository.save(vacationRequest);
+    }
+
+    @Transactional
+    public void deleteById(Long vacationId) {
+        repository.deleteById(vacationId);
+    }
+
+    public VacationRequest getVacationById(Long vacationId) {
+        return repository.findById(vacationId).orElseThrow(() ->
+                new IllegalArgumentException("Выбранный отпуск не существует!"));
     }
 
     public List<VacationRequest> getAllVacations() {
@@ -32,5 +54,38 @@ public class VacationService {
 
     public List<VacationRequest> getEmployeeVacations(Employee employee) {
         return repository.findByEmployee(employee);
+    }
+
+    public boolean existsByEmployeeIdAndVacationDates(Long employeeId, LocalDate startDate, LocalDate endDate) {
+        return repository.existsByEmployeeIdAndVacationDates(employeeId, startDate, endDate);
+    }
+
+    public boolean existsByEmployeeIdAndVacationDatesExcludeVacation(Long employeeId, LocalDate startDate,
+                                                                    LocalDate endDate, Long vacationId) {
+        return repository.existsByEmployeeIdAndVacationDatesExcludeVacation(employeeId, startDate, endDate, vacationId);
+    }
+
+    public long getVacationDaysOfProcessingRequestByEmployee(Employee employee) {
+        List<VacationRequest> vacationRequests = repository.findByEmployeeAndRequestStatus(employee,
+                RequestStatus.IN_PROCESS);
+        return vacationRequests.stream().mapToLong(VacationRequest::getVacationDays).sum();
+    }
+
+    public long getVacationDaysOfProcessingRequestByEmployeeExcludeCurrentVacation(Employee employee, Long vacationId) {
+        log.info("ID OF EXCLUDED VACATION: {}", vacationId);
+        List<VacationRequest> vacationRequests = repository.findByEmployeeAndRequestStatusAndIdNot(
+                employee, RequestStatus.IN_PROCESS, vacationId);
+        log.info("VACATIONS FOUND: {}", vacationRequests);
+        return vacationRequests.stream().mapToLong(VacationRequest::getVacationDays).sum();
+    }
+
+    @Transactional
+    public void saveAll(List<VacationRequest> vacationRequests) {
+        repository.saveAll(vacationRequests);
+    }
+
+    @Transactional
+    public void deleteAll(List<VacationRequest> vacationRequests) {
+        repository.deleteAll(vacationRequests);
     }
 }

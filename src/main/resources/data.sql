@@ -72,27 +72,6 @@ INSERT INTO department_info(company_branch_id, department_id, department_budget)
                                                                                      (1, 3, 10000.0),
                                                                                      (1, 4, 10000.0),
                                                                                      (1, 5, 10000.0);
-
-INSERT INTO employee (employment_date, home_building_number, company_branch_id, employee_status, position_id, salary, email, first_name, home_city, home_country, home_street, home_zip_code, last_name, middle_name, phone_number)
-VALUES
-    ('2021-05-15', 123, 1, 'WORKING', 1, 50000.0, 'john.doe@examle.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4567'),
-    ('2020-05-15', 123, 1, 'FIRED', 2, 25000.0, 'john.doe@exmple.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4561'),
-    ('2024-05-15', 123, 1, 'VACATION', 3, 150000.0, 'john.doe@exampe.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4562'),
-    ('2022-05-15', 123, 1, 'VACATION', 4, 10000.0, 'john.doe@xample.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4563'),
-
-    ('2021-05-15', 123, 1, 'WORKING', 5, 50000.0, 'john.doe@sail.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-133-4564'),
-    ('2020-05-15', 123, 1, 'WORKING', 11, 50000.0, 'john.doe@gail.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-143-4564'),
-    ('2023-05-15', 123, 1, 'WORKING', 12, 50000.0, 'john.doe@wail.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-153-4564'),
-    ('2022-05-15', 123, 1, 'WORKING', 13, 50000.0, 'john.doe@lain.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-163-4564'),
-    ('2024-05-04', 123, 1, 'WORKING', 14, 50000.0, 'john.doe@kain.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-173-4564'),
-    ('2019-05-15', 123, 1, 'WORKING', 4, 50000.0, 'john.doe@fain.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-183-4564'),
-    ('2022-05-15', 123, 1, 'WORKING', 5, 50000.0, 'john.doe@oali.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-193-4564'),
-    ('2023-05-15', 123, 1, 'WORKING', 2, 50000.0, 'john.doe@rail.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-223-4564'),
-    ('2022-05-15', 123, 1, 'WORKING', 3, 50000.0, 'john.doe@pail.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-323-4564'),
-    ('2021-05-15', 123, 1, 'WORKING', 4, 50000.0, 'john.doe@amle.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-423-4564'),
-    ('2023-05-15', 123, 1, 'WORKING', 5, 50000.0, 'john.doe@mail.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-523-4564'),
-    ('2023-05-15', 123, 1, 'WORKING', 6, 50000.0, 'john.doe@exale.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-623-4565');
-
 INSERT INTO UZER (uzer_name, password, IS_ENABLED) VALUES ( 'admin', '$2a$12$kprqzMBw3sRsWU4s1Svlwuqz/b29gQ/q1h2f7H6k./xAuFqwR8PJu', true);
 
 INSERT INTO UZER (uzer_name, password, IS_ENABLED) VALUES ( 'john.doe@examle.com', '$2a$12$kprqzMBw3sRsWU4s1Svlwuqz/b29gQ/q1h2f7H6k./xAuFqwR8PJu', true);
@@ -128,6 +107,26 @@ INSERT INTO user_roles (roles, user_id) values (1, 1),
                                                (4, 2),
                                                (4, 2),
                                                (4, 2);
+
+INSERT INTO employee (employment_date, home_building_number, company_branch_id, employee_status, position_id, salary, email, first_name, home_city, home_country, home_street, home_zip_code, last_name, middle_name, phone_number, vacation_days, user_id)
+VALUES
+    ('2021-05-15', 123, 1, 'WORKING', 1, 50000.0, 'john.doe@examle.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4567', 100, 2),
+    ('2020-05-15', 123, 1, 'FIRED', 2, 25000.0, 'john.doe@exmple.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4561', 28, 3),
+    ('2024-05-15', 123, 1, 'VACATION', 3, 150000.0, 'john.doe@exampe.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4562', 28, 4),
+    ('2022-05-15', 123, 1, 'VACATION', 4, 10000.0, 'john.doe@xample.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4563', 28, 5),
+
+    ('2021-05-15', 123, 1, 'WORKING', 5, 50000.0, 'john.doe@sail.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-133-4564', 28, 6),
+    ('2020-05-15', 123, 1, 'WORKING', 11, 50000.0, 'john.doe@gail.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-143-4564', 28, 7),
+    ('2023-05-15', 123, 1, 'WORKING', 12, 50000.0, 'john.doe@wail.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-153-4564', 28, 8),
+    ('2022-05-15', 123, 1, 'WORKING', 13, 50000.0, 'john.doe@lain.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-163-4564', 28, 9),
+    ('2024-05-04', 123, 1, 'WORKING', 14, 50000.0, 'john.doe@kain.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-173-4564', 28, 10),
+    ('2019-05-15', 123, 1, 'WORKING', 4, 50000.0, 'john.doe@fain.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-183-4564', 28, 11),
+    ('2022-05-15', 123, 1, 'WORKING', 5, 50000.0, 'john.doe@oali.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-193-4564', 28, 12),
+    ('2023-05-15', 123, 1, 'WORKING', 2, 50000.0, 'john.doe@rail.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-223-4564', 28, 13),
+    ('2022-05-15', 123, 1, 'WORKING', 3, 50000.0, 'john.doe@pail.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-323-4564', 28, 14),
+    ('2021-05-15', 123, 1, 'WORKING', 4, 50000.0, 'john.doe@amle.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-423-4564', 28, 15),
+    ('2023-05-15', 123, 1, 'WORKING', 5, 50000.0, 'john.doe@mail.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-523-4564', 28, 16),
+    ('2023-05-15', 123, 1, 'WORKING', 6, 50000.0, 'john.doe@exale.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-623-4565', 28, 17);
 
 -- Employee Payment Log
 INSERT INTO employee_payment_log (date_of_payment, payment_amount, employee_id, payment_type, transfer_action)

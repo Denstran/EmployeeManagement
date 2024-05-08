@@ -11,6 +11,7 @@ import lombok.ToString;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Entity
@@ -41,6 +42,10 @@ public class VacationRequest extends AbstractAggregateRoot<VacationRequest> {
 
     @Column(name = "REQUEST_STATUS", nullable = false)
     private RequestStatus requestStatus;
+
+    public long getVacationDays() {
+        return vacationStartDate.until(vacationEndDate, ChronoUnit.DAYS);
+    }
 
     public void createRequest() {
         List<String> employeeContacts = List.of(employee.getPhoneNumber(), employee.getEmail());

@@ -68,7 +68,7 @@ public class VacationController {
         if (bindingResult.hasErrors())
             return CREATE_VACATION_FORM;
 
-        vacationService.saveRequest(vacationRequestMapper.toEntity(vacationRequestDTO));
+        vacationService.createRequest(vacationRequestMapper.toEntity(vacationRequestDTO));
         return "redirect:/vacations";
     }
 }

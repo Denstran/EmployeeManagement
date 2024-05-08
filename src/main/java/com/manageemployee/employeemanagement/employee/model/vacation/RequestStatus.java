@@ -1,6 +1,6 @@
 package com.manageemployee.employeemanagement.employee.model.vacation;
 
 public enum RequestStatus {
-    APPROVE,
+    APPROVED,
     IN_PROCESS
 }

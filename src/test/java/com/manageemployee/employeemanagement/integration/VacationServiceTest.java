@@ -48,7 +48,7 @@ public class VacationServiceTest {
         vacationRequest.setVacationStartDate(currentDate);
         vacationRequest.setVacationEndDate(futureDate);
 
-        vacationService.saveRequest(vacationRequest);
+        vacationService.createRequest(vacationRequest);
         TestTransaction.flagForCommit();
         TestTransaction.end();
 

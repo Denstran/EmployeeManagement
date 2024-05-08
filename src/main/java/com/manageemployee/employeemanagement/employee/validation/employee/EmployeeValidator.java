@@ -1,4 +1,4 @@
-package com.manageemployee.employeemanagement.employee.validation;
+package com.manageemployee.employeemanagement.employee.validation.employee;
 
 import com.manageemployee.employeemanagement.employee.dto.EmployeeDTO;
 import com.manageemployee.employeemanagement.util.validators.AbstractValidator;

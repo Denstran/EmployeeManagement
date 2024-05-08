@@ -8,7 +8,7 @@ import com.manageemployee.employeemanagement.employee.dto.SearchEmployeeFilters;
 import com.manageemployee.employeemanagement.employee.dto.mapper.EmployeeMapper;
 import com.manageemployee.employeemanagement.employee.model.employee.Employee;
 import com.manageemployee.employeemanagement.employee.service.EmployeeService;
-import com.manageemployee.employeemanagement.employee.validation.EmployeeValidator;
+import com.manageemployee.employeemanagement.employee.validation.employee.EmployeeValidator;
 import com.manageemployee.employeemanagement.position.dto.PositionDTO;
 import com.manageemployee.employeemanagement.position.dto.mapper.PositionMapper;
 import com.manageemployee.employeemanagement.position.model.Position;
