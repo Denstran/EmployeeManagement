@@ -30,6 +30,14 @@ public class VacationService {
         return repository.save(vacationRequest);
     }
 
+    @Transactional
+    public VacationRequest updateVacation(VacationRequest vacationRequest) {
+        if (vacationRequest == null) throw new NullPointerException("Передано null значение!");
+
+        vacationRequest.updateVacation();
+        return repository.save(vacationRequest);
+    }
+
     // Метод для тестирования
     @Transactional
     public VacationRequest saveRequest(VacationRequest vacationRequest) {
@@ -41,6 +49,16 @@ public class VacationService {
     @Transactional
     public void deleteById(Long vacationId) {
         repository.deleteById(vacationId);
+    }
+
+    @Transactional
+    public void deleteAllByEmployeeEmail(String employeeEmail) {
+        repository.deleteAllByEmployee_Email(employeeEmail);
+    }
+
+    @Transactional
+    public void saveAll(List<VacationRequest> vacationRequests) {
+        repository.saveAll(vacationRequests);
     }
 
     public VacationRequest getVacationById(Long vacationId) {
@@ -79,13 +97,7 @@ public class VacationService {
         return vacationRequests.stream().mapToLong(VacationRequest::getVacationDays).sum();
     }
 
-    @Transactional
-    public void saveAll(List<VacationRequest> vacationRequests) {
-        repository.saveAll(vacationRequests);
-    }
-
-    @Transactional
-    public void deleteAll(List<VacationRequest> vacationRequests) {
-        repository.deleteAll(vacationRequests);
+    public boolean existsByVacationIdAndEmployeeMail(Long vacationId, String employeeMail) {
+        return repository.existsByIdAndEmployee_Email(vacationId, employeeMail);
     }
 }

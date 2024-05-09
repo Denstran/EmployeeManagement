@@ -24,4 +24,14 @@ public class VacationEventListener {
         Employee employee = employeeService.getDepartmentBoss(event.getCompanyBranch(), event.getDepartment());
         emailService.sendVacationRequestMail(employee.getEmail(), event);
     }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void vacationRequestUpdatedEventListener(VacationRequestUpdated event) {
+        Employee employee = event.getEmployee();
+        Employee employeeBoss = employeeService.getDepartmentBoss(employee.getCompanyBranch(),
+                employee.getPosition().getDepartment());
+
+        emailService.sendVacationResponseMail(employee.getEmail(), event);
+        emailService.sendVacationResponseMail(employeeBoss.getEmail(), event);
+    }
 }

@@ -37,4 +37,8 @@ public interface VacationRepository extends JpaRepository<VacationRequest, Long>
     List<VacationRequest> findByEmployeeAndRequestStatusAndIdNot(Employee employee,
                                                                  RequestStatus requestStatus,
                                                                  Long vacationId);
+
+    boolean existsByIdAndEmployee_Email(Long vacationId, String employeeEmail);
+
+    void deleteAllByEmployee_Email(String employeeEmail);
 }

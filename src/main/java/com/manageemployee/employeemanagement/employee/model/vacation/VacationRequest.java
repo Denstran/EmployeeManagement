@@ -2,6 +2,7 @@ package com.manageemployee.employeemanagement.employee.model.vacation;
 
 import com.manageemployee.employeemanagement.employee.model.employee.Employee;
 import com.manageemployee.employeemanagement.employee.model.event.vacationEvent.VacationRequestCreated;
+import com.manageemployee.employeemanagement.employee.model.event.vacationEvent.VacationRequestUpdated;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
@@ -24,7 +25,7 @@ public class VacationRequest extends AbstractAggregateRoot<VacationRequest> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "EMPLOYEE_ID", nullable = false,
             foreignKey = @ForeignKey(name = "FK_EMPLOYEE_VACATION"))
     @ToString.Exclude
@@ -55,5 +56,9 @@ public class VacationRequest extends AbstractAggregateRoot<VacationRequest> {
                 employee.getCompanyBranch(), employee.getPosition().getDepartment(),
                 vacationStartDate, vacationEndDate,
                 employeeContacts, employee.getName()));
+    }
+
+    public void updateVacation() {
+        registerEvent(new VacationRequestUpdated(true, vacationStartDate, vacationEndDate, employee));
     }
 }

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Getter
@@ -16,7 +17,8 @@ public class EmailService {
         this.mailSender = mailSender;
     }
 
-    private void sendEmail(Mail mail) {
+    @Async
+    public void sendEmail(Mail mail) {
         log.info("FROM EMAIL_SERVICE: SENDING MAIL TO {}, FROM {}, SUBJECT: {}, TEXT {}",
                 mail.getTo(), Mail.getFrom(), mail.getSubject(), mail.getContent());
         SimpleMailMessage message = mapMailToSimpleMailMessage(mail);
@@ -24,16 +26,19 @@ public class EmailService {
         mailSender.send(message);
     }
 
+    @Async
     public void sendVacationRequestMail(String to, VacationRequest vacationRequest) {
         Mail mail = Mail.prepareVacationRequestEmail(to, vacationRequest);
         sendEmail(mail);
     }
 
+    @Async
     public void sendVacationResponseMail(String to, VacationResponse vacationResponse) {
         Mail mail = Mail.prepareVacationResponseEmail(to, vacationResponse);
         sendEmail(mail);
     }
 
+    @Async
     public void sendSimpleMessage(String to, String subject, String content) {
         Mail mail = Mail.prepareSimpleMail(to, subject, content);
         sendEmail(mail);
