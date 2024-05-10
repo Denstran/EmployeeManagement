@@ -1,4 +1,4 @@
-package com.manageemployee.employeemanagement.integration;
+package com.manageemployee.employeemanagement.integration.employee;
 
 import com.manageemployee.employeemanagement.companyBranch.service.CompanyBranchService;
 import com.manageemployee.employeemanagement.employee.model.employee.Employee;

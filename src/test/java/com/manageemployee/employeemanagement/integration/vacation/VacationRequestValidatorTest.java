@@ -1,4 +1,4 @@
-package com.manageemployee.employeemanagement.integration;
+package com.manageemployee.employeemanagement.integration.vacation;
 
 import com.manageemployee.employeemanagement.employee.dto.VacationRequestDTO;
 import com.manageemployee.employeemanagement.employee.model.vacation.RequestStatus;

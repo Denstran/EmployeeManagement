@@ -1,4 +1,4 @@
-package com.manageemployee.employeemanagement.integration;
+package com.manageemployee.employeemanagement.integration.employee;
 
 import com.manageemployee.employeemanagement.employee.dto.SearchEmployeeFilters;
 import com.manageemployee.employeemanagement.employee.model.employee.Employee;

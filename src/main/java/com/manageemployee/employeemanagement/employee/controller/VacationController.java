@@ -11,6 +11,7 @@ import com.manageemployee.employeemanagement.employee.validation.vacation.Vacati
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -111,6 +112,41 @@ public class VacationController {
         log.info("VALIDATION SUCCESSFUL. UPDATING VACATION");
         vacationService.updateVacation(vacationRequest);
         return "redirect:/myPage/vacations";
+    }
+
+    @PostMapping("/{vacationId}/approve")
+    @Secured("ROLE_HEAD_OF_DEPARTMENT")
+    public String approveVacation(@PathVariable Long vacationId, @AuthenticationPrincipal UserDetails userDetails) {
+        log.info("POST-REQUEST RECEIVED REQUEST FROM VACATION APPROVAL");
+        Employee headOfDepartment = employeeService.getByEmail(userDetails.getUsername()).orElseThrow(() ->
+                new SecurityException("Bad Credentials"));
+
+        log.info("ID OF HEAD OF DEPARTMENT: {} ID OF COMPANY BRANCH {}",
+                headOfDepartment.getPosition().getDepartment().getId(),
+                headOfDepartment.getCompanyBranch().getId());
+
+        VacationRequest vacationRequest = vacationService.getVacationById(vacationId);
+        log.info("VACATION BELONGS TO EMPLOYEE WITH ID {} FROM COMPANY_BRANCH {}",
+                vacationRequest.getEmployee().getId(),
+                vacationRequest.getEmployee().getCompanyBranch().getId());
+
+        if (!isHeadOfDepartmentInCorrectBranch(headOfDepartment, vacationRequest))
+            throw new SecurityException("Попытка одобрить отпуск в чужом филиале!");
+        if (!isHeadOfCorrectDepartment(headOfDepartment, vacationRequest))
+            throw new SecurityException("Попытка одобрить отпуск в чужом отделе!");
+
+        vacationService.approveVacation(vacationRequest);
+        return "redirect:/myPage/vacations";
+    }
+
+    private boolean isHeadOfCorrectDepartment(Employee headOfDepartment, VacationRequest vacationRequest) {
+        return headOfDepartment.getPosition().getDepartment().getId()
+                .equals(vacationRequest.getEmployee().getPosition().getDepartment().getId());
+    }
+
+    private boolean isHeadOfDepartmentInCorrectBranch(Employee headOfDepartment, VacationRequest vacationRequest) {
+        return headOfDepartment.getCompanyBranch().getId()
+                .equals(vacationRequest.getEmployee().getCompanyBranch().getId());
     }
 
     private void processAccessLegality(UserDetails userDetails, VacationRequest vacationRequest) {

@@ -61,6 +61,13 @@ public class VacationService {
         repository.saveAll(vacationRequests);
     }
 
+    @Transactional
+    public void approveVacation(VacationRequest vacationRequest) {
+        vacationRequest.approveVacation();
+
+        repository.save(vacationRequest);
+    }
+
     public VacationRequest getVacationById(Long vacationId) {
         return repository.findById(vacationId).orElseThrow(() ->
                 new IllegalArgumentException("Выбранный отпуск не существует!"));

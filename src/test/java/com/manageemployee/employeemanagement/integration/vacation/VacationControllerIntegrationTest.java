@@ -1,4 +1,4 @@
-package com.manageemployee.employeemanagement.integration;
+package com.manageemployee.employeemanagement.integration.vacation;
 
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
@@ -287,6 +287,41 @@ public class VacationControllerIntegrationTest {
 
         vacationService.deleteById(1L);
         vacationService.deleteById(2L);
+    }
+
+    @Test
+    @Transactional
+    @WithMockUser(username = "john.doe@examle.com", roles = {"HEAD_OF_DEPARTMENT"})
+    void assert_that_vacation_is_approved_when_correct_role() throws Exception {
+        VacationRequest vacation = setUpVacation(1L);
+        vacation = vacationService.saveRequest(vacation);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/myPage/vacations/" + vacation.getId() + "/approve")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(status().is3xxRedirection()) // Ожидаем, что метод вернет редирект
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/myPage/vacations"));
+
+        vacation = vacationService.getVacationById(vacation.getId());
+        assertEquals(RequestStatus.APPROVED, vacation.getRequestStatus());
+    }
+
+    @Test
+    @Transactional
+    @WithMockUser(username = "john.doe@gail.com", roles = {"HEAD_OF_DEPARTMENT"})
+    void should_throw_exception_when_not_correct_department() {
+        VacationRequest vacation = setUpVacation(1L);
+        vacation = vacationService.saveRequest(vacation);
+
+        final VacationRequest finalVacation = vacation;
+        assertThatThrownBy(() -> {
+            mockMvc.perform(MockMvcRequestBuilders.post("/myPage/vacations/" + finalVacation.getId() + "/approve")
+                            .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                    .andExpect(status().is3xxRedirection()) // Ожидаем, что метод вернет редирект
+                    .andExpect(MockMvcResultMatchers.redirectedUrl("/myPage/vacations"));
+        }).hasCauseInstanceOf(SecurityException.class);
+
+        vacation = vacationService.getVacationById(vacation.getId());
+        assertEquals(RequestStatus.IN_PROCESS, vacation.getRequestStatus());
     }
 
     private void performGetWhenUpdating(Long vacationId) throws Exception {

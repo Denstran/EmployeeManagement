@@ -1,4 +1,4 @@
-package com.manageemployee.employeemanagement.integration;
+package com.manageemployee.employeemanagement.integration.vacation;
 
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
@@ -82,18 +82,12 @@ public class VacationServiceTest {
     }
 
     @Test
-    void should_send_email_to_requester_and_boss_after_updating() throws MessagingException {
+    void should_send_email_to_requester_and_boss_after_updating() throws MessagingException, IOException {
         Employee employee = employeeService.getById(3L);
         Employee departmentBoss = employeeService.getDepartmentBoss(employee.getCompanyBranch(),
                 employee.getPosition().getDepartment());
 
-        LocalDate currentDate = LocalDate.now();
-        LocalDate futureDate = currentDate.plusDays(14);
-        VacationRequest vacationRequest = new VacationRequest();
-        vacationRequest.setEmployee(employee);
-        vacationRequest.setVacationStartDate(currentDate);
-        vacationRequest.setVacationEndDate(futureDate);
-        vacationRequest.setRequestStatus(RequestStatus.IN_PROCESS);
+        VacationRequest vacationRequest = setupVacation(employee);
         vacationRequest = vacationService.saveRequest(vacationRequest);
         TestTransaction.flagForCommit();
         TestTransaction.end();
@@ -106,12 +100,55 @@ public class VacationServiceTest {
         TestTransaction.end();
 
         MimeMessage[] messages = greenMail.getReceivedMessages();
-        List<String> recievers = new ArrayList<>();
+        List<String> receivers = new ArrayList<>();
         for (MimeMessage message : messages) {
-            recievers.addAll(Arrays.stream(message.getAllRecipients()).map(Address::toString).toList());
+            receivers.addAll(Arrays.stream(message.getAllRecipients()).map(Address::toString).toList());
         }
+
         assertEquals(2, messages.length);
-        assertTrue(recievers.contains(employee.getEmail()));
-        assertTrue(recievers.contains(departmentBoss.getEmail()));
+        assertTrue(messages[0].getContent().toString().contains("изменён"));
+        assertTrue(messages[1].getContent().toString().contains("изменён"));
+        assertTrue(receivers.contains(employee.getEmail()));
+        assertTrue(receivers.contains(departmentBoss.getEmail()));
+    }
+
+    @Test
+    void should_sent_email_to_requester_and_boss_after_approving() throws MessagingException, IOException {
+        Employee employee = employeeService.getById(3L);
+        Employee departmentBoss = employeeService.getDepartmentBoss(employee.getCompanyBranch(),
+                employee.getPosition().getDepartment());
+
+        VacationRequest vacationRequest = setupVacation(employee);
+        vacationRequest = vacationService.saveRequest(vacationRequest);
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
+
+        TestTransaction.start();
+        vacationRequest = vacationService.getVacationById(vacationRequest.getId());
+        vacationService.approveVacation(vacationRequest);
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
+
+        MimeMessage[] messages = greenMail.getReceivedMessages();
+        List<String> receivers = new ArrayList<>();
+        for (MimeMessage message : messages) {
+            receivers.addAll(Arrays.stream(message.getAllRecipients()).map(Address::toString).toList());
+        }
+
+        assertEquals(2, messages.length);
+        assertTrue(messages[0].getContent().toString().contains("одобрен"));
+        assertTrue(messages[1].getContent().toString().contains("одобрен"));
+        assertTrue(receivers.contains(employee.getEmail()));
+        assertTrue(receivers.contains(departmentBoss.getEmail()));
+    }
+
+    private VacationRequest setupVacation(Employee employee) {
+        VacationRequest vacationRequest = new VacationRequest();
+        vacationRequest.setEmployee(employee);
+        vacationRequest.setVacationStartDate(LocalDate.now());
+        vacationRequest.setVacationEndDate(LocalDate.now().plusDays(14));
+        vacationRequest.setRequestStatus(RequestStatus.IN_PROCESS);
+
+        return vacationRequest;
     }
 }
