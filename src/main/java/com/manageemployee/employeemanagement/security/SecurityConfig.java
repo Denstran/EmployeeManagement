@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -15,8 +16,11 @@ import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
     private final UserService userService;
 
@@ -37,6 +41,7 @@ public class SecurityConfig {
                         .requestMatchers(mvc.pattern("/auth/login"), mvc.pattern("/auth/logout"), mvc.pattern("/process_login"),
                                 mvc.pattern("/errors")).permitAll()
                         .requestMatchers(PathRequest.toH2Console()).permitAll()
+                        .requestMatchers(antMatcher("/myPage/vacations/**/approve")).hasRole("HEAD_OF_DEPARTMENT")
                         .anyRequest().authenticated())
                 .headers(httpSecurityHeadersConfigurer -> httpSecurityHeadersConfigurer.frameOptions().disable())
                 .csrf(AbstractHttpConfigurer::disable)

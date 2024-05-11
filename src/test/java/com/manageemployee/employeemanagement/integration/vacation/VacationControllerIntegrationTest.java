@@ -303,6 +303,7 @@ public class VacationControllerIntegrationTest {
 
         vacation = vacationService.getVacationById(vacation.getId());
         assertEquals(RequestStatus.APPROVED, vacation.getRequestStatus());
+        vacationService.deleteById(vacation.getId());
     }
 
     @Test
@@ -314,14 +315,53 @@ public class VacationControllerIntegrationTest {
 
         final VacationRequest finalVacation = vacation;
         assertThatThrownBy(() -> {
-            mockMvc.perform(MockMvcRequestBuilders.post("/myPage/vacations/" + finalVacation.getId() + "/approve")
-                            .contentType(MediaType.APPLICATION_FORM_URLENCODED))
-                    .andExpect(status().is3xxRedirection()) // Ожидаем, что метод вернет редирект
-                    .andExpect(MockMvcResultMatchers.redirectedUrl("/myPage/vacations"));
+            performPostWhenApproving(finalVacation);
         }).hasCauseInstanceOf(SecurityException.class);
 
         vacation = vacationService.getVacationById(vacation.getId());
         assertEquals(RequestStatus.IN_PROCESS, vacation.getRequestStatus());
+        vacationService.deleteById(vacation.getId());
+    }
+
+    @Test
+    @Transactional
+    @WithMockUser(username = "john.doeAnotherBranch@examle.com", roles = {"HEAD_OF_DEPARTMENT"})
+    void should_throw_exception_when_not_correct_company_branch() {
+        VacationRequest vacation = setUpVacation(1L);
+        vacation = vacationService.saveRequest(vacation);
+
+        final VacationRequest finalVacation = vacation;
+        assertThatThrownBy(() -> {
+            performPostWhenApproving(finalVacation);
+        }).hasCauseInstanceOf(SecurityException.class);
+
+        vacation = vacationService.getVacationById(vacation.getId());
+        assertEquals(RequestStatus.IN_PROCESS, vacation.getRequestStatus());
+        vacationService.deleteById(vacation.getId());
+    }
+
+    @Test
+    @Transactional
+    @WithMockUser(username = "john.doe@examle.com", roles = {"EMPLOYEE"})
+    void should_throw_exception_when_not_correct_role() throws Exception {
+        VacationRequest vacation = setUpVacation(1L);
+        vacation = vacationService.saveRequest(vacation);
+
+        final VacationRequest finalVacation = vacation;
+        mockMvc.perform(MockMvcRequestBuilders.post("/myPage/vacations/" + finalVacation.getId() + "/approve")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(status().isForbidden()); // Ожидаем, что метод вернет редирект
+
+        vacation = vacationService.getVacationById(vacation.getId());
+        assertEquals(RequestStatus.IN_PROCESS, vacation.getRequestStatus());
+        vacationService.deleteById(vacation.getId());
+    }
+
+    private void performPostWhenApproving(VacationRequest vacationRequest) throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/myPage/vacations/" + vacationRequest.getId() + "/approve")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(status().is3xxRedirection()) // Ожидаем, что метод вернет редирект
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/myPage/vacations"));
     }
 
     private void performGetWhenUpdating(Long vacationId) throws Exception {

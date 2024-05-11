@@ -90,9 +90,11 @@ INSERT INTO UZER (uzer_name, password, IS_ENABLED) VALUES ( 'john.doe@pail.com',
 INSERT INTO UZER (uzer_name, password, IS_ENABLED) VALUES ( 'john.doe@amle.com', '$2a$12$kprqzMBw3sRsWU4s1Svlwuqz/b29gQ/q1h2f7H6k./xAuFqwR8PJu', true);
 INSERT INTO UZER (uzer_name, password, IS_ENABLED) VALUES ( 'john.doe@mail.com', '$2a$12$kprqzMBw3sRsWU4s1Svlwuqz/b29gQ/q1h2f7H6k./xAuFqwR8PJu', true);
 INSERT INTO UZER (uzer_name, password, IS_ENABLED) VALUES ( 'john.doe@exale.com', '$2a$12$kprqzMBw3sRsWU4s1Svlwuqz/b29gQ/q1h2f7H6k./xAuFqwR8PJu', true);
+INSERT INTO UZER (uzer_name, password, IS_ENABLED) VALUES ( 'john.doeAnotherBranch@examle.com', '$2a$12$kprqzMBw3sRsWU4s1Svlwuqz/b29gQ/q1h2f7H6k./xAuFqwR8PJu', true);
 
 INSERT INTO user_roles (roles, user_id) values (1, 1),
                                                (4, 2),
+                                               (1, 18),
                                                (4, 3),
                                                (4, 4),
                                                (4, 5),
@@ -126,7 +128,8 @@ VALUES
     ('2022-05-15', 123, 1, 'WORKING', 3, 50000.0, 'john.doe@pail.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-323-4564', 28, 14),
     ('2021-05-15', 123, 1, 'WORKING', 4, 50000.0, 'john.doe@amle.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-423-4564', 28, 15),
     ('2023-05-15', 123, 1, 'WORKING', 5, 50000.0, 'john.doe@mail.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-523-4564', 28, 16),
-    ('2023-05-15', 123, 1, 'WORKING', 6, 50000.0, 'john.doe@exale.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-623-4565', 28, 17);
+    ('2023-05-15', 123, 1, 'WORKING', 6, 50000.0, 'john.doe@exale.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-623-4565', 28, 17),
+    ('2021-05-15', 123, 2, 'WORKING', 1, 50000.0, 'john.doeAnotherBranch@examle.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-723-4567', 100, 18);
 
 -- Employee Payment Log
 INSERT INTO employee_payment_log (date_of_payment, payment_amount, employee_id, payment_type, transfer_action)

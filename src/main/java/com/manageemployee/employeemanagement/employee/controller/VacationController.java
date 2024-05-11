@@ -114,10 +114,11 @@ public class VacationController {
         return "redirect:/myPage/vacations";
     }
 
-    @PostMapping("/{vacationId}/approve")
+
     @Secured("ROLE_HEAD_OF_DEPARTMENT")
+    @PostMapping("/{vacationId}/approve")
     public String approveVacation(@PathVariable Long vacationId, @AuthenticationPrincipal UserDetails userDetails) {
-        log.info("POST-REQUEST RECEIVED REQUEST FROM VACATION APPROVAL");
+        log.info("POST-REQUEST RECEIVED REQUEST FROM VACATION APPROVAL. USER ROLE {}", userDetails.getAuthorities());
         Employee headOfDepartment = employeeService.getByEmail(userDetails.getUsername()).orElseThrow(() ->
                 new SecurityException("Bad Credentials"));
 
