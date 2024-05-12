@@ -145,8 +145,11 @@ public class EmployeeService implements com.manageemployee.employeemanagement.de
     }
 
     public List<Employee> getAllEmployee(SearchEmployeeFilters filters) {
-        Specification<Employee> spec = EmployeeSpecification.setupSpecification(filters.getCompanyBranchId(),
-                filters.getDepartmentId());
+        Specification<Employee> spec;
+        if (filters.getDepartmentId() == null)
+             spec = EmployeeSpecification.setupSpecification(filters.getCompanyBranchId());
+        else
+            spec = EmployeeSpecification.setupSpecification(filters.getCompanyBranchId(), filters.getDepartmentId());
 
         spec = processEmailFilter(filters.getEmail(), spec);
         spec = processPositionFilter(filters.getPositionName(), spec);

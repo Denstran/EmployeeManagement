@@ -28,6 +28,10 @@ public class SearchEmployeeFilters {
         this.departmentId = departmentId;
     }
 
+    public SearchEmployeeFilters(Long companyBranchId) {
+        this.companyBranchId = companyBranchId;
+    }
+
     @Override
     public String toString() {
         return "SearchEmployeeFilters{" +

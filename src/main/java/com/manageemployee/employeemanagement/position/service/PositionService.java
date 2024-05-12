@@ -47,6 +47,10 @@ public class PositionService {
         return positionRepository.findAll(spec);
     }
 
+    public List<Position> getAllPositions() {
+        return positionRepository.findAll();
+    }
+
     public Optional<Position> getByName(String positionName) {
         return positionRepository.findByPositionNameIgnoreCase(positionName);
     }

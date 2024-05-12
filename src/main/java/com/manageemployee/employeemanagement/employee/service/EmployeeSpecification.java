@@ -27,8 +27,21 @@ public class EmployeeSpecification {
         };
     }
 
+    public static Specification<Employee> isInCompanyBranch(Long companyBranchId) {
+        return (root, query, criteriaBuilder) -> {
+            Join<Employee, CompanyBranch> companyBranchJoin = root.join(Employee_.companyBranch);
+            Predicate isEqualToCompanyBranchId = criteriaBuilder.equal(companyBranchJoin.get("id"), companyBranchId);
+
+            return criteriaBuilder.and(isEqualToCompanyBranchId);
+        };
+    }
+
     public static Specification<Employee> setupSpecification(Long companyBranchId, Long departmentId) {
         return Specification.where(isInCompanyBranchAndDepartment(companyBranchId, departmentId));
+    }
+
+    public static Specification<Employee> setupSpecification(Long companyBranchId) {
+        return Specification.where(isInCompanyBranch(companyBranchId));
     }
 
     public static Specification<Employee> isEqualToEmail(String email) {
