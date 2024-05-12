@@ -69,6 +69,10 @@
             <p class="card-text" id="daysLeft"></p>
         </div>
     </div>
+
+    <a th:href="@{/myPage/vacations}" class="btn btn-primary mt-3">Просмотр отпусков</a>
+    <a th:if="${#authorization.expression('hasRole(''HEAD_OF_DEPARTMENT'')')}"
+       th:href="@{/myPage/vacations/vacationRequests}" class="btn btn-primary mt-3">Просмотр отпусков</a>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

@@ -96,10 +96,6 @@ public class EmployeeService implements com.manageemployee.employeemanagement.de
                 -> new IllegalArgumentException("Выбранного сотрудника не существует"));
     }
 
-    public List<Employee> getEmployeesByCompanyBranchAndDepartment(Long companyBranchId, Long depId) {
-        return repository.getEmployeeByCompanyBranchAndDepartment(companyBranchId, depId);
-    }
-
     public DepartmentInfo getEmployeeDepartmentInfo(Long companyBranchId, Long employeePositionId) {
         return repository.findEmployeeDepartmentInfo(companyBranchId, employeePositionId).orElseThrow(() ->
                 new IllegalArgumentException("Не удалось найти отдел по входным данным!"));

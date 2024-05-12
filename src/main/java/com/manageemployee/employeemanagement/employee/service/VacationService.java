@@ -63,14 +63,26 @@ public class VacationService {
 
     @Transactional
     public void approveVacation(VacationRequest vacationRequest) {
+        if (vacationRequest == null) throw new NullPointerException("Передано null значение!");
         vacationRequest.approveVacation();
+        repository.save(vacationRequest);
+    }
 
+    @Transactional
+    public void cancelVacation(VacationRequest vacationRequest, Employee headOfDepartment) {
+        if (vacationRequest == null) throw new NullPointerException("Передано null значение!");
+        vacationRequest.cancelVacation(headOfDepartment);
         repository.save(vacationRequest);
     }
 
     public VacationRequest getVacationById(Long vacationId) {
         return repository.findById(vacationId).orElseThrow(() ->
                 new IllegalArgumentException("Выбранный отпуск не существует!"));
+    }
+
+    public List<VacationRequest> getByHeadOfDepartment(Employee headOfDepartment) {
+        return repository.findAllByEmployee_CompanyBranchAndEmployee_Position_Department(
+                headOfDepartment.getCompanyBranch(), headOfDepartment.getPosition().getDepartment());
     }
 
     public List<VacationRequest> getAllVacations() {

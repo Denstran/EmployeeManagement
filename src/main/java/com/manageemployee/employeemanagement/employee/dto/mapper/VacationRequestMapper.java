@@ -26,7 +26,10 @@ public class VacationRequestMapper extends AbstractMapperWithSpecificFields<Vaca
     @Override
     public void setupMapper() {
         mapper.createTypeMap(VacationRequest.class, VacationRequestDTO.class)
-                .addMappings(m -> m.skip(VacationRequestDTO::setEmployeeId))
+                .addMappings(m -> {
+                    m.skip(VacationRequestDTO::setEmployeeId);
+                    m.skip(VacationRequestDTO::setContacts);
+                })
                 .setPostConverter(toDtoConverter());
         mapper.createTypeMap(VacationRequestDTO.class, VacationRequest.class)
                 .addMappings(m -> m.skip(VacationRequest::setEmployee))
@@ -37,6 +40,10 @@ public class VacationRequestMapper extends AbstractMapperWithSpecificFields<Vaca
     protected void mapSpecificFieldsForDto(VacationRequest source, VacationRequestDTO destination) {
         log.info("MAPPING VACATION_REQUEST OBJ: {} TO DTO", source);
         destination.setEmployeeId(source.getEmployee().getId());
+        String contacts = source.getEmployee().getName() + " "
+                        + source.getEmployee().getEmail() + " "
+                        + source.getEmployee().getPhoneNumber();
+        destination.setContacts(contacts);
         log.info("MAPPING RESULT: {}", source);
     }
 

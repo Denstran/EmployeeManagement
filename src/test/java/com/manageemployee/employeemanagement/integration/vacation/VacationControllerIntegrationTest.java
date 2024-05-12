@@ -64,7 +64,7 @@ public class VacationControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .flashAttr("vacationRequestDTO", vacationRequestDTO))
                 .andExpect(status().is3xxRedirection()) // Ожидаем, что метод вернет редирект
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/vacations")); // Ожидаем, что произойдет редирект на указанный URL
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/myPage/vacations")); // Ожидаем, что произойдет редирект на указанный URL
 
         List<VacationRequest> vacationRequests = vacationService.getAllVacations();
         assertEquals(1, vacationRequests.size());
@@ -85,13 +85,15 @@ public class VacationControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .flashAttr("vacationRequestDTO", vacationRequestDTO))
                 .andExpect(status().is3xxRedirection()) // Ожидаем, что метод вернет редирект
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/vacations")); // Ожидаем, что произойдет редирект на указанный URL
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/myPage/vacations")); // Ожидаем, что произойдет редирект на указанный URL
 
         TestTransaction.flagForCommit();
         TestTransaction.end();
 
-        MimeMessage message = greenMail.getReceivedMessages()[0];
-        assertEquals("john.doe@examle.com", message.getAllRecipients()[0].toString());
+        while (!greenMail.waitForIncomingEmail(1)) {
+            MimeMessage message = greenMail.getReceivedMessages()[0];
+            assertEquals("john.doe@examle.com", message.getAllRecipients()[0].toString());
+        }
         vacationService.deleteAllByEmployeeEmail("john.doe@examle.com");
     }
 
@@ -113,16 +115,8 @@ public class VacationControllerIntegrationTest {
     @Transactional
     @WithMockUser(username = "john.doe@examle.com", roles = {"EMPLOYEE"})
     void should_return_collection_with_one_element() throws Exception {
-        VacationRequestDTO vacationRequestDTO = new VacationRequestDTO();
-        vacationRequestDTO.setEmployeeId(1L);
-        vacationRequestDTO.setVacationStartDate(LocalDate.now().plusDays(100L));
-        vacationRequestDTO.setVacationEndDate(LocalDate.now().plusDays(110L));
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/myPage/vacations/requestVacation")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .flashAttr("vacationRequestDTO", vacationRequestDTO))
-                .andExpect(status().is3xxRedirection()) // Ожидаем, что метод вернет редирект
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/vacations"));
+        VacationRequest vacationRequest = setUpVacation(1L);
+        vacationService.saveRequest(vacationRequest);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/myPage/vacations"))
                 .andExpect(status().isOk())
@@ -331,9 +325,8 @@ public class VacationControllerIntegrationTest {
         vacation = vacationService.saveRequest(vacation);
 
         final VacationRequest finalVacation = vacation;
-        assertThatThrownBy(() -> {
-            performPostWhenApproving(finalVacation);
-        }).hasCauseInstanceOf(SecurityException.class);
+        assertThatThrownBy(() -> performPostWhenApproving(finalVacation))
+                .hasCauseInstanceOf(SecurityException.class);
 
         vacation = vacationService.getVacationById(vacation.getId());
         assertEquals(RequestStatus.IN_PROCESS, vacation.getRequestStatus());

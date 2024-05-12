@@ -2,6 +2,7 @@ package com.manageemployee.employeemanagement.employee.model.vacation;
 
 import com.manageemployee.employeemanagement.employee.model.employee.Employee;
 import com.manageemployee.employeemanagement.employee.model.event.vacationEvent.VacationRequestApproved;
+import com.manageemployee.employeemanagement.employee.model.event.vacationEvent.VacationRequestCancelled;
 import com.manageemployee.employeemanagement.employee.model.event.vacationEvent.VacationRequestCreated;
 import com.manageemployee.employeemanagement.employee.model.event.vacationEvent.VacationRequestUpdated;
 import jakarta.persistence.*;
@@ -66,5 +67,10 @@ public class VacationRequest extends AbstractAggregateRoot<VacationRequest> {
     public void approveVacation() {
         this.setRequestStatus(RequestStatus.APPROVED);
         registerEvent(new VacationRequestApproved(vacationStartDate, vacationEndDate, employee));
+    }
+
+    public void cancelVacation(Employee headOfDepartment) {
+        this.setRequestStatus(RequestStatus.CANCELLED);
+        registerEvent(new VacationRequestCancelled(headOfDepartment, employee));
     }
 }

@@ -24,7 +24,8 @@ public class EmployeePageController {
 
     @GetMapping(path = "/myPage")
     public String getEmployeePage(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        log.info("FROM EMPLOYEE_CONTROLLER: RECEIVED REQUEST FOR PRIVATE PAGE FROM USER: {}", userDetails);
+        log.info("FROM EMPLOYEE_CONTROLLER: RECEIVED REQUEST FOR PRIVATE PAGE FROM USER: {} ROLES {}",
+                userDetails, userDetails.getAuthorities());
         CompanyBranchDTO companyBranchDTO = controllerFacade.getCompanyBranchDTO(userDetails);
         EmployeeDTO employeeDTO = controllerFacade.getEmployeeDTOFromUser(userDetails);
 

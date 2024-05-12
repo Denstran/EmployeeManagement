@@ -11,6 +11,7 @@ import com.manageemployee.employeemanagement.employee.validation.vacation.Vacati
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,6 +35,7 @@ public class VacationController {
     private static final String CREATE_VACATION_FORM = "vacation/createVacationForm";
     private static final String EMPLOYEE_VACATIONS = "vacation/employeeVacations";
     private static final String UPDATE_VACATION_FORM = "vacation/updateVacationForm";
+    private static final String SUBORDINATE_EMPLOYEE_VACATIONS = "vacation/subordinateEmployeeVacations";
 
     @Autowired
     public VacationController(VacationService vacationService,
@@ -56,6 +58,17 @@ public class VacationController {
         return EMPLOYEE_VACATIONS;
     }
 
+    @GetMapping("/vacationRequests")
+    public String getDepartmentEmployeeVacations(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        Employee employee = employeeService.getByEmail(userDetails.getUsername()).orElseThrow(() ->
+                new SecurityException("Bad Credentials"));
+        List<VacationRequestDTO> vacationRequestDTOS =
+                vacationRequestMapper.toDtoList(vacationService.getByHeadOfDepartment(employee));
+
+        model.addAttribute("vacationRequestDTOS", vacationRequestDTOS);
+        return SUBORDINATE_EMPLOYEE_VACATIONS;
+    }
+
     @GetMapping("/requestVacation")
     public String createVacationForm(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         VacationRequestDTO vacationRequestDTO = new VacationRequestDTO();
@@ -69,15 +82,19 @@ public class VacationController {
 
     @PostMapping("/requestVacation")
     public String createVacation(@ModelAttribute("vacationRequestDTO") @Valid VacationRequestDTO vacationRequestDTO,
-                                 BindingResult bindingResult) {
+                                 BindingResult bindingResult, Model model) {
         vacationValidator.validate(vacationRequestDTO, bindingResult);
-        if (bindingResult.hasErrors())
+        if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getGlobalErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
+            model.addAttribute("errors", errors);
             return CREATE_VACATION_FORM;
+        }
 
         log.info("POST-REQUEST VACATION REQUEST PROCEEDED SUCCESSFULLY. SAVING VACATION REQUEST: {}",
                 vacationRequestDTO);
         vacationService.createRequest(vacationRequestMapper.toEntity(vacationRequestDTO));
-        return "redirect:/vacations";
+        return "redirect:/myPage/vacations";
     }
 
     @GetMapping("/{vacationId}/update")
@@ -90,7 +107,7 @@ public class VacationController {
         processAccessLegality(userDetails, vacationRequest);
 
         VacationRequestDTO vacationRequestDTO =
-                vacationRequestMapper.toDto(vacationService.getVacationById(vacationId));
+                vacationRequestMapper.toDto(vacationRequest);
         log.info("ACCESS GRANTED. VACATION DTO: {}", vacationRequestDTO);
         model.addAttribute("vacationRequestDTO", vacationRequestDTO);
         return UPDATE_VACATION_FORM;
@@ -100,11 +117,16 @@ public class VacationController {
     public String updateVacation(@ModelAttribute("vacationRequestDTO") @Valid VacationRequestDTO vacationRequestDTO,
                                  BindingResult bindingResult,
                                  @PathVariable Long vacationId,
-                                 @AuthenticationPrincipal UserDetails userDetails) {
+                                 @AuthenticationPrincipal UserDetails userDetails,
+                                 Model model) {
         log.info("POST-REQUEST FOR UPDATING VACATION RECEIVED, VACATION DTO: {}. STARTING VALIDATION", vacationRequestDTO);
         vacationValidator.validate(vacationRequestDTO, bindingResult);
         if (bindingResult.hasErrors()) {
             log.info("VALIDATION FAILED");
+            List<String> errors = bindingResult.getGlobalErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .toList();
+            model.addAttribute("errors", errors);
             return UPDATE_VACATION_FORM;
         }
         VacationRequest vacationRequest = vacationRequestMapper.toEntity(vacationRequestDTO);
@@ -137,6 +159,27 @@ public class VacationController {
             throw new SecurityException("Попытка одобрить отпуск в чужом отделе!");
 
         vacationService.approveVacation(vacationRequest);
+        return "redirect:/myPage/vacations/vacationRequests";
+    }
+
+    @PostMapping("/cancel")
+    public String cancelVacation(@RequestParam(name = "vacationId") Long vacationId,
+                                 @AuthenticationPrincipal UserDetails userDetails) {
+        Employee requester = employeeService.getByEmail(userDetails.getUsername()).orElseThrow(() ->
+                new SecurityException("Bad Credentials"));
+        VacationRequest vacationRequest = vacationService.getVacationById(vacationId);
+        Employee vacationOwner = vacationRequest.getEmployee();
+
+        log.info("POST-REQUEST FOR CANCELING VACATION. REQUESTER: {}, VACATION OWNER: {}", requester, vacationOwner);
+
+        if (!isVacationOwner(requester, vacationOwner))
+            throw new SecurityException("Попытка отменить чужой отпуск!");
+
+        log.info("NO SECURITY ISSUES. PROCESSING VACATION");
+        Employee headOfDepartment = employeeService.getDepartmentBoss(vacationOwner.getCompanyBranch(),
+                vacationOwner.getPosition().getDepartment());
+
+        vacationService.cancelVacation(vacationRequest, headOfDepartment);
         return "redirect:/myPage/vacations";
     }
 

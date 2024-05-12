@@ -42,6 +42,7 @@ public class SecurityConfig {
                                 mvc.pattern("/errors")).permitAll()
                         .requestMatchers(PathRequest.toH2Console()).permitAll()
                         .requestMatchers(antMatcher("/myPage/vacations/**/approve")).hasRole("HEAD_OF_DEPARTMENT")
+                        .requestMatchers(mvc.pattern("/myPage/vacations/requestVacation")).hasRole("HEAD_OF_DEPARTMENT")
                         .anyRequest().authenticated())
                 .headers(httpSecurityHeadersConfigurer -> httpSecurityHeadersConfigurer.frameOptions().disable())
                 .csrf(AbstractHttpConfigurer::disable)

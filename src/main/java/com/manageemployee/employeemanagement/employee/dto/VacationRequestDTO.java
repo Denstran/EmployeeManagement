@@ -30,6 +30,7 @@ public class VacationRequestDTO implements Serializable {
     @Future(message = "Дата конца отпуска должна быть в будущем!")
     private LocalDate vacationEndDate;
     private RequestStatus requestStatus;
+    private String contacts;
 
     public long getVacationDaysAmount() {
         return vacationStartDate.until(vacationEndDate, ChronoUnit.DAYS);
