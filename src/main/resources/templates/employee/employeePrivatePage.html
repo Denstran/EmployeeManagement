@@ -78,7 +78,7 @@
        class="btn btn-primary mt-3">Просмотр отпусков</a>
 
     <a th:if="${#authorization.expression('hasRole(''HEAD_OF_DEPARTMENT'')')}"
-       th:href="@{/myPage/headOfDepartmen/employees}"
+       th:href="@{/myPage/headOfDepartment/myEmployees}"
        class="btn btn-primary mt-3">Мои подчинённые</a>
 
     <a th:if="${#authorization.expression('hasRole(''HR'')')}"

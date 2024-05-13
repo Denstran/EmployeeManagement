@@ -44,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers(antMatcher("/myPage/vacations/**/approve")).hasRole("HEAD_OF_DEPARTMENT")
                         .requestMatchers(mvc.pattern("/myPage/vacations/requestVacation")).hasRole("HEAD_OF_DEPARTMENT")
                         .requestMatchers(antMatcher("/myPage/hr/**")).hasRole("HR")
+                        .requestMatchers(antMatcher("/myPage/headOfDepartment/**")).hasRole("HEAD_OF_DEPARTMENT")
                         .anyRequest().authenticated())
                 .headers(httpSecurityHeadersConfigurer -> httpSecurityHeadersConfigurer.frameOptions().disable())
                 .csrf(AbstractHttpConfigurer::disable)
