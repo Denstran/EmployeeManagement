@@ -4,6 +4,7 @@ import com.manageemployee.employeemanagement.employee.model.employee.Employee;
 import com.manageemployee.employeemanagement.employee.service.EmployeeService;
 import com.manageemployee.employeemanagement.task.dto.TaskDTO;
 import com.manageemployee.employeemanagement.task.dto.TaskMapper;
+import com.manageemployee.employeemanagement.task.model.Task;
 import com.manageemployee.employeemanagement.task.service.TaskService;
 import com.manageemployee.employeemanagement.task.validation.TaskValidator;
 import jakarta.validation.Valid;
@@ -46,6 +47,15 @@ public class TaskController {
         model.addAttribute("taskDTOS", taskDTOS);
 
         return "task/employeeTask";
+    }
+
+    @GetMapping("/headOfDepartment/givenTasks")
+    public String getGivenTasks(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        Employee employee = loadFromUser(userDetails);
+        List<TaskDTO> taskDTOS = taskMapper.toDtoList(taskService.getAllGiveTasksByGiver(employee));
+        model.addAttribute("taskDTOS", taskDTOS);
+
+        return "task/givenTasks";
     }
 
     @GetMapping("/headOfDepartment/createTask/{employeeId}")
@@ -91,6 +101,38 @@ public class TaskController {
 
         taskService.createTask(taskMapper.toEntity(taskDTO));
         return "redirect:/myPage/tasks/headOfDepartment/givenTasks";
+    }
+
+    @PostMapping("/{taskId}/finish")
+    public String finishMyTask(@AuthenticationPrincipal UserDetails userDetails,
+                               @PathVariable Long taskId) {
+        Task task = taskService.getTaskById(taskId);
+        Employee employee = loadFromUser(userDetails);
+        if (!isTaskOwner(task, employee))
+            throw new SecurityException("Попытка получить доступ к чужой задаче!");
+
+        taskService.finishTask(task);
+        return "redirect:/myPage/tasks";
+    }
+
+    @PostMapping("/headOfDepartment/{taskId}/approveTask")
+    public String approveTask(@AuthenticationPrincipal UserDetails userDetails,
+                              @PathVariable Long taskId) {
+        Task task = taskService.getTaskById(taskId);
+        Employee employee = loadFromUser(userDetails);
+        if (!isTaskGiver(task, employee))
+            throw new SecurityException("Попытка получить доступ к чужой задаче!");
+
+        taskService.approveTask(task);
+        return "redirect:/myPage/tasks/headOfDepartment/givenTasks";
+    }
+
+    private boolean isTaskGiver(Task task, Employee employee) {
+        return task.getTaskGiver().getId().equals(employee.getId());
+    }
+
+    private boolean isTaskOwner(Task task, Employee employee) {
+        return task.getTaskOwner().getId().equals(employee.getId());
     }
 
     private List<String> getGlobalErrors(BindingResult bindingResult) {

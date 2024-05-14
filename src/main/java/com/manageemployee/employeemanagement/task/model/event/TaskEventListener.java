@@ -29,4 +29,31 @@ public class TaskEventListener {
 
         emailService.sendEmail(mail);
     }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void taskFinishedEventHandler(TaskFinished taskFinished) {
+        String emailText = String.format(
+                """
+                Сотрудник %s сдал задачу на проверку
+                Описание задачи: %s
+                Дата сдачи: %s
+                """, taskFinished.getOwnerContacts(), taskFinished.getTaskDescription(), taskFinished.getFinishDate()
+        );
+        String to = taskFinished.getGiverEmail();
+        Mail mail = Mail.prepareSimpleMail(to, "Задача на проверку", emailText);
+        emailService.sendEmail(mail);
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void taskApprovedEventHandler(TaskApproved taskApproved) {
+        String emailText = String.format(
+                """
+                Начальник подтвердил выполнение задачу: %s
+                """, taskApproved.getTaskDescription()
+        );
+
+        String to = taskApproved.getOwnerEmail();
+        Mail mail = Mail.prepareSimpleMail(to, "Задача выполнена", emailText);
+        emailService.sendEmail(mail);
+    }
 }

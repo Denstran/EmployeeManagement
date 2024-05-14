@@ -1,7 +1,9 @@
 package com.manageemployee.employeemanagement.task.model;
 
 import com.manageemployee.employeemanagement.employee.model.employee.Employee;
+import com.manageemployee.employeemanagement.task.model.event.TaskApproved;
 import com.manageemployee.employeemanagement.task.model.event.TaskCreated;
+import com.manageemployee.employeemanagement.task.model.event.TaskFinished;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotEmpty;
@@ -74,5 +76,19 @@ public class Task extends AbstractAggregateRoot<Task> {
                 taskDescription,
                 getTaskGiver().getEmployeeContacts(),
                 taskDeadLine));
+    }
+
+    public void finishTask() {
+        taskStatus = TaskStatus.ON_VALIDATION;
+        registerEvent(new TaskFinished(
+                taskGiver.getEmail(),
+                taskOwner.getEmployeeContacts(),
+                LocalDate.now(),
+                taskDescription));
+    }
+
+    public void approve() {
+        taskStatus = TaskStatus.FINISHED;
+        registerEvent(new TaskApproved(getTaskOwner().getEmail(), taskDescription));
     }
 }
