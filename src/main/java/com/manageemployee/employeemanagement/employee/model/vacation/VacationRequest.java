@@ -44,6 +44,7 @@ public class VacationRequest extends AbstractAggregateRoot<VacationRequest> {
     private LocalDate vacationEndDate;
 
     @Column(name = "REQUEST_STATUS", nullable = false)
+    @Enumerated(value = EnumType.STRING)
     private RequestStatus requestStatus;
 
     public long getVacationDays() {

@@ -293,7 +293,7 @@ public class VacationControllerIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/myPage/vacations/" + vacation.getId() + "/approve")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().is3xxRedirection()) // Ожидаем, что метод вернет редирект
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/myPage/vacations"));
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/myPage/vacations/vacationRequests"));
 
         vacation = vacationService.getVacationById(vacation.getId());
         assertEquals(RequestStatus.APPROVED, vacation.getRequestStatus());

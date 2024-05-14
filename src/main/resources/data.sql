@@ -108,7 +108,7 @@ INSERT INTO employee (employment_date, home_building_number, company_branch_id, 
 VALUES
     ('2021-05-15', 123, 1, 'WORKING', 1, 50000.0, 'john.doe@examle.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4567', 100, 2),
     ('2020-05-15', 123, 1, 'FIRED', 2, 25000.0, 'john.doe@exmple.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4561', 28, 3),
-    ('2024-05-15', 123, 1, 'VACATION', 3, 150000.0, 'john.doe@exampe.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4562', 28, 4),
+    ('2024-05-15', 123, 1, 'WORKING', 3, 150000.0, 'john.doe@exampe.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4562', 28, 4),
     ('2022-05-15', 123, 1, 'VACATION', 4, 10000.0, 'john.doe@xample.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-123-4563', 28, 5),
 
     ('2021-05-15', 123, 1, 'WORKING', 5, 50000.0, 'john.doe@sail.com', 'John', 'New York', 'USA', '123 Main St', '10001', 'Doe', 'Robert', '555-133-4564', 28, 6),

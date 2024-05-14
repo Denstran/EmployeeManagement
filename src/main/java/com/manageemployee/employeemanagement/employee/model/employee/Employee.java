@@ -109,6 +109,10 @@ public class Employee extends AbstractAggregateRoot<Employee> {
         return Objects.hash(id);
     }
 
+    public String getEmployeeContacts() {
+        return name + " " + phoneNumber + " " + email;
+    }
+
     public void hireEmployee(Set<UserRole> roles, String password) {
         this.employeeStatus = EmployeeStatus.WORKING;
         this.user = User.createUser(email, roles, password);
