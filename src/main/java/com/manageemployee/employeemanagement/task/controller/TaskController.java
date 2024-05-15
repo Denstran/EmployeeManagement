@@ -3,6 +3,7 @@ package com.manageemployee.employeemanagement.task.controller;
 import com.manageemployee.employeemanagement.employee.model.employee.Employee;
 import com.manageemployee.employeemanagement.employee.service.EmployeeService;
 import com.manageemployee.employeemanagement.task.dto.TaskDTO;
+import com.manageemployee.employeemanagement.task.dto.TaskExtensionDeadlineDTO;
 import com.manageemployee.employeemanagement.task.dto.TaskMapper;
 import com.manageemployee.employeemanagement.task.model.Task;
 import com.manageemployee.employeemanagement.task.service.TaskService;
@@ -120,15 +121,72 @@ public class TaskController {
                               @PathVariable Long taskId) {
         Task task = taskService.getTaskById(taskId);
         Employee employee = loadFromUser(userDetails);
-        if (!isTaskGiver(task, employee))
+        if (isNotTaskGiver(task, employee))
             throw new SecurityException("Попытка получить доступ к чужой задаче!");
 
         taskService.approveTask(task);
         return "redirect:/myPage/tasks/headOfDepartment/givenTasks";
     }
 
-    private boolean isTaskGiver(Task task, Employee employee) {
-        return task.getTaskGiver().getId().equals(employee.getId());
+    @PostMapping("/headOfDepartment/{taskId}/disapproveTask")
+    public String disapproveTask(@AuthenticationPrincipal UserDetails userDetails,
+                              @PathVariable Long taskId) {
+        Task task = taskService.getTaskById(taskId);
+        Employee employee = loadFromUser(userDetails);
+        if (isNotTaskGiver(task, employee))
+            throw new SecurityException("Попытка получить доступ к чужой задаче!");
+
+        taskService.disapproveTask(task);
+        return "redirect:/myPage/tasks/headOfDepartment/givenTasks";
+    }
+
+    @PostMapping("/headOfDepartment/{taskId}/cancelTask")
+    public String cancelTask(@AuthenticationPrincipal UserDetails userDetails,
+                              @PathVariable Long taskId) {
+        Task task = taskService.getTaskById(taskId);
+        Employee employee = loadFromUser(userDetails);
+        if (isNotTaskGiver(task, employee))
+            throw new SecurityException("Попытка получить доступ к чужой задаче!");
+
+        taskService.cancelTask(task);
+        return "redirect:/myPage/tasks/headOfDepartment/givenTasks";
+    }
+
+    @GetMapping("/headOfDepartment/{taskId}/extendTask")
+    public String extendTaskForm(Model model,
+                                 @AuthenticationPrincipal UserDetails userDetails,
+                                 @PathVariable Long taskId) {
+        Task task = taskService.getTaskById(taskId);
+        Employee employee = loadFromUser(userDetails);
+        if (isNotTaskGiver(task, employee))
+            throw new SecurityException("Попытка получить доступ к чужой задаче!");
+        TaskExtensionDeadlineDTO dateExtensionDTO = new TaskExtensionDeadlineDTO();
+        dateExtensionDTO.setExtendedDeadline(task.getTaskDeadLine());
+
+        model.addAttribute("dateExtensionDTO", dateExtensionDTO);
+        return "task/extendTaskDeadline";
+    }
+
+    @PostMapping("/headOfDepartment/{taskId}/extendTask")
+    public String extendTask(@PathVariable Long taskId,
+                             @ModelAttribute("dateExtensionDTO") @Valid TaskExtensionDeadlineDTO dateExtensionDTO,
+                             BindingResult bindingResult,
+                             @AuthenticationPrincipal UserDetails userDetails) {
+        if (bindingResult.hasErrors()) return "task/extendTaskDeadline";
+        Employee employee = loadFromUser(userDetails);
+        Task task = taskService.getTaskById(taskId);
+
+        if (isNotTaskGiver(task, employee))
+            throw new SecurityException("Попытка получить доступ к чужой задаче!");
+
+        task.setTaskDeadLine(dateExtensionDTO.getExtendedDeadline());
+        taskService.extendTaskDeadline(task);
+
+        return "redirect:/myPage/tasks/headOfDepartment/givenTasks";
+    }
+
+    private boolean isNotTaskGiver(Task task, Employee employee) {
+        return !task.getTaskGiver().getId().equals(employee.getId());
     }
 
     private boolean isTaskOwner(Task task, Employee employee) {

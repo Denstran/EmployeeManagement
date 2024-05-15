@@ -56,12 +56,6 @@ public class TaskService {
         return entity;
     }
 
-    @Transactional
-    public Task finishTask(Task task) {
-        task.finishTask();
-        return taskRepository.save(task);
-    }
-
     public void deleteAllByOwnerId(Long employeeId) {
         taskRepository.deleteAllByTaskOwner_Id(employeeId);
     }
@@ -85,13 +79,58 @@ public class TaskService {
     }
 
     @Transactional
+    public Task finishTask(Task task) {
+        if (task == null)
+            throw new NullPointerException("Передан не корректные аргументы");
+        if (!task.getTaskStatus().equals(TaskStatus.IN_PROCESS))
+            return task;
+
+        task.finishTask();
+        return taskRepository.save(task);
+    }
+
+    @Transactional
     public Task approveTask(Task task) {
         if (task == null)
             throw new NullPointerException("Передан не корректные аргументы");
-        if (task.getTaskStatus().equals(TaskStatus.FINISHED))
+        if (!task.getTaskStatus().equals(TaskStatus.ON_VALIDATION))
             return task;
 
         task.approve();
+        return taskRepository.save(task);
+    }
+
+    @Transactional
+    public Task cancelTask(Task task) {
+        if (task == null)
+            throw new NullPointerException("Передан не корректные аргументы");
+        if (!task.getTaskStatus().equals(TaskStatus.IN_PROCESS))
+            return task;
+
+        task.cancel();
+        return taskRepository.save(task);
+    }
+
+    @Transactional
+    public Task extendTaskDeadline(Task task) {
+        if (task == null)
+            throw new NullPointerException("Передан не корректные аргументы");
+
+        if (!task.getTaskStatus().equals(TaskStatus.IN_PROCESS))
+            return task;
+
+        task.extendTaskDeadline();
+        return taskRepository.save(task);
+    }
+
+    @Transactional
+    public Task disapproveTask(Task task) {
+        if (task == null)
+            throw new NullPointerException("Передан не корректные аргументы");
+        if (!task.getTaskStatus().equals(TaskStatus.ON_VALIDATION))
+            return task;
+
+        task.disapprove();
         return taskRepository.save(task);
     }
 }

@@ -4,6 +4,6 @@ public enum TaskStatus {
     FINISHED,
     IN_PROCESS,
     ON_VALIDATION,
-    POSTPONED,
+    CANCELED,
     FAILED
 }

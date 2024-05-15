@@ -56,4 +56,52 @@ public class TaskEventListener {
         Mail mail = Mail.prepareSimpleMail(to, "Задача выполнена", emailText);
         emailService.sendEmail(mail);
     }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void taskCanceledEventHandler(TaskCanceled taskCanceled) {
+        String emailText = String.format(
+                """
+                Начальник отменил выполнение задачу: %s
+                Контакты начальник: %s
+                """, taskCanceled.getTaskDescription(), taskCanceled.getTaskGiverContacts()
+        );
+
+        String to = taskCanceled.getTaskOwnerEmail();
+        Mail mail = Mail.prepareSimpleMail(to, "Задача отменена", emailText);
+        emailService.sendEmail(mail);
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void taskDisapprovedEventHandler(TaskDisapproved taskDisapproved) {
+        String emailText = String.format(
+                """
+                Начальник не принял выполнение задачи: %s
+                Контакты начальника: %s
+                """, taskDisapproved.getTaskDescription(), taskDisapproved.getGiverContacts()
+        );
+
+        String to = taskDisapproved.getOwnerEmail();
+        Mail mail = Mail.prepareSimpleMail(to, "Задача не выполнена", emailText);
+        emailService.sendEmail(mail);
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void taskDeadlineExtendedEventHandler(TaskDeadlineExtended taskDeadlineExtended) {
+        String emailText = String.format(
+                """
+                Срок сдачи задачи передвинут
+                Новый срок: %s
+                Описание задачи: %s
+                Контакты начальника: %s
+                """,
+                taskDeadlineExtended.getExtendedDeadline(),
+                taskDeadlineExtended.getTaskDescription(),
+                taskDeadlineExtended.getGiverContacts()
+        );
+
+        String to = taskDeadlineExtended.getOwnerEmail();
+
+        Mail mail = Mail.prepareSimpleMail(to, "Срок сдачи задачи передвинут", emailText);
+        emailService.sendEmail(mail);
+    }
 }

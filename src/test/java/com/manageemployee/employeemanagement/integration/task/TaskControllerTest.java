@@ -5,6 +5,7 @@ import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import com.manageemployee.employeemanagement.employee.service.EmployeeService;
 import com.manageemployee.employeemanagement.task.dto.TaskDTO;
+import com.manageemployee.employeemanagement.task.dto.TaskExtensionDeadlineDTO;
 import com.manageemployee.employeemanagement.task.model.Task;
 import com.manageemployee.employeemanagement.task.model.TaskStatus;
 import com.manageemployee.employeemanagement.task.service.TaskService;
@@ -354,6 +355,7 @@ public class TaskControllerTest {
     @Transactional
     void should_approve_task_and_send_email_when_role_is_legal() throws Exception {
         Task task = setupTask(3L);
+        task.setTaskStatus(TaskStatus.ON_VALIDATION);
         task = taskService.saveTask(task);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/myPage/tasks/headOfDepartment/" + task.getId() + "/approveTask")
@@ -402,6 +404,85 @@ public class TaskControllerTest {
                             .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                     .andExpect(status().isBadRequest());
         }).hasCauseInstanceOf(SecurityException.class);
+    }
+
+    @Test
+    @WithMockUser(username = "john.doe@examle.com", roles = {"HEAD_OF_DEPARTMENT"})
+    @Transactional
+    void should_change_status_and_send_email_when_disapproving_task_with_correct_role() throws Exception {
+        Task task = setupTask(3L);
+        task.setTaskStatus(TaskStatus.ON_VALIDATION);
+        task = taskService.saveTask(task);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/myPage/tasks/headOfDepartment/" + task.getId() + "/disapproveTask")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/myPage/tasks/headOfDepartment/givenTasks"));
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
+
+        while (!greenMail.waitForIncomingEmail(1)) {
+            MimeMessage message = greenMail.getReceivedMessages()[0];
+            assertEquals("john.doe@exampe.com", message.getAllRecipients()[0].toString());
+            assertTrue(message.getContent().toString().contains("TEST"));
+            assertTrue(message.getContent().toString().contains(LocalDate.now().toString()));
+            assertEquals("Задача не выполнена", message.getSubject());
+        }
+
+        TestTransaction.start();
+        task = taskService.getTaskById(task.getId());
+        assertEquals(TaskStatus.IN_PROCESS, task.getTaskStatus());
+        taskService.deleteTask(task);
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
+    }
+
+    @Test
+    @WithMockUser(username = "john.doe@examle.com", roles = {"HEAD_OF_DEPARTMENT"})
+    @Transactional
+    void should_extend_deadline_and_send_mail_when_extending_email_with_valid_data_and_role() throws Exception {
+        Task task = taskService.saveTask(setupTask(3L));
+        TaskExtensionDeadlineDTO dateExtensionDTO = new TaskExtensionDeadlineDTO();
+        dateExtensionDTO.setExtendedDeadline(task.getTaskDeadLine().plusDays(15L));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/myPage/tasks/headOfDepartment/" + task.getId() + "/extendTask")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .flashAttr("dateExtensionDTO", dateExtensionDTO))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/myPage/tasks/headOfDepartment/givenTasks"));
+
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
+
+        while (!greenMail.waitForIncomingEmail(1)) {
+            MimeMessage message = greenMail.getReceivedMessages()[0];
+            assertEquals("john.doe@exampe.com", message.getAllRecipients()[0].toString());
+            assertTrue(message.getContent().toString().contains("TEST"));
+            assertTrue(message.getContent().toString().contains(dateExtensionDTO.getExtendedDeadline().toString()));
+            assertEquals("Срок сдачи задачи передвинут", message.getSubject());
+        }
+
+        TestTransaction.start();
+        task = taskService.getTaskById(task.getId());
+        assertEquals(dateExtensionDTO.getExtendedDeadline(), task.getTaskDeadLine());
+        taskService.deleteTask(task);
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
+    }
+
+    @Test
+    @WithMockUser(username = "john.doe@examle.com", roles = {"HEAD_OF_DEPARTMENT"})
+    @Transactional
+    void should_not_extend_task_deadline_when_not_valid_data() throws Exception {
+        Task task = taskService.saveTask(setupTask(3L));
+        TaskExtensionDeadlineDTO dateExtensionDTO = new TaskExtensionDeadlineDTO();
+        dateExtensionDTO.setExtendedDeadline(task.getTaskDeadLine().minusDays(15L));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/myPage/tasks/headOfDepartment/" + task.getId() + "/extendTask")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .flashAttr("dateExtensionDTO", dateExtensionDTO))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("task/extendTaskDeadline"));
     }
 
     private Task setupTask(Long empId) {
