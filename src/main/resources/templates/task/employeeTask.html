@@ -19,6 +19,7 @@
             <th>Описание задачи</th>
             <th>Кем выдана</th>
             <th>Статус</th>
+            <th>Действия:</th>
         </tr>
         </thead>
         <tbody>
@@ -28,6 +29,16 @@
             <td th:text="${task.taskDescription}">6</td>
             <td th:text="${task.employeeGiverContacts}"></td>
             <td th:text="${task.taskStatus}"></td>
+            <td>
+                <form th:if="${task.taskStatus.name() eq 'IN_PROCESS'}"
+                      th:action="@{/myPage/tasks/{taskId}/finish(taskId=${task.id})}"
+                      method="post">
+                    <button type="submit"
+                            class="btn btn-primary btn-sm">
+                        Отправить на проверку
+                    </button>
+                </form>
+            </td>
         </tr>
         </tbody>
     </table>

@@ -19,10 +19,10 @@ public class EmailService {
 
     @Async
     public void sendEmail(Mail mail) {
-        log.info("FROM EMAIL_SERVICE: SENDING MAIL TO {}, FROM {}, SUBJECT: {}, TEXT {}",
+        log.info("SENDING MAIL TO {}, FROM {}, SUBJECT: {}, TEXT {}",
                 mail.getTo(), Mail.getFrom(), mail.getSubject(), mail.getContent());
         SimpleMailMessage message = mapMailToSimpleMailMessage(mail);
-        log.info("FROM EMPLOYEE_SERVICE: MESSAGE PREPARED: {}", message);
+        log.info("MESSAGE PREPARED: {}", message);
         mailSender.send(message);
     }
 

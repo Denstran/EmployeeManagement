@@ -79,6 +79,7 @@
                     <th scope="col">Зарплата</th>
                     <th scope="col">Дата найма</th>
                     <th scope="col">Статус</th>
+                    <th scope="col">Действие</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -91,6 +92,13 @@
                     <td th:text="${employee.salary.amount}"></td>
                     <td th:text="${employee.employmentDate}"></td>
                     <td th:text="${employee.employeeStatus}"></td>
+                    <td>
+                        <a th:if="${employee.employeeStatus.name() eq 'WORKING'}"
+                           class="btn btn-primary btn-sm"
+                           th:href="@{/myPage/tasks/headOfDepartment/createTask/{employeeId}(employeeId=${employee.id})}">
+                            Выдать задачу
+                        </a>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -148,7 +156,5 @@
         })
     });
 </script>
-</body>
-</html>
 </body>
 </html>

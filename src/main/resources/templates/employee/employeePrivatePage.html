@@ -75,11 +75,18 @@
 
     <a th:if="${#authorization.expression('hasRole(''HEAD_OF_DEPARTMENT'')')}"
        th:href="@{/myPage/vacations/vacationRequests}"
-       class="btn btn-primary mt-3">Просмотр отпусков</a>
+       class="btn btn-primary mt-3">Просмотр запросов отпусков</a>
 
     <a th:if="${#authorization.expression('hasRole(''HEAD_OF_DEPARTMENT'')')}"
        th:href="@{/myPage/headOfDepartment/myEmployees}"
        class="btn btn-primary mt-3">Мои подчинённые</a>
+
+    <a th:if="${#authorization.expression('hasRole(''HEAD_OF_DEPARTMENT'')')}"
+       th:href="@{/myPage/tasks/headOfDepartment/givenTasks}"
+       class="btn btn-primary mt-3">Задачи моих подчинённых</a>
+
+    <a th:href="@{/myPage/tasks}"
+       class="btn btn-primary mt-3">Мои задачи</a>
 
     <a th:if="${#authorization.expression('hasRole(''HR'')')}"
        th:href="@{/myPage/hr/employees}"

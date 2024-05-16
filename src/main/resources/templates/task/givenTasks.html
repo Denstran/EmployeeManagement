@@ -19,6 +19,7 @@
             <th>Кем выдана</th>
             <th>Кому выдана</th>
             <th>Статус</th>
+            <th>Действия</th>
         </tr>
         </thead>
         <tbody>
@@ -29,6 +30,37 @@
             <td th:text="${task.employeeGiverContacts}"></td>
             <td th:text="${task.employeeOwnerContacts}"></td>
             <td th:text="${task.taskStatus}"></td>
+            <td>
+                <form th:if="${task.taskStatus.name() eq 'ON_VALIDATION'}"
+                      th:action="@{/myPage/tasks/headOfDepartment/{taskId}/approveTask(taskId=${task.id})}"
+                      method="post">
+                    <button type="submit"
+                            class="btn btn-primary btn-sm">
+                        Одобрить
+                    </button>
+                </form>
+                <form th:if="${task.taskStatus.name() eq 'ON_VALIDATION'}"
+                      th:action="@{/myPage/tasks/headOfDepartment/{taskId}/disapproveTask(taskId=${task.id})}"
+                      method="post">
+                    <button type="submit"
+                            class="btn btn-danger btn-sm">
+                        Отказать
+                    </button>
+                </form>
+                <form th:if="${task.taskStatus.name() eq 'IN_PROCESS'}"
+                      th:action="@{/myPage/tasks/headOfDepartment/{taskId}/cancelTask(taskId=${task.id})}"
+                      method="post">
+                    <button type="submit"
+                            class="btn btn-danger btn-sm">
+                        Отменить
+                    </button>
+                </form>
+                <a th:if="${task.taskStatus.name() eq 'IN_PROCESS'}"
+                   th:href="@{/myPage/tasks/headOfDepartment/{taskId}/extendTask(taskId=${task.id})}"
+                   class="btn btn-primary btn-sm">
+                    Продлить
+                </a>
+            </td>
         </tr>
         </tbody>
     </table>

@@ -161,6 +161,7 @@ public class TaskController {
         if (isNotTaskGiver(task, employee))
             throw new SecurityException("Попытка получить доступ к чужой задаче!");
         TaskExtensionDeadlineDTO dateExtensionDTO = new TaskExtensionDeadlineDTO();
+        dateExtensionDTO.setTaskId(taskId);
         dateExtensionDTO.setExtendedDeadline(task.getTaskDeadLine());
 
         model.addAttribute("dateExtensionDTO", dateExtensionDTO);
