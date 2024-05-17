@@ -33,13 +33,20 @@
                     <!-- Left links -->
                     <ul class="navbar-nav mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link" aria-current="page" th:href="@{/departments}">Отделы</a>
+                            <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
+                               class="nav-link" aria-current="page" th:href="@{/departments}">Отделы</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/companyBranches}">Филиалы</a>
+                            <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
+                               class="nav-link" th:href="@{/companyBranches}">Филиалы</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/positions}">Должности</a>
+                            <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
+                               class="nav-link" th:href="@{/positions}">Должности</a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:if="${!#authorization.expression('hasRole(''ADMIN'')')}"
+                               class="nav-link" th:href="@{/myPage}">Личный кабинет</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" th:href="@{/auth/logout}">Выйти</a>

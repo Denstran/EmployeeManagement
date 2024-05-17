@@ -39,8 +39,9 @@ public class EmployeeService implements com.manageemployee.employeemanagement.de
     public void createEmployee(Employee employee) {
         Set<UserRole> roles = prepareUserRoles(employee);
 
-        String password = passwordEncoder.encode(PasswordGenerator.generatePassword());
-        employee.hireEmployee(roles, password);
+        String password = PasswordGenerator.generatePassword();
+        String encodedPassword = passwordEncoder.encode(password);
+        employee.hireEmployee(roles, password, encodedPassword);
         repository.saveAndFlush(employee);
     }
 
@@ -128,8 +129,10 @@ public class EmployeeService implements com.manageemployee.employeemanagement.de
         return totalResult;
     }
 
-    public boolean existsByPositionAndCompanyBranch(Position position, Long companyBranchId) {
-        return repository.existsByPositionAndCompanyBranch_Id(position, companyBranchId);
+    public boolean existsByPositionAndCompanyBranchAndNotFired(Position position, Long companyBranchId) {
+        return repository.existsByPositionAndCompanyBranch_IdAndEmployeeStatusNot(position,
+                companyBranchId,
+                EmployeeStatus.FIRED);
     }
 
     public Optional<Employee> getByPositionAndCompanyBranchId(Position position, Long companyBranchId) {

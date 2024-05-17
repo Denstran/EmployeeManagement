@@ -92,7 +92,7 @@ INSERT INTO UZER (uzer_name, password, IS_ENABLED) VALUES ( 'john.doe@mail.com',
 INSERT INTO UZER (uzer_name, password, IS_ENABLED) VALUES ( 'john.doe@exale.com', '$2a$12$kprqzMBw3sRsWU4s1Svlwuqz/b29gQ/q1h2f7H6k./xAuFqwR8PJu', true);
 INSERT INTO UZER (uzer_name, password, IS_ENABLED) VALUES ( 'john.doeAnotherBranch@examle.com', '$2a$12$kprqzMBw3sRsWU4s1Svlwuqz/b29gQ/q1h2f7H6k./xAuFqwR8PJu', true);
 
-INSERT INTO user_roles (roles, user_id) values (1, 1),
+INSERT INTO user_roles (roles, user_id) values (0, 1),
 
                                                (1, 18),
                                                (4, 3),
@@ -102,7 +102,8 @@ INSERT INTO user_roles (roles, user_id) values (1, 1),
                                                (1, 2),
                                                (2, 2),
                                                (3, 2),
-                                               (4, 2);
+                                               (4, 2),
+                                               (3, 8);
 
 INSERT INTO employee (employment_date, home_building_number, company_branch_id, employee_status, position_id, salary, email, first_name, home_city, home_country, home_street, home_zip_code, last_name, middle_name, phone_number, vacation_days, user_id)
 VALUES

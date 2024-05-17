@@ -4,6 +4,7 @@ import com.manageemployee.employeemanagement.companyBranch.model.CompanyBranch;
 import com.manageemployee.employeemanagement.department.model.Department;
 import com.manageemployee.employeemanagement.department.model.DepartmentInfo;
 import com.manageemployee.employeemanagement.employee.model.employee.Employee;
+import com.manageemployee.employeemanagement.employee.model.employee.EmployeeStatus;
 import com.manageemployee.employeemanagement.employee.model.employee.Name;
 import com.manageemployee.employeemanagement.position.model.Position;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -53,7 +54,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>, JpaSp
     Optional<Employee> findEmployeeByPhoneNumber(String phoneNumber);
     Optional<Employee> findEmployeeByEmail(String email);
 
-    boolean existsByPositionAndCompanyBranch_Id(Position position, Long companyBranchId);
+    boolean existsByPositionAndCompanyBranch_IdAndEmployeeStatusNot(Position position,
+                                                                     Long companyBranchId,
+                                                                     EmployeeStatus status);
 
     Optional<Employee> findByPositionAndCompanyBranch_Id(Position position, Long companyBranchId);
 }

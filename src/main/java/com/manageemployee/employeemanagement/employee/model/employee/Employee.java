@@ -113,10 +113,10 @@ public class Employee extends AbstractAggregateRoot<Employee> {
         return name + " " + phoneNumber + " " + email;
     }
 
-    public void hireEmployee(Set<UserRole> roles, String password) {
+    public void hireEmployee(Set<UserRole> roles, String password, String encodedPassword) {
         this.employeeStatus = EmployeeStatus.WORKING;
-        this.user = User.createUser(email, roles, password);
-        registerEvent(new EmployeeHired(this, salary, salary));
+        this.user = User.createUser(email, roles, encodedPassword);
+        registerEvent(new EmployeeHired(this, salary, salary, password));
     }
 
 

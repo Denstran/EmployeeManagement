@@ -57,11 +57,11 @@ public class EmployeeController {
     }
 
     @GetMapping("/new")
-    public String createEmployeeForm(Model model, @PathVariable String depId) {
+    public String createEmployeeForm(Model model, @PathVariable String depId, @PathVariable Long companyBranchId) {
         EmployeeDTO employeeDTO = new EmployeeDTO();
         List<PositionDTO> positionDTOS = controllerFacade.getPositionDTOList(depId);
         setupModelForCreatingEmployee(model, employeeDTO, positionDTOS);
-
+        model.addAttribute("companyBranchId", companyBranchId);
         return CREATE_OR_UPDATE_FORM;
     }
 
@@ -80,6 +80,7 @@ public class EmployeeController {
         if (bindingResult.hasErrors()) {
             List<PositionDTO> positionDTOS = controllerFacade.getPositionDTOList(depId);
             model.addAttribute("positionDTOS", positionDTOS);
+            model.addAttribute("companyBranchId", companyBranchId);
             return CREATE_OR_UPDATE_FORM;
         }
 

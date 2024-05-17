@@ -87,7 +87,7 @@ public class HrController {
     }
 
     @PostMapping("/employees/{employeeId}/update")
-    public String updateEmployeeForm(@ModelAttribute("employeeDTO")
+    public String updateEmployee(@ModelAttribute("employeeDTO")
                                      @Validated({DefaultGroup.class, UpdatingGroup.class}) EmployeeDTO employeeDTO,
                                      BindingResult bindingResult,
                                      @PathVariable("employeeId") Long employeeId,

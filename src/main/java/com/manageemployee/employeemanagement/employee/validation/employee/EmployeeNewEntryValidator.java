@@ -60,7 +60,7 @@ public class EmployeeNewEntryValidator implements Validator {
         Position position = positionService.getById(dto.getPositionId());
         if (!position.isLeading()) return;
 
-        if (employeeService.existsByPositionAndCompanyBranch(position, dto.getCompanyBranchId()))
+        if (employeeService.existsByPositionAndCompanyBranchAndNotFired(position, dto.getCompanyBranchId()))
             errors.rejectValue("positionId", "", "Ведущая должность уже занята!");
     }
 }

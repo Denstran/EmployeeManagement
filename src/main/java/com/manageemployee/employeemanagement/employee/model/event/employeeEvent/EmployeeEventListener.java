@@ -9,10 +9,14 @@ import com.manageemployee.employeemanagement.department.service.DepartmentInfoSe
 import com.manageemployee.employeemanagement.employee.model.employee.Employee;
 import com.manageemployee.employeemanagement.employee.model.employee.EmployeePaymentLog;
 import com.manageemployee.employeemanagement.employee.service.EmployeePaymentLogService;
+import com.manageemployee.employeemanagement.employee.service.EmployeeService;
+import com.manageemployee.employeemanagement.mail.EmailService;
+import com.manageemployee.employeemanagement.mail.Mail;
 import com.manageemployee.employeemanagement.security.User;
 import com.manageemployee.employeemanagement.security.UserRole;
 import com.manageemployee.employeemanagement.util.Money;
 import com.manageemployee.employeemanagement.util.enumType.Action;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
@@ -22,23 +26,59 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Component
+@Slf4j
 public class EmployeeEventListener {
     private final DepartmentInfoService departmentInfoService;
     private final EmployeePaymentLogService employeePaymentLogService;
     private final DepartmentInfoPaymentLogService departmentInfoPaymentLogService;
+    private final EmailService emailService;
+    private final EmployeeService employeeService;
 
     @Autowired
     public EmployeeEventListener(DepartmentInfoService departmentInfoService,
                                  EmployeePaymentLogService employeePaymentLogService,
-                                 DepartmentInfoPaymentLogService departmentInfoPaymentLogService) {
+                                 DepartmentInfoPaymentLogService departmentInfoPaymentLogService,
+                                 EmailService emailService, EmployeeService employeeService) {
         this.departmentInfoService = departmentInfoService;
         this.departmentInfoPaymentLogService = departmentInfoPaymentLogService;
         this.employeePaymentLogService = employeePaymentLogService;
+        this.emailService = emailService;
+        this.employeeService = employeeService;
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void createEmployeeEventHandler(EmployeeHired employeeHired) {
+        log.info("EMPLOYEE EMAIL {}", employeeHired.getEmployee().getEmail());
         processSalaryChanges(employeeHired, Action.CREATE);
+        sendPasswordEmail(employeeHired.getEmployee().getEmail(), employeeHired.getPassword());
+        sendHiringNotificationEmail(employeeHired.getEmployee());
+    }
+
+    private void sendHiringNotificationEmail(Employee employee) {
+        Employee headOfDepartment = employeeService.getDepartmentBoss(
+                employee.getCompanyBranch(),
+                employee.getPosition().getDepartment());
+
+        String text = String.format(
+                """
+                У вас появился новый подчинённый.
+                Его контакты: %s
+                """, employee.getEmployeeContacts());
+
+        emailService.sendEmail(Mail.prepareSimpleMail(headOfDepartment.getEmail(), "Новый сотрудник", text));
+    }
+
+    private void sendPasswordEmail(String email, String password) {
+        String emailText = String.format(
+                """
+                    Добро пожаловать в нашу компанию! Для авторизации в системе вам понадобятся данные для входа:
+                    Логин: %s
+                    Пароль: %s
+                """, email, password);
+        log.info("ACTUAL EMAIL: {}", email);
+        log.info("MAIL MESSAGE: {}", emailText);
+        Mail mail = Mail.prepareSimpleMail(email, "Данные для входа", emailText);
+        emailService.sendEmail(mail);
     }
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
@@ -100,6 +140,14 @@ public class EmployeeEventListener {
         if (isSamePosition(employeeUpdated)) return;
         if (isPositionChangedToLeading(employeeUpdated)) addLeadingRole(employeeUpdated);
         else removeLeadingRole(employeeUpdated);
+
+        String text = String.format(
+                """
+                Ваша должность была изменена, вот ваши текущая должность: %s
+                """, employeeUpdated.getEmployee().getPosition().getPositionName());
+        String to = employeeUpdated.getEmployee().getEmail();
+        Mail mail = Mail.prepareSimpleMail(to, "Изменение должности", text);
+        emailService.sendEmail(mail);
     }
 
     private boolean isPositionChangedToLeading(EmployeeUpdated employeeUpdated) {
@@ -185,6 +233,16 @@ public class EmployeeEventListener {
         EmployeePaymentLog paymentLog =
                 EmployeePaymentLog.createPaymentLog(baseEvent.getEmployee(), Money.abs(payment), isPositive);
         employeePaymentLogService.saveEmployeePaymentLog(paymentLog);
+        sendSalaryChangesEmail(baseEvent.getEmployee().getEmail(), payment);
+    }
+
+    private void sendSalaryChangesEmail(String email, Money payment) {
+        String mailText = String.format(
+                """
+                Выша зарплата была изменена на: %s
+                """, payment.toString());
+
+        emailService.sendEmail(Mail.prepareSimpleMail(email, "Изменение зарплаты", mailText));
     }
 
     private DepartmentInfo getDepartmentInfo(EmployeeBaseEvent event) {
