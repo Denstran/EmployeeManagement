@@ -92,10 +92,11 @@ public class EmployeeController {
     @GetMapping("/{employeeId}/update")
     public String updateEmployeeFrom(Model model,
                                      @PathVariable String depId,
-                                     @PathVariable String employeeId) {
+                                     @PathVariable String employeeId, @PathVariable Long companyBranchId) {
         List<PositionDTO> positionDTOS = controllerFacade.getPositionDTOList(depId);
         EmployeeDTO employeeDTO = controllerFacade.getEmployeeDTO(employeeId);
         setupModelForUpdating(model, positionDTOS, employeeDTO);
+        model.addAttribute(companyBranchId);
 
         return CREATE_OR_UPDATE_FORM;
     }

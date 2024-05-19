@@ -58,5 +58,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>, JpaSp
                                                                      Long companyBranchId,
                                                                      EmployeeStatus status);
 
-    Optional<Employee> findByPositionAndCompanyBranch_Id(Position position, Long companyBranchId);
+    List<Employee> findByPositionAndCompanyBranch_Id(Position position, Long companyBranchId);
 }

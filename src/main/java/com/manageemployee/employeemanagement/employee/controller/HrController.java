@@ -103,7 +103,7 @@ public class HrController {
         }
 
         employeeService.updateEmployee(employeeMapper.toEntity(employeeDTO));
-        return "redirect:/myPage/hr/getEmployees";
+        return "redirect:/myPage/hr/employees";
     }
 
     @GetMapping("/employees/hireEmployee")

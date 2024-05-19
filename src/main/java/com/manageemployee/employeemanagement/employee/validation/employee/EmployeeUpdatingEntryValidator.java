@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -70,12 +71,14 @@ public class EmployeeUpdatingEntryValidator implements Validator {
         Position position = positionService.getById(dto.getPositionId());
         if (!position.isLeading()) return;
 
-        Optional<Employee> employee =
+        List<Employee> employee =
                 employeeService.getByPositionAndCompanyBranchId(position, dto.getCompanyBranchId());
 
         if (employee.isEmpty()) return;
+        if (employee.size() > 1)
+            errors.rejectValue("positionId", "", "Ведущая должность уже занята!");
 
-        if (!employee.get().getId().equals(dto.getId()))
+        if (!employee.get(0).getId().equals(dto.getId()))
             errors.rejectValue("positionId", "", "Ведущая должность уже занята!");
     }
 }

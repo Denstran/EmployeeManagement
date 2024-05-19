@@ -135,7 +135,7 @@ public class EmployeeService implements com.manageemployee.employeemanagement.de
                 EmployeeStatus.FIRED);
     }
 
-    public Optional<Employee> getByPositionAndCompanyBranchId(Position position, Long companyBranchId) {
+    public List<Employee> getByPositionAndCompanyBranchId(Position position, Long companyBranchId) {
         return repository.findByPositionAndCompanyBranch_Id(position, companyBranchId);
     }
 
