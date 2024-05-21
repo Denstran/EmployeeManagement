@@ -5,12 +5,15 @@ import com.manageemployee.employeemanagement.department.dto.DepartmentInfoPaymen
 import com.manageemployee.employeemanagement.department.model.DepartmentInfoPaymentLog;
 import com.manageemployee.employeemanagement.department.service.DepartmentService;
 import com.manageemployee.employeemanagement.util.dtomapper.AbstractMapperWithSpecificFields;
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
 @Component
+@Slf4j
 public class DepartmentInfoPaymentLogMapper
         extends AbstractMapperWithSpecificFields<DepartmentInfoPaymentLog, DepartmentInfoPaymentLogDTO> {
 
@@ -24,19 +27,21 @@ public class DepartmentInfoPaymentLogMapper
         this.departmentService = departmentService;
     }
 
+    @PostConstruct
     @Override
     public void setupMapper() {
         mapper.createTypeMap(DepartmentInfoPaymentLog.class, DepartmentInfoPaymentLogDTO.class)
                 .addMappings(m -> {
                     m.skip(DepartmentInfoPaymentLogDTO::setDepartmentId);
                     m.skip(DepartmentInfoPaymentLogDTO::setCompanyBranchId);
-                });
+                    m.skip(DepartmentInfoPaymentLogDTO::setDepartmentName);
+                }).setPostConverter(toDtoConverter());
 
         mapper.createTypeMap(DepartmentInfoPaymentLogDTO.class, DepartmentInfoPaymentLog.class)
                 .addMappings(m -> {
                     m.skip(DepartmentInfoPaymentLog::setCompanyBranch);
                     m.skip(DepartmentInfoPaymentLog::setDepartment);
-                });
+                }).setPostConverter(toEntityConverter());
     }
 
     @Override
@@ -45,7 +50,7 @@ public class DepartmentInfoPaymentLogMapper
                 Objects.isNull(source.getCompanyBranch()) ? null : source.getCompanyBranch().getId());
         destination.setDepartmentId(Objects.isNull(source) ||
                 Objects.isNull(source.getDepartment()) ? null : source.getDepartment().getId());
-
+        destination.setDepartmentName(source.getDepartment().getDepartmentName());
     }
 
     @Override

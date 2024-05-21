@@ -1,5 +1,6 @@
 package com.manageemployee.employeemanagement.employee.service;
 
+import com.manageemployee.employeemanagement.companyBranch.model.CompanyBranch;
 import com.manageemployee.employeemanagement.employee.EmployeePaymentLogSpec;
 import com.manageemployee.employeemanagement.employee.model.employee.Employee;
 import com.manageemployee.employeemanagement.employee.model.employee.EmployeePaymentLog;
@@ -41,18 +42,30 @@ public class EmployeePaymentLogService {
         return repository.findAll(spec);
     }
 
-    public List<EmployeePaymentLog> getAllEmployeesPaymentLogsFormDepartment(Long companyBranchId, Long departmentId,
-                                                                             String startDate,String endDate,
-                                                                             String transferAction,
-                                                                             String phoneNumber) {
-        validateResources(companyBranchId, departmentId);
-        Specification<EmployeePaymentLog> spec =
-                EmployeePaymentLogSpec.setupSpecification(companyBranchId, departmentId);
+    public List<EmployeePaymentLog> getAllEmployeesPaymentLogsFromCompanyBranch(CompanyBranch companyBranch,
+                                                                                String departmentId,
+                                                                                String startDate, String endDate,
+                                                                                String transferAction,
+                                                                                String phoneNumber) {
+        validateResources(companyBranch.getId());
+        Specification<EmployeePaymentLog> spec = setupSpec(companyBranch, departmentId);
         spec = PaymentSpecificationProcessor.processDateParams(startDate, endDate, spec);
         spec = PaymentSpecificationProcessor.processAction(transferAction, spec);
         spec = processPhoneNumberParameter(phoneNumber, spec);
 
         return repository.findAll(spec);
+    }
+
+    private Specification<EmployeePaymentLog> setupSpec(CompanyBranch companyBranch, String departmentId) {
+        if (departmentId == null || departmentId.isEmpty() || departmentId.equals("ALL"))
+            return EmployeePaymentLogSpec.setupSpecification(companyBranch);
+
+        try {
+            Long depId = Long.parseLong(departmentId);
+            return EmployeePaymentLogSpec.setupSpecification(companyBranch.getId(), depId);
+        }catch (NumberFormatException e) {
+            return EmployeePaymentLogSpec.setupSpecification(companyBranch);
+        }
     }
 
     private Specification<EmployeePaymentLog> processPhoneNumberParameter(String phoneNumber,

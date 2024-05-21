@@ -22,6 +22,19 @@ public class DepartmentInfoPaymentLogSpec {
         });
     }
 
+    public static Specification<DepartmentInfoPaymentLog> isEqualToCompanyBranchId(Long companyBranchId) {
+        return ((root, query, criteriaBuilder) -> {
+            Join<DepartmentInfoPaymentLog, CompanyBranch> companyBranchJoin = root.join("companyBranch");
+            Predicate isEqualToCompanyBranchId = criteriaBuilder.equal(companyBranchJoin.get("id"), companyBranchId);
+
+            return criteriaBuilder.and(isEqualToCompanyBranchId);
+        });
+    }
+
+    public static Specification<DepartmentInfoPaymentLog> setupSpecification(Long companyBranchId) {
+        return Specification.where(isEqualToCompanyBranchId(companyBranchId));
+    }
+
     public static Specification<DepartmentInfoPaymentLog> setupSpecification(Long companyBranchId, Long departmentId) {
         return Specification.where(isEqualToCompanyBranchIdAndDepartmentId(companyBranchId, departmentId));
     }

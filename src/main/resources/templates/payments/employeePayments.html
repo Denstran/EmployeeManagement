@@ -8,24 +8,15 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 </head>
 <body>
-
-<div th:if="${employeeName}">
-    <header th:replace="fragments/header :: header(text='ПЛАТЕЖИ СОТРУДНИКА: ' + ${employeeName})">
-    </header>
-</div>
-
-<div th:if="${departmentName}">
-    <header th:replace="fragments/header :: header(text='ПЛАТЕЖИ СОТРУДНИКОВ ОТДЕЛА: ' + ${departmentName})">
-    </header>
-</div>
-
 <div class="container">
+    <header th:replace="fragments/header :: header(text='ПЛАТЕЖИ СОТРУДНИКОВ ФИЛИАЛА')">
+    </header>
     <!-- Форма для выбора критериев поиска -->
-    <form th:action="${employeeName} ? @{/companyBranches/{companyBranchId}/departments/{depId}/employees/{employeeId}/payments(companyBranchId = ${companyBranchId}, depId = ${depId}, employeeId = ${employeeId})} :
-            @{/companyBranches/{companyBranchId}/departments/{depId}/employees/payments(companyBranchId = ${companyBranchId}, depId = ${depId})}"
-          method="get" onsubmit="return validateForm()">
+    <form th:action="@{/myPage/accounting/employeesPaymentLogs}"
+          method="get"
+          onsubmit="return validateForm()">
         <div class="row">
-            <div th:if="${departmentName}" class="col-md-2">
+            <div class="col-md-2">
                 <label for="phoneNumber">Номер телефона:</label>
                 <input type="text" id="phoneNumber" name="phoneNumber">
             </div>
@@ -45,18 +36,28 @@
                     <option value="ALL">Все</option>
                 </select>
             </div>
+            <div class="col-md-2">
+                <label for="departmentId">Отдел:</label>
+                <select id="departmentId" name="departmentId">
+                    <option th:each="department : ${departmentDTOS}"
+                            th:text="${department.departmentName}"
+                            th:value="${department.id}">Отдел</option>
+                    <option value="ALL">Все</option>
+                </select>
+            </div>
             <div class="col-md-3">
                 <button type="submit" class="btn btn-primary">Поиск</button>
-                <a th:if="${employeeName}" class="btn btn-primary" role="button" th:href="@{/companyBranches/{companyBranchId}/departments/{depId}/employees/{empId}/payments(companyBranchId = ${companyBranchId}, depId = ${depId}, empId = ${employeeId})}">Все записи</a>
-                <a th:if="${departmentName}" class="btn btn-primary" role="button" th:href="@{/companyBranches/{companyBranchId}/departments/{depId}/employees/payments(companyBranchId = ${companyBranchId}, depId = ${depId})}">Все записи</a>
+                <a class="btn btn-primary"
+                   role="button"
+                   th:href="@{/myPage/accounting/employeesPaymentLogs}">Все записи</a>
             </div>
         </div>
     </form>
     <table class="table">
         <thead class="table-dark">
         <tr>
-            <th scope="col" th:if="${departmentName}">Имя сотрудника</th>
-            <th scope="col" th:if="${departmentName}">Номер телефона сотрудника</th>
+            <th scope="col">Имя сотрудника</th>
+            <th scope="col">Номер телефона сотрудника</th>
             <th scope="col">Количество средств</th>
             <th scope="col">Действие</th>
             <th scope="col">Тип платежа</th>
@@ -64,9 +65,9 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="payment : ${paymentLogs}">
-            <td th:if="${departmentName}" th:text="${payment.employeeName}"></td>
-            <td th:if="${departmentName}" th:text="${payment.employeePhoneNumber}"></td>
+        <tr th:each="payment : ${employeePaymentLogDTOS}">
+            <td th:text="${payment.employeeName}"></td>
+            <td th:text="${payment.employeePhoneNumber}"></td>
             <td th:text="${payment.paymentAmount.amount}"></td>
             <td th:text="${payment.transferAction}"></td>
             <td th:text="${payment.paymentType}"></td>
@@ -75,5 +76,24 @@
         </tbody>
     </table>
 </div>
+<script>
+    function validateForm() {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        // Проверка, что обе даты не заполнены
+        if (startDate === '' && endDate === '') {
+            return true;
+        }
+
+        // Проверка, что обе даты заполнены
+        if (startDate !== '' && endDate !== '') {
+            return true;
+        }
+
+        // Возвращаем false если хотя бы одна дата не заполнена
+        alert('Пожалуйста, заполните обе даты.');
+        return false;
+    }
+</script>
 </body>
 </html>

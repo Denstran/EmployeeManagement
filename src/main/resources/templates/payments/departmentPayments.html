@@ -8,12 +8,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 </head>
 <body>
-<header th:replace="fragments/header :: header(text='ПЛАТЕЖИ ОТДЕЛА: ' + ${departmentName})">
-</header>
 
 <div class="container">
+    <header th:replace="fragments/header :: header(text='ПЛАТЕЖИ ОТДЕЛОВ ФИЛИАЛА')">
+    </header>
     <!-- Форма для выбора критериев поиска -->
-    <form th:action="@{/companyBranches/{companyBranchId}/departments/{depId}/payments(companyBranchId = ${companyBranchId}, depId = ${depId})}" method="get" onsubmit="return validateForm()">
+    <form th:action="@{/myPage/accounting/departmentsPayments}"
+          method="get"
+          onsubmit="return validateForm()">
         <div class="row">
             <div class="col-md-3">
                 <label for="startDate">Начальная дата (гггг-мм-дд):</label>
@@ -32,8 +34,19 @@
                 </select>
             </div>
             <div class="col-md-3">
+                <label for="depId">Отдел:</label>
+                <select id="depId" name="depId">
+                    <option th:each="department : ${departmentDTOS}"
+                            th:value="${department.id}"
+                            th:text="${department.departmentName}">Отдел</option>
+                    <option value="ALL">Все</option>
+                </select>
+            </div>
+            <div class="col-md-3">
                 <button type="submit" class="btn btn-primary">Поиск</button>
-                <a class="btn btn-primary" role="button" th:href="@{/companyBranches/{companyBranchId}/departments/{depId}/payments(companyBranchId = ${companyBranchId}, depId = ${depId})}">Все записи</a>
+                <a class="btn btn-primary"
+                   role="button"
+                   th:href="@{/myPage/accounting/departmentsPayments}">Все записи</a>
             </div>
         </div>
     </form>
@@ -41,6 +54,7 @@
     <table class="table">
         <thead class="table-dark">
         <tr>
+            <th scope="col">Отдел</th>
             <th scope="col">Количество средств</th>
             <th scope="col">Действие</th>
             <th scope="col">Тип платежа</th>
@@ -49,6 +63,7 @@
         </thead>
         <tbody>
         <tr th:each="payment : ${paymentLogs}">
+            <td th:text="${payment.departmentName}"></td>
             <td th:text="${payment.paymentAmount.amount}"></td>
             <td th:text="${payment.transferAction}"></td>
             <td th:text="${payment.paymentType}"></td>

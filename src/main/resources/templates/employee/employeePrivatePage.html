@@ -91,6 +91,18 @@
     <a th:if="${#authorization.expression('hasRole(''HR'')')}"
        th:href="@{/myPage/hr/employees}"
        class="btn btn-primary mt-3">Сотрудники филиала</a>
+
+    <a th:if="${#authorization.expression('hasRole(''ACCOUNTING'')')}"
+       th:href="@{/myPage/accounting/companyBranchPaymentLogs}"
+       class="btn btn-primary mt-3">Платежи филиала</a>
+
+    <a th:if="${#authorization.expression('hasRole(''ACCOUNTING'')')}"
+       th:href="@{/myPage/accounting/departmentsPayments}"
+       class="btn btn-primary mt-3">Платежи отделов</a>
+
+    <a th:if="${#authorization.expression('hasRole(''ACCOUNTING'')')}"
+       th:href="@{/myPage/accounting/employeesPaymentLogs}"
+       class="btn btn-primary mt-3">Платежи сотрудников филиала</a>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

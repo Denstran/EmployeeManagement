@@ -36,4 +36,6 @@ public class DepartmentInfoPaymentLogDTO {
     private Long departmentId;
     @NotNull
     private TransferAction transferAction;
+
+    private String departmentName;
 }

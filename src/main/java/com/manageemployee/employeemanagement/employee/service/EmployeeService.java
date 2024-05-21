@@ -49,9 +49,14 @@ public class EmployeeService implements com.manageemployee.employeemanagement.de
         Set<UserRole> roles = new HashSet<>();
         if (isOnLeadingPosition(employee)) roles.add(UserRole.ROLE_HEAD_OF_DEPARTMENT);
         if (isHR(employee)) roles.add(UserRole.ROLE_HR);
-        else roles.add(UserRole.ROLE_EMPLOYEE);
+        else if (isAccounter(employee)) roles.add(UserRole.ROLE_ACCOUNTING);
 
+        roles.add(UserRole.ROLE_EMPLOYEE);
         return roles;
+    }
+
+    private boolean isAccounter(Employee employee) {
+        return DepartmentType.ACCOUNTING.equals(employee.getPosition().getDepartment().getDepartmentType());
     }
 
     private boolean isOnLeadingPosition(Employee employee) {

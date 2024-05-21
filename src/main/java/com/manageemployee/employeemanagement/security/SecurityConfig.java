@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers(PathRequest.toH2Console()).permitAll()
                         .requestMatchers(antMatcher("/myPage/vacations/**/approve")).hasRole("HEAD_OF_DEPARTMENT")
                         .requestMatchers(antMatcher("/myPage/hr/**")).hasRole("HR")
+                        .requestMatchers(antMatcher("/myPage/accounting/**")).hasRole("ACCOUNTING")
                         .requestMatchers(antMatcher("/myPage/**/headOfDepartment/**")).hasRole("HEAD_OF_DEPARTMENT")
                         .requestMatchers(antMatcher("/companyBranches/**")).hasRole("ADMIN")
                         .requestMatchers(antMatcher("/departments/**")).hasRole("ADMIN")

@@ -25,19 +25,30 @@ public class DepartmentInfoPaymentLogService {
         repository.saveAndFlush(departmentInfoPaymentLog);
     }
 
-    public List<DepartmentInfoPaymentLog> getDepartmentPayments(Long companyBranchId, Long departmentId,
+    public List<DepartmentInfoPaymentLog> getDepartmentPayments(Long companyBranchId, String departmentId,
                                                                 String startDate, String endDate, String transferAction) {
-        validateResource(companyBranchId, departmentId);
-        Specification<DepartmentInfoPaymentLog> spec =
-                DepartmentInfoPaymentLogSpec.setupSpecification(companyBranchId, departmentId);
+        validateResource(companyBranchId);
+        Specification<DepartmentInfoPaymentLog> spec = setupSpec(companyBranchId, departmentId);
         spec = PaymentSpecificationProcessor.processDateParams(startDate, endDate, spec);
         spec = PaymentSpecificationProcessor.processAction(transferAction, spec);
 
         return repository.findAll(spec);
     }
 
-    private void validateResource(Long companyBranchId, Long departmentId) {
-        if (companyBranchId == null || companyBranchId <= 0 || departmentId == null || departmentId <= 0)
+    private Specification<DepartmentInfoPaymentLog> setupSpec(Long companyBranchId, String departmentId) {
+        if (departmentId == null || departmentId.isEmpty() || departmentId.equals("ALL"))
+            return DepartmentInfoPaymentLogSpec.setupSpecification(companyBranchId);
+
+        try {
+            Long depId = Long.parseLong(departmentId);
+            return DepartmentInfoPaymentLogSpec.setupSpecification(companyBranchId, depId);
+        }catch (NumberFormatException e) {
+            return DepartmentInfoPaymentLogSpec.setupSpecification(companyBranchId);
+        }
+    }
+
+    private void validateResource(Long companyBranchId) {
+        if (companyBranchId == null || companyBranchId <= 0)
             throw new IllegalArgumentException("Выбран не существующий отдел!");
     }
 

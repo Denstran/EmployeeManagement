@@ -13,7 +13,10 @@
 
     <div class="container">
         <!-- Форма для выбора критериев поиска -->
-        <form th:action="@{/companyBranches/{companyBranchId}/payments(companyBranchId = ${companyBranchId})}" method="get" onsubmit="return validateForm()">
+        <form th:action="@{/myPage/accounting/companyBranchPaymentLogs}"
+              method="get"
+              onsubmit="return validateForm()">
+
             <div class="row">
                 <div class="col-md-3">
                     <label for="startDate">Начальная дата (гггг-мм-дд):</label>
@@ -33,7 +36,9 @@
                 </div>
                 <div class="col-md-3">
                     <button type="submit" class="btn btn-primary">Поиск</button>
-                    <a class="btn btn-primary" role="button" th:href="@{/companyBranches/{companyBranchId}/payments(companyBranchId = ${companyBranchId})}">Все записи</a>
+                    <a class="btn btn-primary"
+                       role="button"
+                       th:href="@{/myPage/accounting/companyBranchPaymentLogs}">Все записи</a>
                 </div>
             </div>
         </form>

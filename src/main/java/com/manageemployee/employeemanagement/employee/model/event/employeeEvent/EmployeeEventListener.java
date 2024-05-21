@@ -156,7 +156,7 @@ public class EmployeeEventListener {
 
     private void addLeadingRole(EmployeeUpdated employeeUpdated) {
         User user = employeeUpdated.getEmployee().getUser();
-        user.addRole(UserRole.ROLE_HEAD_OF_BRANCH);
+        user.addRole(UserRole.ROLE_HEAD_OF_DEPARTMENT);
     }
 
     private void removeLeadingRole(EmployeeUpdated employeeUpdated) {

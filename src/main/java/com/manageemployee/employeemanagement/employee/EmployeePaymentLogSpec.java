@@ -17,6 +17,15 @@ public class EmployeePaymentLogSpec {
         });
     }
 
+    public static Specification<EmployeePaymentLog> isEqualToCompanyBranchId(Long companyBranchId) {
+        return (root, query, criteriaBuilder) -> {
+            Join<EmployeePaymentLog, Employee> employeeJoin = root.join("employee");
+            Join<Employee, CompanyBranch> companyBranchJoin = employeeJoin.join("companyBranch");
+
+            return criteriaBuilder.equal(companyBranchJoin.get("id"), companyBranchId);
+        };
+    }
+
     public static Specification<EmployeePaymentLog> isPhoneNumberEqualTo(String phoneNumber) {
         return (root, query, criteriaBuilder) -> {
             Join<EmployeePaymentLog, Employee> employeeJoin = root.join("employee");
@@ -45,5 +54,9 @@ public class EmployeePaymentLogSpec {
 
     public static Specification<EmployeePaymentLog> setupSpecification(Long companyBranchId, Long departmentId) {
         return Specification.where(isEqualToCompanyBranchIdAndDepartmentId(companyBranchId, departmentId));
+    }
+
+    public static Specification<EmployeePaymentLog> setupSpecification(CompanyBranch companyBranch) {
+        return Specification.where(isEqualToCompanyBranchId(companyBranch.getId()));
     }
 }
