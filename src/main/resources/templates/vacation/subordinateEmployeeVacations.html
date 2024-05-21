@@ -6,11 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ОЗапросы отпусков сотрудников</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 <div class="container">
     <header th:replace="~{fragments/header :: header(text='ЗАПРОСЫ ОТПУСКОВ СОТРУДНИКОВ')}"></header>
-    <a class="btn btn-primary btn-sm" role="button" th:href="@{/myPage}">На мою страницу</a>
+    <button type="button" class="btn btn-success" onclick="downloadExcel()">Скачать Excel</button>
     <table class="table">
         <thead>
         <tr>
@@ -44,6 +45,59 @@
     </table>
 </div>
 
+<script>
+    function downloadExcel() {
+        // Найти таблицу с классом "table"
+        const table = document.querySelector('.table');
+
+        // Создать новую книгу Excel
+        const wb = XLSX.utils.book_new();
+
+        // Преобразовать таблицу в массив данных, исключая второй столбец
+        const rows = [];
+        const trs = table.querySelectorAll('tr');
+
+        trs.forEach(tr => {
+            const row = [];
+            const tds = tr.querySelectorAll('th, td');
+            tds.forEach((td, index) => {
+                if (index !== 5) { // Исключить второй столбец (index 1)
+                    row.push(td.innerText);
+                }
+            });
+            rows.push(row);
+        });
+
+        // Преобразовать массив данных в лист Excel
+        const ws = XLSX.utils.aoa_to_sheet(rows);
+
+        // Добавить лист в книгу
+        XLSX.utils.book_append_sheet(wb, ws, 'Платежи');
+
+        // Генерация бинарных данных файла Excel
+        const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+
+        // Функция для преобразования строки в ArrayBuffer
+        function s2ab(s) {
+            const buf = new ArrayBuffer(s.length);
+            const view = new Uint8Array(buf);
+            for (let i = 0; i < s.length; i++) {
+                view[i] = s.charCodeAt(i) & 0xFF;
+            }
+            return buf;
+        }
+
+        // Создание файла Excel и его скачивание
+        const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "subordinate_employees_vacations.xlsx";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+</script>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

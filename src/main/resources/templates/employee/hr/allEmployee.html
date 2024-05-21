@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>МОИ СОТРУДНИКИ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -78,6 +78,7 @@
 
                 <input type="hidden" th:value="${companyBranchId}" name="companyBranchId">
                 <button type="submit" class="btn btn-primary">Применить фильтры</button>
+                <button type="button" class="btn btn-success" onclick="downloadExcel()">Скачать Excel</button>
             </form>
             <!-- Таблица сотрудников -->
             <table class="table">
@@ -165,6 +166,58 @@
             return false;
         })
     });
+
+    function downloadExcel() {
+        // Найти таблицу с классом "table"
+        const table = document.querySelector('.table');
+
+        // Создать новую книгу Excel
+        const wb = XLSX.utils.book_new();
+
+        // Преобразовать таблицу в массив данных, исключая второй столбец
+        const rows = [];
+        const trs = table.querySelectorAll('tr');
+
+        trs.forEach(tr => {
+            const row = [];
+            const tds = tr.querySelectorAll('th, td');
+            tds.forEach((td, index) => {
+                if (index !== 8) { // Исключить второй столбец (index 1)
+                    row.push(td.innerText);
+                }
+            });
+            rows.push(row);
+        });
+
+        // Преобразовать массив данных в лист Excel
+        const ws = XLSX.utils.aoa_to_sheet(rows);
+
+        // Добавить лист в книгу
+        XLSX.utils.book_append_sheet(wb, ws, 'Платежи');
+
+        // Генерация бинарных данных файла Excel
+        const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+
+        // Функция для преобразования строки в ArrayBuffer
+        function s2ab(s) {
+            const buf = new ArrayBuffer(s.length);
+            const view = new Uint8Array(buf);
+            for (let i = 0; i < s.length; i++) {
+                view[i] = s.charCodeAt(i) & 0xFF;
+            }
+            return buf;
+        }
+
+        // Создание файла Excel и его скачивание
+        const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "all_employees.xlsx";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
 </script>
 </body>
 </html>
