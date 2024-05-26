@@ -19,21 +19,23 @@ public interface VacationRepository extends JpaRepository<VacationRequest, Long>
             "FROM VacationRequest vr " +
             "WHERE vr.employee.id = :employeeId " +
             "AND vr.vacationStartDate <= :endDate " +
-            "AND vr.vacationEndDate >= :startDate")
-    boolean existsByEmployeeIdAndVacationDates(@Param("employeeId") Long employeeId,
-                                               @Param("startDate") LocalDate startDate,
-                                               @Param("endDate") LocalDate endDate);
+            "AND vr.vacationEndDate >= :startDate " +
+            "AND vr.requestStatus != 'CANCELLED'")
+    boolean existsByEmployeeIdAndVacationDatesNotCancelled(@Param("employeeId") Long employeeId,
+                                                           @Param("startDate") LocalDate startDate,
+                                                           @Param("endDate") LocalDate endDate);
 
     @Query("SELECT CASE WHEN COUNT(vr) > 0 THEN true ELSE false END " +
             "FROM VacationRequest vr " +
             "WHERE vr.employee.id = :employeeId " +
             "AND vr.vacationStartDate <= :endDate " +
             "AND vr.vacationEndDate >= :startDate " +
-            "AND vr.id != :vacationId")
-    boolean existsByEmployeeIdAndVacationDatesExcludeVacation(@Param("employeeId") Long employeeId,
-                                               @Param("startDate") LocalDate startDate,
-                                               @Param("endDate") LocalDate endDate,
-                                               @Param("vacationId") Long vacationId);
+            "AND vr.id != :vacationId " +
+            "AND vr.requestStatus != 'CANCELLED'")
+    boolean existsByEmployeeIdAndVacationDatesExcludeVacationNotCancelled(@Param("employeeId") Long employeeId,
+                                                                          @Param("startDate") LocalDate startDate,
+                                                                          @Param("endDate") LocalDate endDate,
+                                                                          @Param("vacationId") Long vacationId);
 
     List<VacationRequest> findByEmployeeAndRequestStatus(Employee employee, RequestStatus requestStatus);
     List<VacationRequest> findByEmployeeAndRequestStatusAndIdNot(Employee employee,

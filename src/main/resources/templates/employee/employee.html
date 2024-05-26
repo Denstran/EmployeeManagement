@@ -62,7 +62,6 @@
             <th scope="col">Зарплата</th>
             <th scope="col">Дата найма</th>
             <th scope="col">Статус</th>
-            <th scope="col">ПЛАТЕЖИ</th>
             <th scope="col">ОБНОВИТЬ</th>
         </tr>
         </thead>
@@ -76,7 +75,6 @@
             <td th:text="${employee.salary.amount}"></td>
             <td th:text="${employee.employmentDate}"></td>
             <td th:text="${employee.employeeStatus}"></td>
-            <td><a class="btn btn-dark" th:href="@{/companyBranches/{id}/departments/{depId}/employees/{employeeId}/payments(id = ${employee.companyBranchId}, employeeId = ${employee.id}, depId = ${depId})}" role="button">Платежи</a></td>
             <td>
                 <a class="btn btn-dark" role="button" th:href="@{/companyBranches/{companyBranchId}/departments/{depId}/employees/{empId}/update(
                     companyBranchId=${companyBranchId}, depId=${depId}, empId=${employee.id})}">Обновить</a>

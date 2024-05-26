@@ -32,7 +32,7 @@
             <td th:text="${vacation.requestStatus}">Ожидает подтверждения</td>
             <td>
                 <a class="btn btn-primary btn-sm" role="button"
-                   th:disabled="${vacation.requestStatus.name() eq 'CANCELLED'}"
+                   th:if="${vacation.requestStatus.name() eq 'IN_PROCESS'}"
                    th:href="@{/myPage/vacations/{vacationId}/update(vacationId = ${vacation.id})}">Обновить</a>
                 <form th:action="@{/myPage/vacations/{vacationId}/approve (vacationId=${vacation.id})}" method="post">
                     <button th:disabled="${vacation.requestStatus.name() eq 'CANCELLED' ||

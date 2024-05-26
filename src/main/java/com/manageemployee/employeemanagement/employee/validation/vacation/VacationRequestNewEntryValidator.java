@@ -50,7 +50,7 @@ public class VacationRequestNewEntryValidator implements Validator {
         Long employeeId = vacationRequestDTO.getEmployeeId();
 
         log.info("VALIDATING REQUESTED DATE FOR VACATION: START DATE {} END DATE {}", startDate, endDate);
-        return vacationService.existsByEmployeeIdAndVacationDates(employeeId, startDate, endDate);
+        return vacationService.existsByEmployeeIdAndVacationDatesAndStatusNotCancelled(employeeId, startDate, endDate);
     }
 
     private void validateVacationDays(VacationRequestDTO dto, Errors errors) {

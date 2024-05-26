@@ -64,6 +64,7 @@
             <th scope="col">Действие</th>
             <th scope="col">Тип платежа</th>
             <th scope="col">Дата платежа</th>
+            <th scope="col">Провести платёж</th>
         </tr>
         </thead>
         <tbody>
@@ -74,6 +75,13 @@
             <td th:text="${payment.transferAction}"></td>
             <td th:text="${payment.paymentType}"></td>
             <td th:text="${payment.dateOfPayment}"></td>
+            <td>
+                <a th:href="@{/myPage/accounting/createPaymentForEmployee/{employeeId}
+                            (employeeId = ${payment.employeeId})}"
+                   class="btn btn-primary mt-3">
+                    Провести платёж
+                </a>
+            </td>
         </tr>
         </tbody>
     </table>
@@ -104,8 +112,23 @@
         // Создать новую книгу Excel
         const wb = XLSX.utils.book_new();
 
-        // Преобразовать таблицу в лист Excel
-        const ws = XLSX.utils.table_to_sheet(table);
+        // Преобразовать таблицу в массив данных, исключая второй столбец
+        const rows = [];
+        const trs = table.querySelectorAll('tr');
+
+        trs.forEach(tr => {
+            const row = [];
+            const tds = tr.querySelectorAll('th, td');
+            tds.forEach((td, index) => {
+                if (index !== 6) { // Исключить второй столбец (index 1)
+                    row.push(td.innerText);
+                }
+            });
+            rows.push(row);
+        });
+
+        // Преобразовать массив данных в лист Excel
+        const ws = XLSX.utils.aoa_to_sheet(rows);
 
         // Добавить лист в книгу
         XLSX.utils.book_append_sheet(wb, ws, 'Платежи');
@@ -128,7 +151,7 @@
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "employee_payments.xlsx";
+        a.download = "employees_payments.xlsx";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);

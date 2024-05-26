@@ -21,8 +21,6 @@
             <th>Название отдела</th>
             <th>Бюджет отдела</th>
             <th>Сотрудники</th>
-            <th>ПЛАТЕЖИ</th>
-            <th>ПЛАТЕЖИ СОТРУДНИКОВ</th>
             <th>ОБНОВИТЬ</th>
             <th>УДАЛИТЬ</th>
         </tr>
@@ -34,8 +32,6 @@
             <td>
                 <a class="btn btn-dark" role="button" th:href="@{/companyBranches/{id}/departments/{depId}/employees(id = ${companyBranchId}, depId = ${departmentInfo.departmentId})}">Сотрудники</a>
             </td>
-            <td><a class="btn btn-dark" th:href="@{/companyBranches/{id}/departments/{depId}/payments(id = ${departmentInfo.companyBranchId}, depId = ${departmentInfo.departmentId})}" role="button">Платежи</a></td>
-            <td><a class="btn btn-dark" th:href="@{/companyBranches/{id}/departments/{depId}/employees/payments(id = ${companyBranchId}, depId = ${departmentInfo.departmentId})}" role="button">Платежи сотрудников</a></td>
             <td>
                 <a class="btn btn-dark" role="button" th:href="@{/companyBranches/{id}/departments/update(id = ${companyBranchId}, depId = ${departmentInfo.departmentId})}">Обновить</a>
             </td>

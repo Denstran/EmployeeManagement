@@ -93,13 +93,13 @@ public class VacationService {
         return repository.findByEmployee(employee);
     }
 
-    public boolean existsByEmployeeIdAndVacationDates(Long employeeId, LocalDate startDate, LocalDate endDate) {
-        return repository.existsByEmployeeIdAndVacationDates(employeeId, startDate, endDate);
+    public boolean existsByEmployeeIdAndVacationDatesAndStatusNotCancelled(Long employeeId, LocalDate startDate, LocalDate endDate) {
+        return repository.existsByEmployeeIdAndVacationDatesNotCancelled(employeeId, startDate, endDate);
     }
 
-    public boolean existsByEmployeeIdAndVacationDatesExcludeVacation(Long employeeId, LocalDate startDate,
-                                                                    LocalDate endDate, Long vacationId) {
-        return repository.existsByEmployeeIdAndVacationDatesExcludeVacation(employeeId, startDate, endDate, vacationId);
+    public boolean existsByEmployeeIdAndVacationDatesExcludeVacationNotCancelled(Long employeeId, LocalDate startDate,
+                                                                                 LocalDate endDate, Long vacationId) {
+        return repository.existsByEmployeeIdAndVacationDatesExcludeVacationNotCancelled(employeeId, startDate, endDate, vacationId);
     }
 
     public long getVacationDaysOfProcessingRequestByEmployee(Employee employee) {

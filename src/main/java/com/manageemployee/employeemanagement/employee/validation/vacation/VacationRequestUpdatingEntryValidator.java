@@ -50,7 +50,7 @@ public class VacationRequestUpdatingEntryValidator implements Validator {
         Long employeeId = dto.getEmployeeId();
 
         log.info("VALIDATING REQUESTED DATE FOR VACATION: START DATE {} END DATE {}", startDate, endDate);
-        return vacationService.existsByEmployeeIdAndVacationDatesExcludeVacation(employeeId, startDate,
+        return vacationService.existsByEmployeeIdAndVacationDatesExcludeVacationNotCancelled(employeeId, startDate,
                 endDate, dto.getId());
     }
 

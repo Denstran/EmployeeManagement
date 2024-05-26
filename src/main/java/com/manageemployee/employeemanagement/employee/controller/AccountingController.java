@@ -13,16 +13,19 @@ import com.manageemployee.employeemanagement.department.service.DepartmentServic
 import com.manageemployee.employeemanagement.employee.dto.EmployeePaymentLogDTO;
 import com.manageemployee.employeemanagement.employee.dto.mapper.EmployeePaymentLogMapper;
 import com.manageemployee.employeemanagement.employee.model.employee.Employee;
+import com.manageemployee.employeemanagement.employee.model.employee.EmployeePaymentLog;
 import com.manageemployee.employeemanagement.employee.service.EmployeePaymentLogService;
 import com.manageemployee.employeemanagement.employee.service.EmployeeService;
+import com.manageemployee.employeemanagement.util.enumType.PaymentType;
+import com.manageemployee.employeemanagement.util.enumType.TransferAction;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -112,6 +115,46 @@ public class AccountingController {
         model.addAttribute("paymentLogs", paymentLogs);
         model.addAttribute("departmentDTOS", departmentDTOS);
         return "payments/departmentPayments";
+    }
+
+    @GetMapping("/createPaymentForEmployee/{employeeId}")
+    public String makeEmployeePaymentForm(Model model,
+                                          @PathVariable Long employeeId,
+                                          @AuthenticationPrincipal UserDetails userDetails) {
+        Employee employee = loadFromUser(userDetails);
+        Employee employee1 = employeeService.getById(employeeId);
+        if (!employee.getCompanyBranch().getId().equals(employee1.getCompanyBranch().getId()))
+            throw new SecurityException("Попытка провести платёж для чужого сотрудника!");
+
+        EmployeePaymentLogDTO paymentLogDTO = new EmployeePaymentLogDTO();
+        paymentLogDTO.setEmployeeId(employeeId);
+        paymentLogDTO.setTransferAction(TransferAction.INCREASE);
+
+        model.addAttribute("paymentLogDTO", paymentLogDTO);
+        model.addAttribute("employeeName", employee1.getName());
+        model.addAttribute("paymentTypes", List.of(PaymentType.SALARY,
+                                                               PaymentType.BONUS,
+                                                               PaymentType.OTHERS));
+        return "payments/createEmployeePayment";
+    }
+
+    @PostMapping("/createPaymentForEmployee")
+    public String makeEmployeePaymentForm(@ModelAttribute("paymentLogDTO") @Valid EmployeePaymentLogDTO paymentLogDTO,
+                                          BindingResult bindingResult,
+                                          @AuthenticationPrincipal UserDetails userDetails) {
+        if (bindingResult.hasErrors()) {
+            return "payments/createEmployeePayment";
+        }
+
+        Employee employee = loadFromUser(userDetails);
+        Employee employee1 = employeeService.getById(paymentLogDTO.getEmployeeId());
+        if (!employee.getCompanyBranch().getId().equals(employee1.getCompanyBranch().getId()))
+            throw new SecurityException("Попытка провести платёж для чужого сотрудника!");
+
+        EmployeePaymentLog employeePaymentLog = employeePaymentLogMapper.toEntity(paymentLogDTO);
+        employeePaymentLogService.saveEmployeePaymentLog(employeePaymentLog);
+
+        return "redirect:/myPage/accounting/employeesPaymentLogs";
     }
 
     private Employee loadFromUser(UserDetails userDetails) {

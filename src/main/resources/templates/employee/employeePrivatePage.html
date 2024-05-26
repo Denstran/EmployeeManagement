@@ -73,9 +73,12 @@
     <a th:href="@{/myPage/vacations}"
        class="btn btn-primary mt-3">Просмотр отпусков</a>"
 
+    <a th:href="@{/myPage/myPayments}"
+       class="btn btn-primary mt-3">Мои платежи</a>"
+
     <a th:if="${#authorization.expression('hasRole(''HEAD_OF_DEPARTMENT'')')}"
        th:href="@{/myPage/vacations/vacationRequests}"
-       class="btn btn-primary mt-3">Просмотр запросов отпусков</a>
+       class="btn btn-primary mt-3btn btn-primary mt-3">Просмотр запросов отпусков</a>
 
     <a th:if="${#authorization.expression('hasRole(''HEAD_OF_DEPARTMENT'')')}"
        th:href="@{/myPage/headOfDepartment/myEmployees}"
