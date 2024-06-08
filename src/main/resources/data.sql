@@ -108,7 +108,6 @@ INSERT INTO user_roles (roles, user_id) values (0, 1),
                                                (4, 2),
                                                (2, 2),
                                                (2, 19),
-                                               (2, 19),
                                                (3, 8);
 
 INSERT INTO employee (employment_date, home_building_number, company_branch_id, employee_status, position_id, salary, email, first_name, home_city, home_country, home_street, home_zip_code, last_name, middle_name, phone_number, vacation_days, user_id)

@@ -13,6 +13,7 @@ import com.manageemployee.employeemanagement.position.model.Position;
 import com.manageemployee.employeemanagement.security.PasswordGenerator;
 import com.manageemployee.employeemanagement.security.UserRole;
 import com.manageemployee.employeemanagement.util.Money;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class EmployeeService implements com.manageemployee.employeemanagement.department.service.EmployeeService {
     private final EmployeeRepository repository;
     private final PasswordEncoder passwordEncoder;
@@ -72,8 +74,11 @@ public class EmployeeService implements com.manageemployee.employeemanagement.de
         Employee employeeFromDB = getById(employee.getId());
         if (isRestoringEmployee(employee, employeeFromDB)) employee.restore();
         else if (isEmployeeFired(employee, employeeFromDB)) employee.fireEmployee(employeeFromDB.getSalary());
-        else employee.updateEmployee(employee);
+        else {
+            employee.updateEmployee(new Money(employeeFromDB.getSalary()), employeeFromDB.getPosition());
+        }
 
+        log.info("Old employee salary: {} Updated employee salary: {}", employeeFromDB.getSalary(), employee.getSalary());
         repository.saveAndFlush(employee);
     }
 

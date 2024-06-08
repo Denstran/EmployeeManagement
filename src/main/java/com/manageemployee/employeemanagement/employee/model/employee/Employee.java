@@ -18,6 +18,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
@@ -30,6 +31,7 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
+@Slf4j
 public class Employee extends AbstractAggregateRoot<Employee> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -120,8 +122,9 @@ public class Employee extends AbstractAggregateRoot<Employee> {
     }
 
 
-    public void updateEmployee(Employee oldEmployee) {
-        registerEvent(new EmployeeUpdated(this, oldEmployee.salary, salary, oldEmployee.getPosition()));
+    public void updateEmployee(Money oldSalary, Position oldPosition) {
+        log.info("Old salary: {}, New salary: {}", oldSalary, this.salary);
+        registerEvent(new EmployeeUpdated(this, oldSalary, this.salary, oldPosition));
     }
 
     public void fireEmployee(Money salaryFromDB) {
