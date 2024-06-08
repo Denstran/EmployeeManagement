@@ -17,39 +17,62 @@
     companyBranchId=${companyBranchId}, depId=${depId})}" role="button">Добавить Сотрудника</a>
     <hr/>
     <form th:action="@{/companyBranches/{companyBranchId}/departments/{depId}/employees(companyBranchId=${companyBranchId}, depId=${depId})}" method="get">
-        <label for="employeeStatus">Employee Status:</label>
+        <div class="form-group">
+        <label for="employeeStatus">Статус сотрудника:</label>
         <select id="employeeStatus" name="employeeStatus">
-            <option th:each="status : ${statuses}" th:text="${status.name()}" th:value="${status.name()}"></option>
-            <option th:value="ALL">ALL</option>
-        </select><br>
+            <option th:each="status : ${statuses}"
+                    th:value="${status.name()}">
+                <span th:switch="${status.name()}">
+                    <span th:case="'WORKING'">РАБОТАЕТ</span>
+                    <span th:case="'VACATION'">В ОТПУСКЕ</span>
+                    <span th:case="'HEALING'">НА БОЛЬНИЧНОМ</span>
+                    <span th:case="'FIRED'">УВОЛЕН</span>
+                    <span th:case="*">Другой</span>
+                </span>
+            </option>
+            <option th:value="ALL">ВСЕ</option>
+        </select>
+        </div>
+        <br>
 
+        <div class="form-group">
         <label for="positionName">Должность:</label>
         <select id="positionName" name="positionName">
-            <option th:each="position : ${positions}" th:text="${position.positionName}" th:value="${position.positionName}"></option>
-            <option th:value="ALL">ALL</option>
+            <option th:each="position : ${positions}"
+                    th:text="${position.positionName}"
+                    th:value="${position.positionName}"></option>
+            <option th:value="ALL">ВСЁ</option>
         </select><br>
+        </div>
 
-        <label for="phoneNumber">Phone Number:</label>
-        <input type="text" id="phoneNumber" name="phoneNumber"><br>
+        <div class="form-control">
+            <label for="phoneNumber">Номер телефона:</label>
+            <input type="text" id="phoneNumber" name="phoneNumber"><br>
+        </div>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" ><br>
+        <div class="form-control">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" ><br>
+        </div>
+        <div class="form-control">
+            <label for="salaryStart">Начало диапазона зарплаты:</label>
+            <input type="number" id="salaryStart" name="salaryStart"><br>
+        </div>
+        <div class="form-control">
+            <label for="salaryEnd">Конец диапазона зарплаты:</label>
+            <input type="number" id="salaryEnd" name="salaryEnd"><br>
+        </div>
+        <div class="form-control">
+            <label for="startAmountOfWorkingYears">Начало диапазона лет работы в компании:</label>
+            <input type="number" id="startAmountOfWorkingYears" name="startAmountOfWorkingYears"><br>
 
-        <label for="salaryStart">Salary Start:</label>
-        <input type="number" id="salaryStart" name="salaryStart"><br>
-
-        <label for="salaryEnd">Salary End:</label>
-        <input type="number" id="salaryEnd" name="salaryEnd"><br>
-
-        <label for="startAmountOfWorkingYears">Start Amount of Working Years:</label>
-        <input type="number" id="startAmountOfWorkingYears" name="startAmountOfWorkingYears"><br>
-
-        <label for="endAmountOfWorkingYears">End Amount of Working Years:</label>
-        <input type="number" id="endAmountOfWorkingYears" name="endAmountOfWorkingYears"><br>
+            <label for="endAmountOfWorkingYears">Конец диапазона лет работы в компании:</label>
+            <input type="number" id="endAmountOfWorkingYears" name="endAmountOfWorkingYears"><br>
+        </div>
 
         <input type="hidden" th:value="${companyBranchId}" name="companyBranchId">
         <input type="hidden" th:value="${depId}" name="departmentId">
-        <button type="submit">Search</button>
+        <button type="submit">Поиск</button>
     </form>
     <table class="table">
         <thead class="table-dark">
@@ -74,7 +97,13 @@
             <td th:text="${employee.homeAddress}"></td>
             <td th:text="${employee.salary.amount}"></td>
             <td th:text="${employee.employmentDate}"></td>
-            <td th:text="${employee.employeeStatus}"></td>
+            <td th:switch="${employee.employeeStatus.name()}">
+                <span th:case="'WORKING'">РАБОТАЕТ</span>
+                <span th:case="'VACATION'">В ОТПУСКЕ</span>
+                <span th:case="'HEALING'">НА БОЛЬНИЧНОМ</span>
+                <span th:case="'FIRED'">УВОЛЕН</span>
+                <span th:case="*">Другой</span>
+            </td>
             <td>
                 <a class="btn btn-dark" role="button" th:href="@{/companyBranches/{companyBranchId}/departments/{depId}/employees/{empId}/update(
                     companyBranchId=${companyBranchId}, depId=${depId}, empId=${employee.id})}">Обновить</a>

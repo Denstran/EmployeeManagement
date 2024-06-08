@@ -27,7 +27,12 @@
             <td th:text="${vacation.vacationStartDate}">20.08.2024</td>
             <td th:text="${vacation.vacationEndDate}">25.08.2024</td>
             <td th:text="${vacation.vacationDaysAmount}">6</td>
-            <td th:text="${vacation.requestStatus}">Ожидает подтверждения</td>
+            <td th:switch="${vacation.requestStatus.name()}">
+                <span th:case="'APPROVED'">ОДОБРЕН</span>
+                <span th:case="'IN_PROCESS'">В ОБРАБОТКЕ</span>
+                <span th:case="'CANCELLED'">ОТМЕНЁН</span>
+                <span th:case="*">НЕИЗВЕСТНО</span>
+            </td>
             <td>
                 <a class="btn btn-primary btn-sm" role="button"
                    th:if="${vacation.requestStatus.name() eq 'IN_PROCESS'}"

@@ -43,7 +43,13 @@
         </div>
         <div class="card-body">
             <p class="card-text" th:text="'Отдел ' + ${employeeDTO.departmentName}">Отдел: Разработка</p>
-            <p class="card-text" th:text="'Статус ' + ${employeeDTO.employeeStatus}">Статус: Активный</p>
+            <div th:switch="${employeeDTO.employeeStatus.name()}">
+                <p class="card-text" th:case="'WORKING'">РАБОТАЕТ</p>
+                <p class="card-text" th:case="'VACATION'">В ОТПУСКЕ</p>
+                <p class="card-text" th:case="'HEALING'">НА БОЛЬНИЧНОМ</p>
+                <p class="card-text" th:case="'FIRED'">УВОЛЕН</p>
+                <p class="card-text" th:case="*">Другой</p>
+            </div>
             <p class="card-text" th:text="'Должность ' + ${employeeDTO.positionName}">Должность: Senior Frontend Developer</p>
             <p class="card-text" th:text="'Зарплата ' + ${employeeDTO.salary}">Зарплата: $5000</p>
         </div>
@@ -52,7 +58,7 @@
     <!-- Блок результативности -->
     <div class="card">
         <div class="card-header">
-            Результативность
+            Информация о работе в компании
         </div>
         <div class="card-body">
             <p class="card-text" th:text="'Дата найма ' + ${employeeDTO.employmentDate}">Дата найма: 01.01.2018</p>

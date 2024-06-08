@@ -13,7 +13,7 @@
     </header>
 
     <!-- Форма для выбора критериев поиска -->
-    <form th:action="@{/myPage/accounting/employeesPaymentLogs}"
+    <form th:action="@{/myPage/myPayments}"
           method="get"
           onsubmit="return validateForm()">
         <div class="row">
@@ -37,13 +37,13 @@
                 <button type="submit" class="btn btn-primary">Поиск</button>
                 <a class="btn btn-primary"
                    role="button"
-                   th:href="@{/myPage/accounting/employeesPaymentLogs}">Все записи</a>
+                   th:href="@{/myPage/myPayments}">Все записи</a>
             </div>
         </div>
     </form>
 
     <table class="table">
-        <thead class="table-dark">
+        <thead>
         <tr>
             <th scope="col">Количество средств</th>
             <th scope="col">Действие</th>
@@ -54,8 +54,19 @@
         <tbody>
         <tr th:each="payment : ${paymentLogDTOS}">
             <td th:text="${payment.paymentAmount.amount}"></td>
-            <td th:text="${payment.transferAction}"></td>
-            <td th:text="${payment.paymentType}"></td>
+            <td th:switch="${payment.transferAction.name()}">
+                <span th:case="'INCREASE'">ПОПОЛНЕНИЕ</span>
+                <span th:case="'DECREASE'">СНЯТИЕ</span>
+                <span th:case="*">НЕИЗВЕСТНО</span>
+            </td>
+            <td th:switch="${payment.paymentType.name()}">
+                <span th:case="'SALARY'">ЗАРПЛАТА</span>
+                <span th:case="'BONUS'">ПРЕМИЯ</span>
+                <span th:case="'BUDGET_CHANGES'">ИЗМЕНЕНИЕ БЮДЖЕТА</span>
+                <span th:case="'SALARY_CHANGES'">ИЗМЕНЕНИЕ ЗАРПЛАТЫ</span>
+                <span th:case="'OTHERS'">ДРУГОЕ</span>
+                <span th:case="*">НЕИЗВЕСТНО</span>
+            </td>
             <td th:text="${payment.dateOfPayment}"></td>
         </tr>
         </tbody>

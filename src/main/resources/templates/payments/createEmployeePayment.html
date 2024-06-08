@@ -33,8 +33,16 @@
         <div class="form-group">
             <label for="typeSelect" aria-describedby="typeError">Тип</label>
             <select class="form-control" id="typeSelect" name="typeSelect" th:field="*{paymentType}">
-                <option th:each="type : ${paymentTypes}" th:value="${type}"
-                        th:text="${type}"></option>
+                <option th:each="type : ${paymentTypes}" th:value="${type}">
+                    <span th:switch="${type.name()}">
+                        <span th:case="'SALARY'">ЗАРПЛАТА</span>
+                        <span th:case="'BONUS'">ПРЕМИЯ</span>
+                        <span th:case="'BUDGET_CHANGES'">ИЗМЕНЕНИЕ БЮДЖЕТА</span>
+                        <span th:case="'SALARY_CHANGES'">ИЗМЕНЕНИЕ ЗАРПЛАТЫ</span>
+                        <span th:case="'OTHERS'">ДРУГОЕ</span>
+                        <span th:case="*">НЕИЗВЕСТНО</span>
+                    </span>
+                </option>
             </select>
 
             <small th:if="${#fields.hasErrors('paymentType')}" th:errors="*{paymentType}"

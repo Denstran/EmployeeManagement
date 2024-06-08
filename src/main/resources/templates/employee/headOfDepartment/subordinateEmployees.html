@@ -17,13 +17,20 @@
             <!-- Фильтры -->
             <form method="GET" th:action="@{/myPage/headOfDepartment/myEmployees}">
                 <div class="form-group">
-                    <label for="employeeStatus">Employee Status:</label>
+                    <label for="employeeStatus">Статус сотрудника:</label>
                     <select id="employeeStatus" name="employeeStatus">
                         <option th:each="status : ${statuses}"
-                                th:text="${status.name()}"
-                                th:value="${status.name()}"></option>
+                                th:value="${status.name()}">
+                            <span th:switch="${status.name()}">
+                                <span th:case="'WORKING'">РАБОТАЕТ</span>
+                                <span th:case="'VACATION'">В ОТПУСКЕ</span>
+                                <span th:case="'HEALING'">НА БОЛЬНИЧНОМ</span>
+                                <span th:case="'FIRED'">УВОЛЕН</span>
+                                <span th:case="*">Другой</span>
+                            </span>
+                        </option>
 
-                        <option th:value="ALL">ALL</option>
+                        <option th:value="ALL">ВСЕ</option>
                     </select><br>
                 </div>
 
@@ -34,12 +41,12 @@
                                 th:text="${position.positionName}"
                                 th:value="${position.positionName}"></option>
 
-                        <option th:value="ALL">ALL</option>
+                        <option th:value="ALL">ВСЕ</option>
                     </select><br>
                 </div>
 
                 <div class="form-control">
-                    <label for="phoneNumber">Phone Number:</label>
+                    <label for="phoneNumber">Номер телефона:</label>
                     <input type="text" id="phoneNumber" name="phoneNumber"><br>
                 </div>
 
@@ -48,18 +55,18 @@
                     <input type="email" id="email" name="email" ><br>
                 </div>
                 <div class="form-control">
-                    <label for="salaryStart">Salary Start:</label>
+                    <label for="salaryStart">Начало диапазона зарплаты:</label>
                     <input type="number" id="salaryStart" name="salaryStart"><br>
                 </div>
                 <div class="form-control">
-                    <label for="salaryEnd">Salary End:</label>
+                    <label for="salaryEnd">Конец диапазона зарплаты:</label>
                     <input type="number" id="salaryEnd" name="salaryEnd"><br>
                 </div>
                 <div class="form-control">
-                    <label for="startAmountOfWorkingYears">Start Amount of Working Years:</label>
+                    <label for="startAmountOfWorkingYears">Начало диапазона лет работы в компании:</label>
                     <input type="number" id="startAmountOfWorkingYears" name="startAmountOfWorkingYears"><br>
 
-                    <label for="endAmountOfWorkingYears">End Amount of Working Years:</label>
+                    <label for="endAmountOfWorkingYears">Конец диапазона лет работы в компании:</label>
                     <input type="number" id="endAmountOfWorkingYears" name="endAmountOfWorkingYears"><br>
                 </div>
 
@@ -91,7 +98,13 @@
                     <td th:text="${employee.homeAddress}"></td>
                     <td th:text="${employee.salary.amount}"></td>
                     <td th:text="${employee.employmentDate}"></td>
-                    <td th:text="${employee.employeeStatus}"></td>
+                    <td th:switch="${employee.employeeStatus.name()}">
+                        <span th:case="'WORKING'">РАБОТАЕТ</span>
+                        <span th:case="'VACATION'">В ОТПУСКЕ</span>
+                        <span th:case="'HEALING'">НА БОЛЬНИЧНОМ</span>
+                        <span th:case="'FIRED'">УВОЛЕН</span>
+                        <span th:case="*">Другой</span>
+                    </td>
                     <td>
                         <a th:if="${employee.employeeStatus.name() eq 'WORKING'}"
                            class="btn btn-primary btn-sm"

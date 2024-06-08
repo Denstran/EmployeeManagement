@@ -40,11 +40,29 @@
             <h2>Тип отдела:</h2>
             <div class="form-group">
                 <label for="typeSelect" aria-describedby="typeError">Тип</label>
-                <select th:disabled="${isUpdating} ? true : false" class="form-control" id="typeSelect" name="typeSelect" th:field="*{departmentType}">
-                    <option th:if="${!isUpdating}" th:each="type : ${types}" th:value="${type}"
-                            th:text="${type}"></option>
+                <select th:disabled="${isUpdating} ? true : false"
+                        class="form-control"
+                        id="typeSelect"
+                        name="typeSelect"
+                        th:field="*{departmentType}">
+                    <option th:if="${!isUpdating}"
+                            th:each="type : ${types}"
+                            th:value="${type}">
+                        <span th:switch="${type.name()}">
+                            <span th:case="'HR'">Отдел HR</span>
+                            <span th:case="'ACCOUNTING'">Бухгалтерия</span>
+                            <span th:case="'OTHER'">Другое</span>
+                        </span>
+                    </option>
 
-                    <option th:if="${isUpdating}" th:value="${departmentDTO.departmentType}" th:text="${departmentDTO.departmentType}"></option>
+                    <option th:if="${isUpdating}"
+                            th:value="${departmentDTO.departmentType}">
+                        <span th:switch="${departmentDTO.departmentType.name()}">
+                            <span th:case="'HR'">Отдел HR</span>
+                            <span th:case="'ACCOUNTING'">Бухгалтерия</span>
+                            <span th:case="'OTHER'">Другое</span>
+                        </span>
+                    </option>
                 </select>
 
                 <small th:if="${#fields.hasErrors('departmentType')}" th:errors="*{departmentType}"

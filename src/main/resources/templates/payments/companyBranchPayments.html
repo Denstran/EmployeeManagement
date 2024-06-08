@@ -57,8 +57,19 @@
             <tbody>
                 <tr th:each="payment : ${paymentLogs}">
                     <td th:text="${payment.paymentAmount.amount}"></td>
-                    <td th:text="${payment.transferAction}"></td>
-                    <td th:text="${payment.paymentType}"></td>
+                    <td th:switch="${payment.transferAction.name()}">
+                        <span th:case="'INCREASE'">ПОПОЛНЕНИЕ</span>
+                        <span th:case="'DECREASE'">СНЯТИЕ</span>
+                        <span th:case="*">НЕИЗВЕСТНО</span>
+                    </td>
+                    <td th:switch="${payment.paymentType.name()}">
+                        <span th:case="'SALARY'">ЗАРПЛАТА</span>
+                        <span th:case="'BONUS'">ПРЕМИЯ</span>
+                        <span th:case="'BUDGET_CHANGES'">ИЗМЕНЕНИЕ БЮДЖЕТА</span>
+                        <span th:case="'SALARY_CHANGES'">ИЗМЕНЕНИЕ ЗАРПЛАТЫ</span>
+                        <span th:case="'OTHERS'">ДРУГОЕ</span>
+                        <span th:case="*">НЕИЗВЕСТНО</span>
+                    </td>
                     <td th:text="${payment.dateOfPayment}"></td>
                 </tr>
             </tbody>

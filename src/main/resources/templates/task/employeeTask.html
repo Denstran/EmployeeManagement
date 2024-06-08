@@ -28,7 +28,14 @@
             <td th:text="${task.taskDeadLine}">25.08.2024</td>
             <td th:text="${task.taskDescription}">6</td>
             <td th:text="${task.employeeGiverContacts}"></td>
-            <td th:text="${task.taskStatus}"></td>
+            <td th:switch="${task.taskStatus.name()}">
+                <span th:case="'FINISHED'">ЗАВЕРШЕНО</span>
+                <span th:case="'IN_PROCESS'">В ПРОЦЕССЕ</span>
+                <span th:case="'ON_VALIDATION'">НА ПРОВЕРКЕ</span>
+                <span th:case="'CANCELED'">ОТМЕНЕНА</span>
+                <span th:case="'FAILED'">ОТМЕНЕНА</span>
+                <span th:case="*">НЕИЗВЕСТНО</span>
+            </td>
             <td>
                 <form th:if="${task.taskStatus.name() eq 'IN_PROCESS'}"
                       th:action="@{/myPage/tasks/{taskId}/finish(taskId=${task.id})}"
