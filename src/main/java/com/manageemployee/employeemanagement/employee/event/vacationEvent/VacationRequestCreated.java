@@ -1,4 +1,4 @@
-package com.manageemployee.employeemanagement.employee.model.event.vacationEvent;
+package com.manageemployee.employeemanagement.employee.event.vacationEvent;
 
 import com.manageemployee.employeemanagement.companyBranch.model.CompanyBranch;
 import com.manageemployee.employeemanagement.department.model.Department;

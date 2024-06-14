@@ -1,12 +1,10 @@
-package com.manageemployee.employeemanagement.employee.model.event.employeeEvent.eventListener;
+package com.manageemployee.employeemanagement.employee.event.employeeEvent.eventListener;
 
-import com.manageemployee.employeemanagement.department.model.CompanyBranchDepartmentPK;
 import com.manageemployee.employeemanagement.department.model.DepartmentInfo;
 import com.manageemployee.employeemanagement.department.model.DepartmentInfoPaymentLog;
 import com.manageemployee.employeemanagement.department.service.DepartmentInfoPaymentLogService;
 import com.manageemployee.employeemanagement.department.service.DepartmentInfoService;
-import com.manageemployee.employeemanagement.employee.model.employee.Employee;
-import com.manageemployee.employeemanagement.employee.model.event.employeeEvent.EmployeeFired;
+import com.manageemployee.employeemanagement.employee.event.employeeEvent.EmployeeFired;
 import com.manageemployee.employeemanagement.security.User;
 import com.manageemployee.employeemanagement.util.Money;
 import lombok.extern.slf4j.Slf4j;
@@ -30,12 +28,13 @@ public class EmployeeFiredEventListener {
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void fireEmployeeEventHandler(EmployeeFired employeeFired) {
-        processSalaryChanges(employeeFired);
+        log.info("Handling firing employee event");
+        processDepartmentBudgetChanges(employeeFired);
         blockAccount(employeeFired);
     }
 
-    private void processSalaryChanges(EmployeeFired employeeFired) {
-        log.info("PROCESSING SALARY CHANGES");
+    private void processDepartmentBudgetChanges(EmployeeFired employeeFired) {
+        log.info("PROCESSING BUDGET CHANGES");
 
         DepartmentInfo departmentInfo = getDepartmentInfo(employeeFired);
         departmentInfoService.employeeSalaryReducing(departmentInfo, employeeFired.getOldSalary());
@@ -46,15 +45,12 @@ public class EmployeeFiredEventListener {
     }
 
     private void blockAccount(EmployeeFired employeeFired) {
-        User user = employeeFired.getEmployee().getUser();
+        User user = employeeFired.getUser();
         user.setEnabled(false);
         user.clearRoles();
     }
 
     private DepartmentInfo getDepartmentInfo(EmployeeFired event) {
-        Employee employee = event.getEmployee();
-        return departmentInfoService.getById(
-                new CompanyBranchDepartmentPK(employee.getCompanyBranch(), employee.getPosition().getDepartment())
-        );
+        return departmentInfoService.getById(event.getDepartmentInfoPK());
     }
 }

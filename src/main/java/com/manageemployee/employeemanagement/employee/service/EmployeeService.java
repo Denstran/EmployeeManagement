@@ -1,14 +1,15 @@
 package com.manageemployee.employeemanagement.employee.service;
 
 import com.manageemployee.employeemanagement.companyBranch.model.CompanyBranch;
+import com.manageemployee.employeemanagement.department.model.CompanyBranchDepartmentPK;
 import com.manageemployee.employeemanagement.department.model.Department;
 import com.manageemployee.employeemanagement.department.model.DepartmentInfo;
 import com.manageemployee.employeemanagement.department.model.DepartmentType;
 import com.manageemployee.employeemanagement.employee.dto.SearchEmployeeFilters;
 import com.manageemployee.employeemanagement.employee.model.employee.Employee;
 import com.manageemployee.employeemanagement.employee.model.employee.EmployeeStatus;
-import com.manageemployee.employeemanagement.employee.model.employee.Name;
 import com.manageemployee.employeemanagement.employee.repository.EmployeeRepository;
+import com.manageemployee.employeemanagement.employee.service.eventPublisher.EmployeeEventPublisher;
 import com.manageemployee.employeemanagement.position.model.Position;
 import com.manageemployee.employeemanagement.security.PasswordGenerator;
 import com.manageemployee.employeemanagement.security.UserRole;
@@ -31,10 +32,15 @@ public class EmployeeService implements com.manageemployee.employeemanagement.de
     private final EmployeeRepository repository;
     private final PasswordEncoder passwordEncoder;
 
+    private List<EmployeeEventPublisher> employeeEventPublishers;
+
     @Autowired
-    public EmployeeService(EmployeeRepository repository, PasswordEncoder passwordEncoder) {
+    public EmployeeService(EmployeeRepository repository,
+                           PasswordEncoder passwordEncoder,
+                           List<EmployeeEventPublisher> employeeEventPublishers) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
+        this.employeeEventPublishers = employeeEventPublishers;
     }
 
     @Transactional
@@ -72,24 +78,10 @@ public class EmployeeService implements com.manageemployee.employeemanagement.de
     @Transactional
     public void updateEmployee(Employee employee) {
         Employee employeeFromDB = getById(employee.getId());
-        if (isRestoringEmployee(employee, employeeFromDB)) employee.restore();
-        else if (isEmployeeFired(employee, employeeFromDB)) employee.fireEmployee(employeeFromDB.getSalary());
-        else {
-            employee.updateEmployee(new Money(employeeFromDB.getSalary()), employeeFromDB.getPosition());
-        }
-
         log.info("Old employee salary: {} Updated employee salary: {}", employeeFromDB.getSalary(), employee.getSalary());
+        employeeEventPublishers.forEach(publisher -> publisher.publishEvent(employee, employeeFromDB));
+
         repository.saveAndFlush(employee);
-    }
-
-    private boolean isRestoringEmployee(Employee employee, Employee employeeFromDB) {
-        return EmployeeStatus.FIRED.equals(employeeFromDB.getEmployeeStatus()) &&
-                !EmployeeStatus.FIRED.equals(employee.getEmployeeStatus());
-    }
-
-    private boolean isEmployeeFired(Employee employee, Employee employeeFromDB) {
-        return employee.getEmployeeStatus().equals(EmployeeStatus.FIRED)
-                && !employeeFromDB.getEmployeeStatus().equals(EmployeeStatus.FIRED);
     }
 
     @Transactional
@@ -99,12 +91,6 @@ public class EmployeeService implements com.manageemployee.employeemanagement.de
 
     public Employee getReference(Long id) {
         return repository.getReferenceById(id);
-    }
-
-    public String getEmployeeNameById(Long employeeId) {
-        Optional<Name> employeeName = repository.getEmployeeNameById(employeeId);
-        return employeeName.map(Name::toString).orElseThrow(()
-                -> new IllegalArgumentException("Выбранного сотрудника не существует"));
     }
 
     public DepartmentInfo getEmployeeDepartmentInfo(Long companyBranchId, Long employeePositionId) {
@@ -227,6 +213,10 @@ public class EmployeeService implements com.manageemployee.employeemanagement.de
 
     public Employee getDepartmentBoss(CompanyBranch companyBranch, Department department) {
         return repository.findDepartmentBoss(companyBranch, department);
+    }
+
+    public Employee getDepartmentBoss(CompanyBranchDepartmentPK pk) {
+        return repository.findDepartmentBoss(pk.getCompanyBranch(), pk.getDepartment());
     }
 
 }

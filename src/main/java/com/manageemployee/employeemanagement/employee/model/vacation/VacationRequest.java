@@ -1,10 +1,10 @@
 package com.manageemployee.employeemanagement.employee.model.vacation;
 
+import com.manageemployee.employeemanagement.employee.event.vacationEvent.VacationRequestApproved;
+import com.manageemployee.employeemanagement.employee.event.vacationEvent.VacationRequestCancelled;
+import com.manageemployee.employeemanagement.employee.event.vacationEvent.VacationRequestCreated;
+import com.manageemployee.employeemanagement.employee.event.vacationEvent.VacationRequestUpdated;
 import com.manageemployee.employeemanagement.employee.model.employee.Employee;
-import com.manageemployee.employeemanagement.employee.model.event.vacationEvent.VacationRequestApproved;
-import com.manageemployee.employeemanagement.employee.model.event.vacationEvent.VacationRequestCancelled;
-import com.manageemployee.employeemanagement.employee.model.event.vacationEvent.VacationRequestCreated;
-import com.manageemployee.employeemanagement.employee.model.event.vacationEvent.VacationRequestUpdated;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;

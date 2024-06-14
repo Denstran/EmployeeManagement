@@ -1,15 +1,13 @@
-package com.manageemployee.employeemanagement.employee.model.event.employeeEvent.eventListener;
+package com.manageemployee.employeemanagement.employee.event.employeeEvent.eventListener;
 
-import com.manageemployee.employeemanagement.department.model.CompanyBranchDepartmentPK;
 import com.manageemployee.employeemanagement.department.model.DepartmentInfo;
 import com.manageemployee.employeemanagement.department.model.DepartmentInfoPaymentLog;
 import com.manageemployee.employeemanagement.department.service.DepartmentInfoPaymentLogService;
 import com.manageemployee.employeemanagement.department.service.DepartmentInfoService;
+import com.manageemployee.employeemanagement.employee.event.employeeEvent.EmployeeRestored;
+import com.manageemployee.employeemanagement.employee.event.employeeEvent.eventListener.roleProcessor.AddRoleProcessor;
 import com.manageemployee.employeemanagement.employee.model.employee.Employee;
 import com.manageemployee.employeemanagement.employee.model.employee.EmployeePaymentLog;
-import com.manageemployee.employeemanagement.employee.model.event.employeeEvent.EmployeeRestored;
-import com.manageemployee.employeemanagement.employee.model.event.employeeEvent.eventListener.roleProcessor.AddRoleProcessor;
-import com.manageemployee.employeemanagement.employee.model.event.employeeEvent.eventListener.roleProcessor.RemoveRoleProcessor;
 import com.manageemployee.employeemanagement.employee.service.EmployeePaymentLogService;
 import com.manageemployee.employeemanagement.security.User;
 import com.manageemployee.employeemanagement.util.Money;
@@ -30,39 +28,37 @@ public class EmployeeRestoredEventListener {
     private final EmployeePaymentLogService employeePaymentLogService;
 
     private final List<AddRoleProcessor> addRoleProcessors;
-    private final List<RemoveRoleProcessor> removeRoleProcessors;
 
     @Autowired
     public EmployeeRestoredEventListener(DepartmentInfoService departmentInfoService,
                                          DepartmentInfoPaymentLogService departmentInfoPaymentLogService,
                                          EmployeePaymentLogService employeePaymentLogService,
-                                         List<AddRoleProcessor> addRoleProcessors,
-                                         List<RemoveRoleProcessor> removeRoleProcessors) {
+                                         List<AddRoleProcessor> addRoleProcessors) {
         this.departmentInfoService = departmentInfoService;
         this.departmentInfoPaymentLogService = departmentInfoPaymentLogService;
         this.employeePaymentLogService = employeePaymentLogService;
         this.addRoleProcessors = addRoleProcessors;
-        this.removeRoleProcessors = removeRoleProcessors;
     }
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void restoreEmployeeEventHandler(EmployeeRestored employeeRestored) {
+        log.info("Handling employee restored event");
         processSalaryChanges(employeeRestored);
         unBlockAccount(employeeRestored);
         addRoleProcessors.forEach(addRoleProcessor -> addRoleProcessor.processAddRole(employeeRestored));
     }
 
     private void unBlockAccount(EmployeeRestored employeeRestored) {
-        User user = employeeRestored.getEmployee().getUser();
+        User user = employeeRestored.getUser();
         user.setEnabled(true);
     }
 
 
     private void processSalaryChanges(EmployeeRestored employeeRestored) {
         log.info("PROCESSING SALARY CHANGES");
-        log.info("Old salary: {}, New salary: {}", employeeRestored.getOldSalary(), employeeRestored.getNewSalary());
-        createEmployeePaymentLog(employeeRestored, employeeRestored.getNewSalary());
-        processDepartmentBudgetChanges(getDepartmentInfo(employeeRestored), employeeRestored.getNewSalary());
+        log.info("Employee salary: {}", employeeRestored.getSalary());
+        createEmployeePaymentLog(employeeRestored.getEmployee());
+        processDepartmentBudgetChanges(getDepartmentInfo(employeeRestored), employeeRestored.getSalary());
     }
 
     private void processDepartmentBudgetChanges(DepartmentInfo departmentInfo, Money budgetChanges) {
@@ -76,16 +72,13 @@ public class EmployeeRestoredEventListener {
         departmentInfoPaymentLogService.saveDepartmentInfoPaymentLog(paymentLog);
     }
 
-    private void createEmployeePaymentLog(EmployeeRestored employeeRestored, Money newSalary) {
+    private void createEmployeePaymentLog(Employee employee) {
         EmployeePaymentLog paymentLog =
-                EmployeePaymentLog.createPaymentLog(employeeRestored.getEmployee(), Money.abs(newSalary), true);
+                EmployeePaymentLog.createPaymentLog(employee, Money.abs(employee.getSalary()), true);
         employeePaymentLogService.saveEmployeePaymentLog(paymentLog);
     }
 
     private DepartmentInfo getDepartmentInfo(EmployeeRestored event) {
-        Employee employee = event.getEmployee();
-        return departmentInfoService.getById(
-                new CompanyBranchDepartmentPK(employee.getCompanyBranch(), employee.getPosition().getDepartment())
-        );
+        return departmentInfoService.getById(event.getDepartmentInfoPK());
     }
 }

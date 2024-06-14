@@ -1,10 +1,9 @@
 package com.manageemployee.employeemanagement.employee.model.employee;
 
 import com.manageemployee.employeemanagement.companyBranch.model.CompanyBranch;
-import com.manageemployee.employeemanagement.employee.model.event.employeeEvent.EmployeeFired;
-import com.manageemployee.employeemanagement.employee.model.event.employeeEvent.EmployeeHired;
-import com.manageemployee.employeemanagement.employee.model.event.employeeEvent.EmployeeRestored;
-import com.manageemployee.employeemanagement.employee.model.event.employeeEvent.EmployeeUpdated;
+import com.manageemployee.employeemanagement.department.model.CompanyBranchDepartmentPK;
+import com.manageemployee.employeemanagement.department.model.Department;
+import com.manageemployee.employeemanagement.employee.event.employeeEvent.*;
 import com.manageemployee.employeemanagement.position.model.Position;
 import com.manageemployee.employeemanagement.security.User;
 import com.manageemployee.employeemanagement.security.UserRole;
@@ -118,21 +117,44 @@ public class Employee extends AbstractAggregateRoot<Employee> {
     public void hireEmployee(Set<UserRole> roles, String password, String encodedPassword) {
         this.employeeStatus = EmployeeStatus.WORKING;
         this.user = User.createUser(email, roles, encodedPassword);
-        registerEvent(new EmployeeHired(this, salary, salary, password));
+        registerEvent(new EmployeeHired(password, this));
     }
 
-
-    public void updateEmployee(Money oldSalary, Position oldPosition) {
-        log.info("Old salary: {}, New salary: {}", oldSalary, this.salary);
-        registerEvent(new EmployeeUpdated(this, oldSalary, this.salary, oldPosition));
+    public void changeSalary(Money oldSalary, Department oldDepartment) {
+        log.info("Registering changed salary event");
+        CompanyBranchDepartmentPK departmentInfoPK = new CompanyBranchDepartmentPK(
+                this.companyBranch, this.getPosition().getDepartment()
+        );
+        registerEvent(new EmployeeSalaryChanged(this.id, oldSalary, this.salary, departmentInfoPK, oldDepartment));
     }
 
     public void fireEmployee(Money salaryFromDB) {
         this.salary = new Money(salaryFromDB);
-        registerEvent(new EmployeeFired(this, salary, salary));
+        CompanyBranchDepartmentPK departmentInfoPK = new CompanyBranchDepartmentPK(
+                this.companyBranch, this.getPosition().getDepartment()
+        );
+        registerEvent(new EmployeeFired(this.salary, departmentInfoPK, user));
     }
 
     public void restore() {
-        registerEvent(new EmployeeRestored(this, salary, salary));
+        registerEvent(new EmployeeRestored(this));
+    }
+
+    public void changePosition(Position oldPosition) {
+        registerEvent(new EmployeePositionChanged(
+                oldPosition,
+                this.position,
+                this.user,
+                this.email,
+                this.companyBranch));
+    }
+
+    public void changeDepartment(Department oldDepartment) {
+        registerEvent(new EmployeeDepartmentChanged(
+                getEmployeeContacts(),
+                salary,
+                companyBranch,
+                oldDepartment,
+                position.getDepartment()));
     }
 }

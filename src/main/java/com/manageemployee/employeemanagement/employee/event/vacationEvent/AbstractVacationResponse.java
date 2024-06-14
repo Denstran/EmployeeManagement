@@ -1,4 +1,4 @@
-package com.manageemployee.employeemanagement.employee.model.event.vacationEvent;
+package com.manageemployee.employeemanagement.employee.event.vacationEvent;
 
 import com.manageemployee.employeemanagement.employee.model.employee.Employee;
 import com.manageemployee.employeemanagement.mail.VacationResponse;

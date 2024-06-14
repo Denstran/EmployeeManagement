@@ -1,13 +1,12 @@
-package com.manageemployee.employeemanagement.employee.model.event.employeeEvent.eventListener;
+package com.manageemployee.employeemanagement.employee.event.employeeEvent.eventListener;
 
-import com.manageemployee.employeemanagement.department.model.CompanyBranchDepartmentPK;
 import com.manageemployee.employeemanagement.department.model.DepartmentInfo;
 import com.manageemployee.employeemanagement.department.model.DepartmentInfoPaymentLog;
 import com.manageemployee.employeemanagement.department.service.DepartmentInfoPaymentLogService;
 import com.manageemployee.employeemanagement.department.service.DepartmentInfoService;
+import com.manageemployee.employeemanagement.employee.event.employeeEvent.EmployeeHired;
 import com.manageemployee.employeemanagement.employee.model.employee.Employee;
 import com.manageemployee.employeemanagement.employee.model.employee.EmployeePaymentLog;
-import com.manageemployee.employeemanagement.employee.model.event.employeeEvent.EmployeeHired;
 import com.manageemployee.employeemanagement.employee.service.EmployeePaymentLogService;
 import com.manageemployee.employeemanagement.employee.service.EmployeeService;
 import com.manageemployee.employeemanagement.mail.EmailService;
@@ -43,17 +42,17 @@ public class EmployeeHiredEventListener {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleEmployeeHiring(EmployeeHired employeeHired) {
-        log.info("EMPLOYEE EMAIL {}", employeeHired.getEmployee().getEmail());
+        log.info("EMPLOYEE EMAIL {}", employeeHired.getEmail());
         processSalaryChanges(employeeHired);
-        sendPasswordEmail(employeeHired.getEmployee().getEmail(), employeeHired.getPassword());
+        sendPasswordEmail(employeeHired.getEmail(), employeeHired.getPassword());
         sendHiringNotificationEmail(employeeHired.getEmployee());
     }
 
     private void processSalaryChanges(EmployeeHired employeeHired) {
         log.info("PROCESSING SALARY CHANGES");
-        log.info("Old salary: {}, New salary: {}", employeeHired.getOldSalary(), employeeHired.getNewSalary());
-        createEmployeePaymentLog(employeeHired, employeeHired.getNewSalary());
-        processDepartmentBudgetChanges(getDepartmentInfo(employeeHired), employeeHired.getNewSalary());
+        log.info("Employee salary: {}", employeeHired.getSalary());
+        createEmployeePaymentLog(employeeHired.getEmployee(), employeeHired.getSalary());
+        processDepartmentBudgetChanges(getDepartmentInfo(employeeHired), employeeHired.getSalary());
     }
 
     private void processDepartmentBudgetChanges(DepartmentInfo departmentInfo, Money budgetChanges) {
@@ -67,9 +66,9 @@ public class EmployeeHiredEventListener {
         departmentInfoPaymentLogService.saveDepartmentInfoPaymentLog(paymentLog);
     }
 
-    private void createEmployeePaymentLog(EmployeeHired employeeHired, Money newSalary) {
+    private void createEmployeePaymentLog(Employee employee, Money newSalary) {
         EmployeePaymentLog paymentLog =
-                EmployeePaymentLog.createPaymentLog(employeeHired.getEmployee(), Money.abs(newSalary), true);
+                EmployeePaymentLog.createPaymentLog(employee, Money.abs(newSalary), true);
         employeePaymentLogService.saveEmployeePaymentLog(paymentLog);
     }
 
@@ -101,9 +100,6 @@ public class EmployeeHiredEventListener {
     }
 
     private DepartmentInfo getDepartmentInfo(EmployeeHired event) {
-        Employee employee = event.getEmployee();
-        return departmentInfoService.getById(
-                new CompanyBranchDepartmentPK(employee.getCompanyBranch(), employee.getPosition().getDepartment())
-        );
+        return departmentInfoService.getById(event.getDepartmentInfoPK());
     }
 }

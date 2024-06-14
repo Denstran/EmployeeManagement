@@ -120,7 +120,7 @@
         </div>
 
         <div class="form-group">
-            <label for="zipCodeInput">ZIP CODE</label>
+            <label for="zipCodeInput">Почтовый индекс</label>
             <input type="number" th:field="*{homeAddress.zipCode}" class="form-control" id="zipCodeInput"
                    aria-describedby="zipCodeError" placeholder="Введите ZIP CODE">
 
@@ -142,7 +142,7 @@
         <hr/>
         <h2>Доступные должности</h2>
         <div class="form-group">
-            <label for="positionSelect" aria-describedby="positionError">Статус</label>
+            <label for="positionSelect" aria-describedby="positionError">Должность</label>
             <select class="form-control" id="positionSelect" name="positionSelect" th:field="*{positionId}">
                 <option th:each="position : ${positionDTOS}" th:value="${position.id}"
                         th:text="${position.positionName}"></option>
