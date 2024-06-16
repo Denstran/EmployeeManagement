@@ -77,7 +77,7 @@ INSERT INTO department_info(company_branch_id, department_id, department_budget)
 
 INSERT INTO UZER (uzer_name, password, IS_ENABLED) VALUES ( 'admin', '$2a$12$kprqzMBw3sRsWU4s1Svlwuqz/b29gQ/q1h2f7H6k./xAuFqwR8PJu', true);
 
-INSERT INTO UZER (uzer_name, password, IS_ENABLED) VALUES ( 'john.doe@examle.com', '$2a$12$kprqzMBw3sRsWU4s1Svlwuqz/b29gQ/q1h2f7H6k./xAuFqwR8PJu', true);
+INSERT INTO UZER (uzer_name, password, IS_ENABLED) VALUES ( 'kirstradz@gmail.com', '$2a$12$kprqzMBw3sRsWU4s1Svlwuqz/b29gQ/q1h2f7H6k./xAuFqwR8PJu', true);
 INSERT INTO UZER (uzer_name, password, IS_ENABLED) VALUES ( 'john.doe@exmple.com', '$2a$12$kprqzMBw3sRsWU4s1Svlwuqz/b29gQ/q1h2f7H6k./xAuFqwR8PJu', true);
 INSERT INTO UZER (uzer_name, password, IS_ENABLED) VALUES ( 'john.doe@exampe.com', '$2a$12$kprqzMBw3sRsWU4s1Svlwuqz/b29gQ/q1h2f7H6k./xAuFqwR8PJu', true);
 INSERT INTO UZER (uzer_name, password, IS_ENABLED) VALUES ( 'john.doe@xample.com', '$2a$12$kprqzMBw3sRsWU4s1Svlwuqz/b29gQ/q1h2f7H6k./xAuFqwR8PJu', true);
@@ -112,7 +112,7 @@ INSERT INTO user_roles (roles, user_id) values (0, 1),
 
 INSERT INTO employee (employment_date, home_building_number, company_branch_id, employee_status, position_id, salary, email, first_name, home_city, home_country, home_street, home_zip_code, last_name, middle_name, phone_number, vacation_days, user_id)
 VALUES
-    ('2021-05-15', 123, 1, 'WORKING', 1, 50000.0, 'john.doe@examle.com', 'Иван', 'Москва', 'Россия', 'Ленина ул.', '101000', 'Иванов', 'Алексеевич', '555-123-4567', 100, 2),
+    ('2021-05-15', 123, 1, 'WORKING', 1, 50000.0, 'kirstradz@gmail.com', 'Иван', 'Москва', 'Россия', 'Ленина ул.', '101000', 'Иванов', 'Алексеевич', '555-123-4567', 100, 2),
     ('2020-05-15', 123, 1, 'WORKING', 2, 25000.0, 'john.doe@exmple.com', 'Петр', 'Москва', 'Россия', 'Ленина ул.', '101000', 'Петров', 'Иванович', '555-123-4561', 28, 3),
     ('2024-05-15', 123, 1, 'WORKING', 3, 150000.0, 'john.doe@exampe.com', 'Алексей', 'Москва', 'Россия', 'Ленина ул.', '101000', 'Сидоров', 'Петрович', '555-123-4562', 28, 4),
     ('2022-05-15', 123, 1, 'VACATION', 4, 10000.0, 'john.doe@xample.com', 'Дмитрий', 'Москва', 'Россия', 'Ленина ул.', '101000', 'Федоров', 'Алексеевич', '555-123-4563', 28, 5),

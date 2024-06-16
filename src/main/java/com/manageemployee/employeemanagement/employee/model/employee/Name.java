@@ -49,7 +49,7 @@ public class Name {
         if (middleName == null || middleName.isEmpty() || middleName.equals("ОТСУТСТВУЕТ"))
             return String.format("%s %s", firstName, lastName);
 
-        return String.format("%s %s %S", firstName, lastName, middleName);
+        return String.format("%s %s %s", firstName, lastName, middleName);
     }
 
     @Override

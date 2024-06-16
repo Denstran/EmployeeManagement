@@ -43,18 +43,14 @@ public class TaskMapper extends AbstractMapperWithSpecificFields<Task, TaskDTO> 
     protected void mapSpecificFieldsForDto(Task source, TaskDTO destination) {
         log.info("Mapping Task entity: {} to TaskDTO", source);
         Employee employeeOwner = source.getTaskOwner();
-        Employee employeeGiver = source.getTaskOwner();
+        Employee employeeGiver = source.getTaskGiver();
 
         destination.setTaskOwnerId(employeeOwner.getId());
         destination.setTaskGiverId(employeeGiver.getId());
 
-        String employeeOwnerContacts = employeeOwner.getName() + " "
-                                  + employeeOwner.getPhoneNumber() + " "
-                                  + employeeOwner.getEmail();
+        String employeeOwnerContacts = employeeOwner.getEmployeeContacts();
 
-        String employeeGiverContacts = employeeGiver.getName() + " "
-                                       + employeeGiver.getPhoneNumber() + " "
-                                       + employeeGiver.getEmail();
+        String employeeGiverContacts = employeeGiver.getEmployeeContacts();
 
         destination.setEmployeeOwnerContacts(employeeOwnerContacts);
         destination.setEmployeeGiverContacts(employeeGiverContacts);
